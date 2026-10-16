@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import {
-  BookOpen,
   CheckCircle2,
   Cpu,
   Download,
@@ -11,7 +10,6 @@ import {
   Link2Off,
   Loader2,
   Lock,
-  Search,
   ShieldAlert,
   ShieldCheck,
   Trash2,
@@ -22,12 +20,11 @@ import { type ReactNode, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, Badge, Button, Card, CardHeader, Switch } from "@/components/ui";
-import { firm, kb } from "@/data/demo";
+import { firm } from "@/data/demo";
 import { verify } from "@/lib/audit";
 import { cn } from "@/lib/cn";
-import { portfolios } from "@/lib/engine";
 import { fmtDate, inrShort } from "@/lib/format";
-import { useApp, useClientName } from "@/state/app";
+import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 
 function Page({ children }: { children: ReactNode }) {
   return <div className="gutter-x mx-auto max-w-[1200px] space-y-4 py-5 sm:py-6">{children}</div>;
@@ -123,7 +120,7 @@ export function DataInbox() {
 export function Reports() {
   const { approved } = useApp();
   const displayName = useClientName();
-  const rows = portfolios.filter((p) => approved[p.spec.id]);
+  const rows = useVisiblePortfolios().filter((p) => approved[p.spec.id]);
   return (
     <Page>
       <Card>
@@ -149,41 +146,6 @@ export function Reports() {
           ))}
         </ul>
       </Card>
-    </Page>
-  );
-}
-
-/* Knowledge */
-export function Knowledge() {
-  const [q, setQ] = useState("");
-  const docs = Object.values(kb).filter((d) => `${d.title} ${d.summary} ${d.section}`.toLowerCase().includes(q.toLowerCase()));
-  return (
-    <Page>
-      <label className="flex h-10 items-center gap-2 rounded-lg border border-line bg-surface px-3 focus-within:border-accent">
-        <Search className="size-4 text-muted" aria-hidden />
-        <span className="sr-only">Search rules</span>
-        <input id="kb-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search SEBI, AMFI and Income-tax sources" className="flex-1 bg-transparent text-[13.5px] text-fg outline-none placeholder:text-muted" />
-      </label>
-      <p className="text-[12px] text-muted">The explainer and Copilot may only cite documents in this library. Each is versioned with its effective date.</p>
-      <div className="grid gap-3 md:grid-cols-2">
-        {docs.map((d) => (
-          <Card key={d.id} className="p-4 sm:p-5">
-            <div className="flex flex-wrap gap-1.5">
-              <Badge tone="accent">{d.issuer}</Badge>
-              <Badge tone="outline">{d.version}</Badge>
-              <Badge tone="outline">{d.effective}</Badge>
-            </div>
-            <p className="mt-2.5 text-[14px] font-semibold text-fg">{d.title}</p>
-            <p className="text-[12.5px] text-muted">{d.section}</p>
-            <p className="mt-2 text-[13px] leading-relaxed text-fg-2">{d.summary}</p>
-          </Card>
-        ))}
-      </div>
-      {docs.length === 0 && (
-        <p className="py-8 text-center text-[13px] text-muted">
-          <BookOpen className="mx-auto mb-2 size-5" aria-hidden /> No documents match “{q}”.
-        </p>
-      )}
     </Page>
   );
 }
@@ -270,7 +232,8 @@ function SettingRow({ title, desc, children }: { title: string; desc: string; ch
 }
 
 export function Settings() {
-  const { aiEnabled, setAiEnabled, setLocked } = useApp();
+  const { aiEnabled, setAiEnabled, setLocked, can } = useApp();
+  const owner = can("settings");
   const [mode, setMode] = useState("india");
   return (
     <Page>
@@ -281,6 +244,7 @@ export function Settings() {
             <div className="flex items-center gap-2">
               <span className={cn("text-[12.5px] font-medium", aiEnabled ? "text-good-text" : "text-critical-text")}>{aiEnabled ? "AI on" : "AI off"}</span>
               <Switch id="ai-switch" label="AI enabled" checked={aiEnabled} onChange={(v) => {
+                if (!owner) return toast.error("Only the firm owner can change this");
                 setAiEnabled(v);
                 toast(v ? "AI drafting resumed" : "AI switched off", { description: "Logged to the audit trail." });
               }} />

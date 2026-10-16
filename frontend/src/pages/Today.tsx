@@ -20,9 +20,9 @@ import { usePendingCount } from "@/components/shell/AppShell";
 import { Avatar, Badge, Button, buttonClass, Card, CardHeader, Tip } from "@/components/ui";
 import { aumHistoryFactors, firm, FY_LABEL, TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
-import { allFindings, bookAum, portfolios } from "@/lib/engine";
+
 import { daysBetween, fmtDate, inr, inrShort, signedPts } from "@/lib/format";
-import { useApp, useClientName } from "@/state/app";
+import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 
 function Kpi({ label, value, sub, children, to }: { label: string; value: ReactNode; sub: ReactNode; children?: ReactNode; to?: string }) {
   const body = (
@@ -43,7 +43,10 @@ function Kpi({ label, value, sub, children, to }: { label: string; value: ReactN
 }
 
 export function Today() {
-  const { decisions, approved, openCopilot } = useApp();
+  const { decisions, approved, openCopilot, me } = useApp();
+  const portfolios = useVisiblePortfolios();
+  const allFindings = portfolios.flatMap((p) => p.findings);
+  const bookAum = portfolios.reduce((s, p) => s + p.total, 0);
   const displayName = useClientName();
   const pending = usePendingCount();
   const open = allFindings.filter((f) => !decisions[f.id] && !approved[f.clientId]);
@@ -100,8 +103,8 @@ export function Today() {
           <p className="text-[13px] text-muted">
             {fmtDate(TODAY)} · {FY_LABEL}
           </p>
-          <h2 className="mt-0.5 text-[22px] font-semibold tracking-tight text-fg sm:text-[26px]">
-            Good afternoon, {firm.advisor.name.split(" ")[0]}
+          <h2 className="mt-0.5 font-display text-[26px] font-semibold text-fg sm:text-[32px]">
+            Good afternoon, {(me?.name ?? firm.advisor.name).split(" ")[0]}
           </h2>
           <p className="mt-1 text-[13.5px] text-fg-2">
             {pending} drafts are waiting for you. {due.length} clients are past their 90-day review.
@@ -118,7 +121,7 @@ export function Today() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-        <Kpi label="Book value" value={inrShort(bookAum)} sub={<span className="text-good-text">+{((1 / aumHistoryFactors[0]! - 1) * 100).toFixed(1)}% over 12 months</span>}>
+        <Kpi label={me?.role === "Adviser" ? "Your book" : "Firm book"} value={inrShort(bookAum)} sub={<span className="text-good-text">+{((1 / aumHistoryFactors[0]! - 1) * 100).toFixed(1)}% over 12 months</span>}>
           <Sparkline values={aumHistoryFactors.map((f) => f * bookAum)} label="Book value, last 12 months" />
         </Kpi>
         <Kpi label="Awaiting approval" value={pending} sub={`${high} high severity · ${byClient.size} clients`} to="/review">

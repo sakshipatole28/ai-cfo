@@ -6,14 +6,15 @@ import { toast } from "sonner";
 import { Avatar, Badge, Button, Card, Meter } from "@/components/ui";
 import { TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
-import { type Portfolio, portfolios } from "@/lib/engine";
+import type { Portfolio } from "@/lib/engine";
 import { daysBetween, fmtDate, inrShort, signedPts } from "@/lib/format";
-import { useApp, useClientName } from "@/state/app";
+import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 
 type Filter = "all" | "review" | "stale" | "drift";
 
 export function Clients() {
   const { decisions, approved, locked } = useApp();
+  const portfolios = useVisiblePortfolios();
   const displayName = useClientName();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
@@ -30,7 +31,7 @@ export function Clients() {
         )
         .sort((a, b) => openCount(b) - openCount(a) || b.total - a.total),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [q, filter, decisions, approved, locked],
+    [q, filter, decisions, approved, locked, portfolios],
   );
 
   const chips: [Filter, string, number][] = [

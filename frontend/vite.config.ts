@@ -8,6 +8,8 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 // `--mode preview` builds a single self-contained HTML file for sharing a live demo.
 export default defineConfig(({ mode }) => ({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  // The knowledge base lives in ../data/kb and is shared with the API.
+  server: { fs: { allow: [".."] } },
   plugins: [react(), tailwindcss(), ...(mode === "preview" ? [viteSingleFile()] : [])],
   build:
     mode === "preview"

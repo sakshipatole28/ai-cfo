@@ -6,8 +6,7 @@ import { toast } from "sonner";
 
 import { Avatar, Kbd } from "@/components/ui";
 import { inrShort } from "@/lib/format";
-import { portfolios } from "@/lib/engine";
-import { useApp, useClientName } from "@/state/app";
+import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 
 const PAGES = [
   ["/", "Today"],
@@ -15,7 +14,9 @@ const PAGES = [
   ["/review", "Review inbox"],
   ["/data", "Data inbox"],
   ["/reports", "Reports"],
-  ["/knowledge", "Knowledge"],
+  ["/knowledge", "Ask the rulebook"],
+  ["/access", "Client access"],
+  ["/team", "Team"],
   ["/audit", "Audit trail"],
   ["/settings", "Settings"],
 ] as const;
@@ -38,6 +39,7 @@ export function CommandMenu() {
   const { commandOpen, setCommandOpen, setTheme, setLocked, openCopilot, locked } = useApp();
   const navigate = useNavigate();
   const displayName = useClientName();
+  const portfolios = useVisiblePortfolios();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

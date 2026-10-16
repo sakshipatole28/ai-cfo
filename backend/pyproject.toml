@@ -8,9 +8,15 @@ license = { text = "Proprietary" }
 dependencies = [
     "cryptography>=50.0.2",
     "fastapi>=0.143.3",
+    "numpy>=2.5.4",
     "pydantic-settings>=2.16.0",
+    "snowballstemmer>=3.1.1",
     "uvicorn[standard]>=0.54.0",
 ]
+
+[project.optional-dependencies]
+# Real dense embeddings (BAAI/bge-small-en-v1.5, ONNX on CPU). CI uses the hashing embedder.
+models = ["fastembed>=0.5"]
 
 [build-system]
 requires = ["hatchling"]
@@ -26,7 +32,7 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "N"]
-ignore = ["S101"]
+ignore = ["S101", "E501"]  # line length is handled by the formatter
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S", "SLF001"]
@@ -37,6 +43,10 @@ strict = true
 mypy_path = "src"
 packages = ["aicfo"]
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["snowballstemmer", "fastembed"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
