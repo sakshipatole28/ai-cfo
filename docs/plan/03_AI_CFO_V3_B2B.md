@@ -302,7 +302,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 | Verify the 80C→s.123 and capital-gains section mapping against the official Act text | ⬜ | P0 (before tax engine) |
 | Verify Supabase Mumbai region, pgmq/cron on free tier, Oracle India capacity | ⬜ | P0 (day 1) |
 
-### 5.2 Old v1 repo (not in this folder)
+### 5.2 Old v1 repo (`AI-CFO-India`: public repo **deleted 16 Oct 2026**; local mirror backup at `~/AI-CFO-India-backup.git`)
 | Item | State | Pri |
 |---|---|---|
 | Rotate the leaked encryption key and purge it from git history | ♻️ | **P0** — do it even if v1 is abandoned |
