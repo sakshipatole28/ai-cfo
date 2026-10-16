@@ -1,5 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BookOpen,
   Bot,
@@ -7,6 +7,7 @@ import {
   ChevronsRight,
   Database,
   FileText,
+  Handshake,
   Inbox,
   LayoutGrid,
   Lock,
@@ -18,8 +19,10 @@ import {
   Settings,
   ShieldCheck,
   Sun,
+  UserCog,
   Users,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
 import { CommandMenu } from "@/components/shell/CommandMenu";
@@ -30,24 +33,26 @@ import { ExplainDrawer } from "@/components/explain/ExplainDrawer";
 import { Avatar, Badge, Button, Kbd, Sheet, Tip } from "@/components/ui";
 import { firm } from "@/data/demo";
 import { cn } from "@/lib/cn";
-import { allFindings } from "@/lib/engine";
-import { type Theme, useApp } from "@/state/app";
+import { type Capability, type Theme, useApp, useVisiblePortfolios } from "@/state/app";
 
-type NavItem = { to: string; label: string; icon: typeof Inbox; badge?: "review" | "data" };
+type NavItem = { to: string; label: string; icon: typeof Inbox; badge?: "review" | "data" | "access"; needs?: Capability };
 const NAV: NavItem[] = [
   { to: "/", label: "Today", icon: LayoutGrid },
   { to: "/clients", label: "Clients", icon: Users },
   { to: "/review", label: "Review inbox", icon: Inbox, badge: "review" },
-  { to: "/data", label: "Data inbox", icon: Database, badge: "data" },
+  { to: "/data", label: "Data inbox", icon: Database, badge: "data", needs: "ingest" },
+  { to: "/access", label: "Client access", icon: Handshake, badge: "access" },
   { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/knowledge", label: "Knowledge", icon: BookOpen },
-  { to: "/audit", label: "Audit trail", icon: ShieldCheck },
+  { to: "/knowledge", label: "Ask the rulebook", icon: BookOpen },
+  { to: "/team", label: "Team", icon: UserCog },
+  { to: "/audit", label: "Audit trail", icon: ShieldCheck, needs: "audit" },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function usePendingCount() {
   const { decisions, approved } = useApp();
-  return allFindings.filter((f) => !decisions[f.id] && !approved[f.clientId]).length;
+  const visible = useVisiblePortfolios();
+  return visible.flatMap((p) => p.findings).filter((f) => !decisions[f.id] && !approved[f.clientId]).length;
 }
 
 function isActive(path: string, to: string) {
@@ -95,26 +100,38 @@ function ThemeMenu() {
 }
 
 function UserMenu() {
-  const { setLocked } = useApp();
+  const { setLocked, me, signOut } = useApp();
+  const navigate = useNavigate();
+  if (!me) return null;
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="cursor-pointer rounded-full" aria-label="Account menu">
-          <Avatar name={firm.advisor.name} />
+          <Avatar name={me.name} />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content align="end" sideOffset={6} className="z-50 w-60 rounded-lg border border-line bg-surface p-1 shadow-pop">
           <div className="px-2 py-2">
-            <p className="text-[13px] font-semibold text-fg">{firm.advisor.name}</p>
+            <p className="text-[13px] font-semibold text-fg">{me.name}</p>
             <p className="text-[12px] text-muted">
-              {firm.advisor.role} · {firm.name}
+              {me.role} · {firm.name}
             </p>
+            <p className="mt-1 text-[11.5px] text-muted">Signed in with password + authenticator · auto sign-out after 30 min idle</p>
           </div>
           <DropdownMenu.Separator className="my-1 h-px bg-line" />
           {[
             { label: "Lock vault", Icon: Lock, on: () => setLocked(true) },
-            { label: "Sign out (demo)", Icon: LogOut, on: () => setLocked(true) },
+            { label: "Team and sessions", Icon: UserCog, on: () => navigate({ to: "/team" }) },
+            {
+              label: "Sign out",
+              Icon: LogOut,
+              on: () => {
+                signOut();
+                navigate({ to: "/signin" });
+                toast("Signed out", { description: "Vault locked and keys cleared from this browser." });
+              },
+            },
           ].map(({ label, Icon, on }) => (
             <DropdownMenu.Item
               key={label}
@@ -151,37 +168,39 @@ function AiPill() {
 
 export function AppShell() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const { setCommandOpen, openCopilot } = useApp();
+  const { setCommandOpen, openCopilot, can, requests } = useApp();
   const pending = usePendingCount();
+  const nav = NAV.filter((n) => !n.needs || can(n.needs));
+  const waitingAccess = requests.filter((r) => r.status === "Waiting for client").length;
   const [collapsed, setCollapsed] = useState(() => typeof window !== "undefined" && window.innerWidth < 1280);
   const [moreOpen, setMoreOpen] = useState(false);
   const title = useTitle(path);
 
   useEffect(() => setMoreOpen(false), [path]);
 
-  const badgeFor = (b?: NavItem["badge"]) => (b === "review" ? pending : b === "data" ? 3 : 0);
+  const badgeFor = (b?: NavItem["badge"]) => (b === "review" ? pending : b === "data" ? 3 : b === "access" ? waitingAccess : 0);
 
   return (
     <div className="flex h-full min-h-0">
       {/* Sidebar (tablet and up) */}
       <aside
         className={cn(
-          "hidden shrink-0 flex-col border-r border-line bg-surface transition-[width] duration-200 md:flex",
+          "hidden shrink-0 flex-col bg-nav text-nav-fg transition-[width] duration-200 md:flex",
           collapsed ? "w-[68px]" : "w-[232px]",
         )}
         style={{ paddingLeft: "env(safe-area-inset-left, 0px)" }}
       >
-        <div className={cn("flex h-14 items-center gap-2.5 border-b border-line", collapsed ? "justify-center px-0" : "px-4")}>
+        <div className={cn("flex h-14 items-center gap-2.5 border-b border-nav-line", collapsed ? "justify-center px-0" : "px-4")}>
           <Logo />
           {!collapsed && (
             <div className="min-w-0 leading-tight">
-              <p className="text-[14px] font-semibold tracking-tight text-fg">AI CFO</p>
-              <p className="truncate text-[11.5px] text-muted">{firm.name}</p>
+              <p className="font-display text-[16px] font-semibold text-white">AI CFO</p>
+              <p className="truncate text-[11.5px] text-nav-muted">{firm.name}</p>
             </div>
           )}
         </div>
         <nav className="scrollbar-thin flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Main">
-          {NAV.map(({ to, label, icon: Icon, badge }) => {
+          {nav.map(({ to, label, icon: Icon, badge }) => {
             const active = isActive(path, to);
             const count = badgeFor(badge);
             const link = (
@@ -190,18 +209,19 @@ export function AppShell() {
                 to={to}
                 className={cn(
                   "group relative flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium transition-colors",
-                  active ? "bg-accent-soft text-accent" : "text-fg-2 hover:bg-surface-2 hover:text-fg",
+                  active ? "bg-nav-active text-nav-active-fg" : "text-nav-fg/80 hover:bg-white/5 hover:text-white",
                   collapsed && "justify-center px-0",
                 )}
               >
                 <Icon className="size-[18px] shrink-0" aria-hidden />
                 {!collapsed && <span className="flex-1 truncate">{label}</span>}
                 {count > 0 && !collapsed && (
-                  <span className={cn("tabular rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-accent text-accent-fg" : "bg-surface-3 text-fg-2")}>
+                  <span className={cn("tabular rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-mint text-[#04201a]" : "bg-white/10 text-nav-fg")}>
                     {count}
                   </span>
                 )}
-                {count > 0 && collapsed && <span className="absolute right-2.5 top-2 size-2 rounded-full bg-accent" aria-hidden />}
+                {count > 0 && collapsed && <span className="absolute right-2.5 top-2 size-2 rounded-full bg-mint" aria-hidden />}
+                {active && <span className="absolute -left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-mint" aria-hidden />}
               </Link>
             );
             return collapsed ? (
@@ -213,11 +233,11 @@ export function AppShell() {
             );
           })}
         </nav>
-        <div className="border-t border-line p-2">
+        <div className="border-t border-nav-line p-2">
           <button
             onClick={() => openCopilot()}
             className={cn(
-              "flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium text-ai hover:bg-ai-soft",
+              "flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium text-sky hover:bg-white/5",
               collapsed && "justify-center px-0",
             )}
           >
@@ -227,7 +247,7 @@ export function AppShell() {
           <button
             onClick={() => setCollapsed((c) => !c)}
             className={cn(
-              "mt-0.5 flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13px] text-muted hover:bg-surface-2 hover:text-fg",
+              "mt-0.5 flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13px] text-nav-muted hover:bg-white/5 hover:text-white",
               collapsed && "justify-center px-0",
             )}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -240,9 +260,13 @@ export function AppShell() {
 
       {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="gutter-x flex h-8 shrink-0 items-center justify-center gap-2 bg-fg text-[12px] text-bg">
+        <div className="gutter-x flex h-8 shrink-0 items-center justify-center gap-2 bg-gradient-to-r from-[var(--accent)] to-[var(--ai)] text-[12px] text-white">
           <span className="font-medium">Demo workspace</span>
-          <span className="hidden opacity-70 sm:inline">· Synthetic clients and funds. No real person's data.</span>
+          <span className="hidden opacity-85 sm:inline">· Synthetic clients and funds. No real person's data.</span>
+          <span className="hidden items-center gap-3 pl-3 opacity-90 lg:flex">
+            <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-mint" /> computed</span>
+            <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-sky" /> AI draft</span>
+          </span>
         </div>
         <header
           className="gutter-x sticky z-20 flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface/85 backdrop-blur-md"
@@ -252,7 +276,7 @@ export function AppShell() {
             <span className="md:hidden">
               <Logo />
             </span>
-            <h1 className="truncate text-[15px] font-semibold text-fg">{title}</h1>
+            <h1 className="truncate font-display text-[17px] font-semibold text-fg">{title}</h1>
           </div>
           <button
             onClick={() => setCommandOpen(true)}
@@ -311,7 +335,7 @@ export function AppShell() {
 
       <Sheet open={moreOpen} onOpenChange={setMoreOpen} side="bottom" title="More">
         <div className="grid grid-cols-3 gap-2 p-4">
-          {NAV.filter((n) => !["/", "/review", "/clients"].includes(n.to)).map(({ to, label, icon: Icon, badge }) => (
+          {nav.filter((n) => !["/", "/review", "/clients"].includes(n.to)).map(({ to, label, icon: Icon, badge }) => (
             <Link key={to} to={to} className="flex flex-col items-center gap-2 rounded-xl border border-line p-3 text-center text-[12.5px] font-medium text-fg-2 hover:bg-surface-2">
               <Icon className="size-5 text-accent" aria-hidden />
               {label}

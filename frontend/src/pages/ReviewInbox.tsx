@@ -22,9 +22,9 @@ import { Logo } from "@/components/shell/Logo";
 import { Avatar, Badge, Button, buttonClass, Card, EmptyState, Kbd, SeverityBadge, severityBar, Sheet } from "@/components/ui";
 import { firm, TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
-import { type Finding, portfolios } from "@/lib/engine";
+import type { Finding } from "@/lib/engine";
 import { fmtDate, inrShort } from "@/lib/format";
-import { type Decision, useApp, useClientName } from "@/state/app";
+import { type Decision, useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 
 const decisionLabel: Record<Decision, { label: string; tone: "good" | "neutral" | "warning"; Icon: typeof Check }> = {
   accepted: { label: "Accepted", tone: "good", Icon: Check },
@@ -33,9 +33,11 @@ const decisionLabel: Record<Decision, { label: string; tone: "good" | "neutral" 
 };
 
 export function ReviewInbox() {
-  const { decisions, decide, approved, approve, explain, aiEnabled } = useApp();
+  const { decisions, decide, approved, approve, explain, aiEnabled, can, me } = useApp();
+  const portfolios = useVisiblePortfolios();
+  const canApprove = can("approve");
   const displayName = useClientName();
-  const queue = useMemo(() => portfolios.filter((p) => p.findings.length > 0 && !approved[p.spec.id]), [approved]);
+  const queue = useMemo(() => portfolios.filter((p) => p.findings.length > 0 && !approved[p.spec.id]), [approved, portfolios]);
   const [clientId, setClientId] = useState<string | undefined>(queue[0]?.spec.id);
   const [findingId, setFindingId] = useState<string | undefined>(queue[0]?.findings[0]?.id);
   const [mobileView, setMobileView] = useState<"clients" | "findings" | "detail">("clients");
@@ -58,6 +60,10 @@ export function ReviewInbox() {
   const act = useCallback(
     (d: Decision) => {
       if (!current) return;
+      if (!canApprove) {
+        toast.error(`Your role (${me?.role}) can prepare reviews but not decide findings`);
+        return;
+      }
       decide(current.id, d);
       const idx = findings.findIndex((f) => f.id === current.id);
       const next = findings.slice(idx + 1).find((f) => !decisions[f.id]) ?? findings.find((f) => !decisions[f.id] && f.id !== current.id);
@@ -67,11 +73,11 @@ export function ReviewInbox() {
         action: { label: "Undo", onClick: () => decide(current.id, null) },
       });
     },
-    [current, decide, decisions, findings],
+    [current, decide, decisions, findings, canApprove, me],
   );
 
   const doApprove = useCallback(() => {
-    if (!pf || remaining > 0) return;
+    if (!pf || remaining > 0 || !canApprove) return;
     approve(pf.spec.id);
     setPreview(false);
     toast.success(`Review approved for ${name}`, { description: "Report rendered in your browser and logged to the audit trail." });
@@ -81,7 +87,7 @@ export function ReviewInbox() {
       setFindingId(next.findings[0]?.id);
     }
     setMobileView("clients");
-  }, [pf, remaining, approve, name, queue]);
+  }, [pf, remaining, approve, name, queue, canApprove]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -190,7 +196,7 @@ export function ReviewInbox() {
           );
         })}
       </ul>
-      <ApproveBar remaining={remaining} total={findings.length} onPreview={() => setPreview(true)} onApprove={doApprove} />
+      <ApproveBar remaining={remaining} total={findings.length} onPreview={() => setPreview(true)} onApprove={doApprove} canApprove={canApprove} />
     </div>
   );
 
@@ -311,6 +317,11 @@ export function ReviewInbox() {
 
   return (
     <div className="h-[calc(100%-0px)] min-h-[560px]">
+      {!canApprove && (
+        <div className="gutter-x border-b border-line bg-ai-soft py-2 text-[12.5px] text-ai">
+          Signed in as {me?.role}: you can read and annotate drafts. Only owners and advisers can accept findings and approve reviews.
+        </div>
+      )}
       {!aiEnabled && (
         <div className="gutter-x border-b border-critical/30 bg-critical-soft py-2 text-[12.5px] text-critical-text">
           AI drafting is switched off. Existing drafts stay reviewable; no new drafts will be generated.
@@ -400,7 +411,7 @@ export function ReviewInbox() {
   );
 }
 
-function ApproveBar({ remaining, total, onPreview, onApprove }: { remaining: number; total: number; onPreview: () => void; onApprove: () => void }) {
+function ApproveBar({ remaining, total, onPreview, onApprove, canApprove }: { remaining: number; total: number; onPreview: () => void; onApprove: () => void; canApprove: boolean }) {
   const done = total - remaining;
   return (
     <div className="space-y-2 border-t border-line bg-surface p-3">
@@ -417,7 +428,7 @@ function ApproveBar({ remaining, total, onPreview, onApprove }: { remaining: num
         <Button size="sm" variant="outline" className="flex-1" onClick={onPreview}>
           <Eye /> Preview
         </Button>
-        <Button size="sm" variant="primary" className="flex-1" onClick={onApprove} disabled={remaining > 0}>
+        <Button size="sm" variant="primary" className="flex-1" onClick={onApprove} disabled={remaining > 0 || !canApprove}>
           <BadgeCheck /> Approve
         </Button>
       </div>

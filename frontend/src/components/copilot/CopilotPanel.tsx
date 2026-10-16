@@ -5,12 +5,14 @@ import { Badge, Button, Num, Sheet } from "@/components/ui";
 import { FY_LABEL, kb, type KbDoc } from "@/data/demo";
 import { type Portfolio, portfolioById, type Seg } from "@/lib/engine";
 import { inrShort, pct, signedPts } from "@/lib/format";
+import { askLocal } from "@/lib/rag";
 import { useApp, useClientName } from "@/state/app";
 
 interface Answer {
   tools: string[];
   body: Seg[];
   citations: KbDoc[];
+  sources?: string[];
   blocked?: boolean;
 }
 interface Message {
@@ -80,9 +82,18 @@ function respond(q: string, pf: Portfolio, first: string): Answer {
       citations: [kb.ltcg!, kb.stcg!],
     };
   }
+  const rag = askLocal(q);
+  if (rag.mode === "extractive") {
+    return {
+      tools: [`search_rules("${q.slice(0, 40)}${q.length > 40 ? "…" : ""}")`],
+      body: [rag.text],
+      citations: [],
+      sources: rag.citations.map((c) => `[${c.n}] ${c.chunk.doc.issuer}: ${c.chunk.section}`),
+    };
+  }
   return {
     tools: ["search_rules(query)"],
-    body: ["In the demo I can answer questions about allocation drift, fund overlap and the tax position, using the same calculations as the review."],
+    body: ["I couldn't find that in the knowledge base. I can explain drift, overlap and tax position for this client, or rules from SEBI, the Income-tax Act and DPDP."],
     citations: [],
   };
 }
@@ -116,6 +127,7 @@ export function CopilotPanel() {
     "Why is equity above target?",
     "Which funds overlap the most?",
     "How much LTCG exemption is left?",
+    "What records must an adviser keep?",
     `Should ${first} buy more Reliance?`,
   ];
 
@@ -227,6 +239,11 @@ export function CopilotPanel() {
                   {m.answer!.citations.map((c) => (
                     <Badge key={c.id} tone="accent">
                       {c.issuer}: {c.section}
+                    </Badge>
+                  ))}
+                  {m.answer!.sources?.map((s) => (
+                    <Badge key={s} tone="accent">
+                      {s}
                     </Badge>
                   ))}
                 </div>

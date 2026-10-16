@@ -374,3 +374,141 @@ export const kb: Record<string, KbDoc> = {
 
 export const aumHistoryFactors = [0.86, 0.87, 0.89, 0.88, 0.9, 0.92, 0.93, 0.92, 0.95, 0.97, 0.985, 1];
 export const aumHistoryMonths = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
+
+/* Team, roles and access (all fictional) */
+
+export type Role = "Owner" | "Adviser" | "Analyst" | "Compliance";
+
+export interface Member {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  status: "Active" | "Invited" | "Suspended";
+  mfa: boolean;
+  lastActive: string;
+}
+
+export const members: Member[] = [
+  { id: "m-priya", name: "Priya Anand", email: "priya@anandwealth.in", role: "Owner", status: "Active", mfa: true, lastActive: "Now" },
+  { id: "m-arun", name: "Arun Kumar", email: "arun@anandwealth.in", role: "Adviser", status: "Active", mfa: true, lastActive: "12 min ago" },
+  { id: "m-sana", name: "Sana Sheikh", email: "sana@anandwealth.in", role: "Analyst", status: "Active", mfa: true, lastActive: "Yesterday" },
+  { id: "m-dev", name: "Dev Mehra", email: "dev@anandwealth.in", role: "Compliance", status: "Active", mfa: true, lastActive: "3 days ago" },
+];
+
+/** Primary adviser for each client. */
+export const primaryAdviser: Record<string, string> = {
+  "rohan-deshpande": "m-priya",
+  "meera-iyer": "m-priya",
+  "arjun-malhotra": "m-priya",
+  "vikram-shetty": "m-priya",
+  "sneha-kulkarni": "m-priya",
+  "priyanka-das": "m-priya",
+  "aditya-menon": "m-priya",
+  "kavya-nair": "m-arun",
+  "ananya-rao": "m-arun",
+  "neha-joshi": "m-arun",
+  "farhan-qureshi": "m-arun",
+  "ishaan-gupta": "m-arun",
+};
+
+export const permissions: { label: string; roles: Role[] }[] = [
+  { label: "See all firm clients", roles: ["Owner", "Analyst", "Compliance"] },
+  { label: "See assigned clients", roles: ["Owner", "Adviser", "Analyst", "Compliance"] },
+  { label: "Upload statements, resolve data exceptions", roles: ["Owner", "Adviser", "Analyst"] },
+  { label: "Accept findings and approve reviews", roles: ["Owner", "Adviser"] },
+  { label: "Request client access", roles: ["Owner", "Adviser"] },
+  { label: "Invite people, change roles, end sessions", roles: ["Owner"] },
+  { label: "AI kill switch and firm settings", roles: ["Owner"] },
+  { label: "Read audit trail", roles: ["Owner", "Compliance"] },
+];
+
+export type Scope = "Mutual fund statements" | "Dhan holdings" | "Tradebook" | "Tax summary" | "Reports";
+
+export interface AccessRequest {
+  id: string;
+  clientId: string;
+  requestedBy: string; // member id
+  forMember: string; // who will get access
+  scopes: Scope[];
+  reason: string;
+  days: number;
+  status: "Waiting for client" | "Approved" | "Declined";
+  created: string;
+}
+
+export const initialRequests: AccessRequest[] = [
+  {
+    id: "rq-101",
+    clientId: "rohan-deshpande",
+    requestedBy: "m-priya",
+    forMember: "m-arun",
+    scopes: ["Mutual fund statements", "Dhan holdings"],
+    reason: "Arun covers my clients while I am on leave from 20 Oct to 3 Nov.",
+    days: 30,
+    status: "Waiting for client",
+    created: "2026-10-16",
+  },
+  {
+    id: "rq-102",
+    clientId: "rohan-deshpande",
+    requestedBy: "m-priya",
+    forMember: "m-priya",
+    scopes: ["Tradebook"],
+    reason: "Purchase dates for your shares, so long-term status is exact.",
+    days: 365,
+    status: "Waiting for client",
+    created: "2026-10-17",
+  },
+  {
+    id: "rq-090",
+    clientId: "kavya-nair",
+    requestedBy: "m-arun",
+    forMember: "m-arun",
+    scopes: ["Mutual fund statements", "Dhan holdings"],
+    reason: "Annual review.",
+    days: 365,
+    status: "Approved",
+    created: "2026-10-14",
+  },
+];
+
+export interface ClientShare {
+  id: string;
+  clientId: string;
+  recipient: string;
+  relation: "Chartered accountant" | "Family member" | "Another adviser";
+  email: string;
+  scopes: Scope[];
+  until: string;
+  status: "Active" | "Revoked";
+}
+
+export const initialShares: ClientShare[] = [
+  {
+    id: "sh-7",
+    clientId: "rohan-deshpande",
+    recipient: "R. Mehta & Co",
+    relation: "Chartered accountant",
+    email: "filings@mehtaco.example",
+    scopes: ["Tax summary"],
+    until: "2026-11-15",
+    status: "Active",
+  },
+];
+
+export interface DeviceSession {
+  id: string;
+  memberId: string;
+  device: string;
+  place: string;
+  last: string;
+  current?: boolean;
+}
+
+export const initialSessions: DeviceSession[] = [
+  { id: "s1", memberId: "m-priya", device: "Chrome on Windows", place: "Pune, IN", last: "Active now", current: true },
+  { id: "s2", memberId: "m-priya", device: "Safari on iPhone", place: "Pune, IN", last: "2 hours ago" },
+  { id: "s3", memberId: "m-arun", device: "Edge on Windows", place: "Mumbai, IN", last: "12 min ago" },
+  { id: "s4", memberId: "m-sana", device: "Firefox on Ubuntu", place: "Pune, IN", last: "Yesterday" },
+];
