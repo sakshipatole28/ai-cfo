@@ -1,0 +1,16 @@
+name: Bug
+description: Something is wrong (do NOT report security issues here; see SECURITY.md)
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (synthetic data only)
+    validations:
+      required: true

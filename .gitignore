@@ -1,0 +1,39 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Real or downloaded data: never commit
+data/raw/
+data/private/
+data/cache/
+*.pdf
+!docs/**/*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+.vite/
+coverage/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
