@@ -617,7 +617,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 | Stack, zero-access design, data plan (§2, §2A, §2B) | ✅ | — |
 | §3 Architecture + data model | ✅ | — |
 | §4 UI/UX structure | ✅ | — |
-| Clickable UI prototype (to validate §4 before coding the frontend) | ⬜ | P1 |
+| Clickable UI prototype (to validate §4 before coding the frontend) | ✅ built as the real frontend + shareable preview | — |
 | Verify the 80C→s.123 and capital-gains section mapping against the official Act text | ⬜ | P0 (before tax engine) |
 | Verify Supabase Mumbai region, pgmq/cron on free tier, Oracle India capacity | ⬜ | P0 (day 1) |
 
@@ -639,7 +639,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 | **4 RAG** | Corpus ingestion (D7), chunking, hybrid search + RRF + reranker, golden-set eval (hit@5, MRR) | ⬜ | P1 |
 | **5 Agents + ML** | LangGraph pipeline (6 agents + deterministic nodes), pseudonymisation gateway, verifier, compliance: rules → classifier → LLM judge, Ollama/Gemini/Vertex adapters, L3 eval suite | ⬜ | P1 |
 | **6 Live connector** | Dhan adapter (owner vault mode + session-only mode), read-only allow-list + CI guard | ⬜ | P1 |
-| **7 Frontend** | Advisor console, review inbox, explain drawer, chat, demo mode | ⬜ | P1 |
+| **7 Frontend** | ✅ console on synthetic data: Today (bento), Clients, Client 360 (7 tabs), Review inbox (3-pane, shortcuts, approve + report preview), Explain drawer, Copilot (scripted, compliance block), Data inbox, Audit (chain verify), Settings (AI kill switch), consent page, Ctrl+K, vault lock, light/dark, desktop/tablet/phone · ⬜ wire to API, route code-splitting (bundle 297 KB gz > 250 KB budget), Playwright e2e + axe in CI | 🔄 | P1 |
 | **8 Deploy** | Oracle India VM + Supabase Mumbai, Caddy, backups, Phoenix tracing, Trust Pack | ⬜ | P2 |
 | **9 Research** | 200+ persona benchmark, ablations (single vs multi-agent, ±verifier, ±RAG, several LLMs), expert labels, paper draft | ⬜ | P2 |
 | **10 B2B growth** | Email ingest, RTA feed parsers, AA sandbox adapter, Dhan Partner application, pilot firm | ⬜ | P3 |

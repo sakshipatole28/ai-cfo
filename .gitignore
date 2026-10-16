@@ -37,3 +37,9 @@ coverage/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Frontend build output
+frontend/dist/
+frontend/dist-preview/
+frontend/test-results/
+frontend/playwright-report/
