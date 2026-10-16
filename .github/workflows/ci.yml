@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read  # gitleaks reads PR commits
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -41,6 +42,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Read-only broker guard
         run: python3 scripts/check_no_order_apis.py
+
+  sast:
+    # Static security analysis. Replaces CodeQL, which needs paid Advanced Security on private repos.
+    runs-on: ubuntu-latest
+    container: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep scan --config p/python --config p/secrets --config p/dockerfile --error --metrics=off
 
   secrets:
     runs-on: ubuntu-latest
