@@ -1,0 +1,26 @@
+# Local development only. Never put real client data in these containers.
+name: aicfo-dev
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: aicfo
+      POSTGRES_PASSWORD: aicfo
+      POSTGRES_DB: aicfo
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aicfo"]
+      interval: 5s
+      retries: 10
+
+  openbao:
+    # Dev mode: in-memory, auto-unsealed, root token "dev-root". Never use in prod.
+    image: openbao/openbao:2.7.1
+    command: server -dev -dev-root-token-id=dev-root -dev-listen-address=0.0.0.0:8200
+    ports: ["127.0.0.1:8200:8200"]
+    cap_add: [IPC_LOCK]
+
+volumes:
+  pgdata:

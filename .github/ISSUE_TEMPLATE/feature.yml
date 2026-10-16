@@ -1,0 +1,25 @@
+name: Feature / task
+description: A unit of planned work
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      options: ["0 Foundation", "1 Data", "2 Core maths", "3 Privacy", "4 RAG", "5 Agents + ML", "6 Live connector", "7 Frontend", "8 Deploy", "9 Research", "10 B2B growth"]
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable bullet points.
+    validations:
+      required: true
