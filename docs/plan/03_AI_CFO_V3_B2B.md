@@ -313,7 +313,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 ### 5.3 Build phases (new repo)
 | Phase | Deliverables | State | Pri |
 |---|---|---|---|
-| **0 Foundation** | ✅ repo, licence, CI (lint, type, test, pip-audit, gitleaks, CodeQL, Dependabot), CLAUDE.md, ADR-0001…0004, Docker Compose (Postgres+pgvector, OpenBao), config, `/health`, **envelope crypto + log redaction + read-only guard (28 tests)** · ⬜ push to GitHub, branch protection, Alembic baseline | 🔄 | P0 |
+| **0 Foundation** | ✅ repo, licence, CI (lint, type, test, pip-audit, gitleaks, Semgrep, Dependabot), CLAUDE.md, ADR-0001…0004, Docker Compose (Postgres+pgvector, OpenBao), config, `/health`, **envelope crypto + log redaction + read-only guard (28 tests)** · ⬜ push to GitHub, branch protection, Alembic baseline | 🔄 | P0 |
 | **1 Data** | AMFI/mfapi loaders, ISIN master, 2–3 AMC disclosure parsers + validation, persona generator (D4), synthetic CAS JSON (D5), Dhan fixtures (D6), normalised model, **reconciliation engine** (property tests) | ⬜ | P0 |
 | **2 Core maths** | Look-through, overlap, drift, FIFO lots, FY 2026-27 tax rule-set, both sides of 1 Apr 2026 tested; 100% hand-checked | ⬜ | P0 |
 | **3 Privacy** | Identity Vault (browser), blind index, OpenBao provider, crypto-shredding, log-redaction tests, spike S1 (browser CAS parse) | ⬜ | P0 |
