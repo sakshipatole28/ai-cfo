@@ -8,7 +8,7 @@
 | 1 | §0 Direction, §1 Blockers → solutions | ✅ Done |
 | 2 | §2 Stack, §2A Zero-access privacy, §2B Development data | ✅ Done |
 | 3 | §3 Architecture + multi-tenant data model | ✅ Done |
-| 4 | §4 UI/UX structure | ⬜ Next |
+| 4 | §4 UI/UX structure | ✅ Done |
 | 5 | §5 Status checklist + roadmap | ✅ Done (living document) |
 
 ---
@@ -471,6 +471,139 @@ Column protection: **P** plain · **E** envelope-encrypted by the server (tenant
 
 ---
 
+## 4. UI/UX structure
+
+### 4.1 Design principles
+1. **Trust is visible.** Every number shows its source and as-of date, and **every number is clickable** to open the explanation drawer (formula, inputs, rule cited, versions).
+2. **Calm, dense, professional.** This is a working tool for advisors, like a modern banking or analytics console: information-rich tables, restrained colour, no decoration.
+3. **The advisor stays in control.** AI output is always labelled *Draft*. Nothing goes out without an explicit **Approve**.
+4. **Never wait on AI.** Data and maths render first; AI drafts stream in with skeletons; jobs show live progress.
+5. **Keyboard-first, mobile-capable.** Power users fly with `Ctrl+K` and shortcuts; approvals and the inbox work comfortably on a phone.
+6. **Indian conventions.** ₹ with lakh/crore grouping (`Intl.NumberFormat('en-IN')`), FY April–March, DD MMM YYYY dates.
+7. **Accessible by default:** WCAG 2.2 AA.
+
+### 4.2 Users and their main jobs
+| Persona | Main jobs | Main screens |
+|---|---|---|
+| **Advisor** | Review and approve findings, talk to clients, ask the copilot | Today, Review inbox, Client 360, Copilot |
+| **Analyst / assistant** | Upload statements, resolve data exceptions, prepare drafts (cannot approve) | Data inbox, Clients |
+| **Owner** | Team, branding, compliance profile, AI kill switch, model portfolios | Settings, Audit |
+| **Auditor / compliance** | Read-only audit trail and decisions | Audit, Reports |
+| **Client (no login)** | Give consent, receive the report | Consent page (mobile-first), report PDF |
+
+### 4.3 Navigation (information architecture)
+```
+Top bar:  [Firm logo]  [Ctrl+K search / command]   [AI: On ● ]  [Jobs ⟳ 2]  [🔔]  [User ▾ · Lock vault]
+Sidebar:  Today · Clients · Review inbox (badge) · Data inbox (badge) · Reports · Copilot · Knowledge · Audit · Settings
+```
+- **Command palette (`Ctrl+K`):** jump to any client (names are searched *in the browser* after decryption), run actions ("Run review for…", "Upload CAS for…"), open settings.
+- **AI status pill:** shows On/Off (kill switch) and the provider mode (Local / India-hosted / Tenant key).
+- **Lock vault:** clears decrypted identities from memory. Auto-locks after idle time.
+
+### 4.4 Screens
+**Access**
+| Screen | Contents |
+|---|---|
+| Sign in → MFA | Email + password, then a 6-digit TOTP code; "trust this device" is *not* offered |
+| Unlock vault | Shown after sign-in on a new session. Derives the key from the password; explains in one line why ("only your browser can read client names") |
+| Onboarding wizard | 1 Firm profile + registration no. → 2 Compliance profile → 3 **Recovery Kit** (download/print, confirm saved) → 4 Invite team → 5 Model portfolios → 6 Start with demo data or the first client |
+
+**Work**
+| Screen | Layout and key components |
+|---|---|
+| **Today** (home) | KPI tiles: pending approvals, clients due for review, data freshness, open exceptions. Queues: "Ready to review", "Needs data", "Lots turning long-term in 30 days", "Reconnect Dhan" |
+| **Clients** | Virtualised data table: name (decrypted locally), risk, portfolio band, last review, freshness, open findings, coverage %. Filters, saved views, bulk "Run review". Cards on mobile |
+| **Client 360** | Header: name, risk, target model, **coverage meter**, source badges with as-of dates, Run review. Tabs listed below |
+| ↳ Overview | Allocation vs target (donut + diverging drift bars in % and ₹), top 10 underlying exposures, open findings |
+| ↳ Holdings | Grouped by account and source; source badge per row; row opens a lot drawer (acquired date, units, cost, "unverified" flags) |
+| ↳ Look-through | Treemap of true company/sector exposure across all funds + direct shares; disclosure month and look-through % shown |
+| ↳ Overlap | Heatmap matrix of fund pairs; click a cell to list the common holdings with both weights |
+| ↳ Tax | FY timeline of lots crossing 12 months; ₹1.25 L LTCG exemption gauge (used/remaining); realised vs unrealised; ruleset version shown |
+| ↳ Findings | Finding cards (draft/approved/dismissed history) |
+| ↳ Data | Connections (Dhan status, expiry, Reconnect), uploads, reconciliation exceptions |
+| ↳ Timeline | Client-scoped audit and activity feed |
+| **Review inbox** | Three-pane: client list → findings for that client → finding detail. Finding card: plain-language text with **numbers highlighted (click → explain)**, citation chips, compliance badge (passed rules/classifier/judge), actions **Accept · Edit · Dismiss (reason) · Snooze**. Sticky footer: "3 accepted · 1 edited · Preview report · **Approve**" |
+| **Explain drawer** (everywhere) | Result → formula in words and symbols → inputs table (value, source, as-of) → step-by-step calculation → rule citation (excerpt + link + version) → versions (engine, ruleset, parser, model, prompt) → "Copy as audit note" |
+| **Data inbox** | Live ingestion jobs; **exception resolver**: side-by-side values from each source, pick or annotate, everything logged; connection health |
+| **Copilot** | Right-side panel opened on any screen, aware of the current client. Shows which tools it used ("used get_overlap"), cites rules, displays the compliance notice; answers can be pinned to a review as a draft finding |
+| **Reports** | Approved reviews; branded preview; PDF rendered in the browser; send log |
+| **Knowledge** | Searchable SEBI/AMFI/Income-tax library with document versions and effective dates |
+| **Audit** | Filterable log; **Verify chain** button with result and checked range; export |
+| **Settings** | Firm & branding · Team & roles · Model portfolios · Compliance profile · AI (kill switch, provider mode, own key) · Security (MFA, sessions, recovery kit rotation) · Data & privacy (retention, export, erasure with type-to-confirm) · Connections |
+
+**Client-facing**
+| Screen | Contents |
+|---|---|
+| Consent page | Mobile-first, plain language: what, from where, why, how long, how to withdraw → OTP → done |
+| Report | Firm-branded PDF/web view: summary, findings, charts, sources, disclaimer |
+
+**Demo mode:** a permanent "Demo data, not real people" banner; a guided tour of 6 steps; reset button.
+
+### 4.5 Interaction patterns
+- **Shortcuts in the review inbox:** `J`/`K` next/previous, `A` accept, `E` explain, `D` dismiss, `S` snooze, `Ctrl+Enter` approve. `?` shows all shortcuts.
+- **Optimistic updates with undo:** "Dismissed · Undo" toast instead of confirmation dialogs. Destructive actions (erasure, disconnect) use type-to-confirm.
+- **Live progress:** server-sent events for jobs ("Parsing CAS… 3/5 checks passed").
+- **Empty states always offer the next action** ("No data yet: Upload CAS · Connect Dhan · Use demo data").
+- **Skeletons, not spinners;** charts reserve their space so pages don't jump.
+- **Inline validation** with zod schemas shared with the API types.
+
+### 4.6 Data visualisation rules
+- One colour-blind-safe palette with semantic meaning (over target / under target / neutral), identical in light and dark themes.
+- Every chart shows its unit, as-of date and source, and has a **table view toggle** for accessibility and exact values.
+- Chart types:
+  - **diverging bars** for drift;
+  - **heatmap** for overlap;
+  - **treemap** for look-through;
+  - **timeline** for lots;
+  - **gauge** for the exemption;
+  - **donut** only for allocation.
+- Tabular numerals (`font-variant-numeric: tabular-nums`) everywhere numbers align.
+
+### 4.7 Responsive behaviour
+| Width | Layout |
+|---|---|
+| ≥ 1280 px | Sidebar + list + detail (three panes); copilot as a side panel |
+| 768–1279 px | Collapsible sidebar; two panes; copilot as an overlay sheet |
+| < 768 px | Single pane; bottom nav (Today · Inbox · Clients · Copilot); tables become cards; review actions as large buttons |
+
+### 4.8 Design system
+- **Components:** shadcn/ui (Radix primitives) + Tailwind CSS v4 design tokens; lucide icons.
+- **Tokens:**
+  - neutral slate base + one brand accent (overridable per tenant for branding);
+  - semantic success/warning/danger/info;
+  - 4-px spacing scale, 8-px radius, two elevation levels.
+- **Type:** Inter (UI) with tabular numerals; JetBrains Mono for IDs and audit hashes.
+- **Motion:** subtle (150–200 ms), respects `prefers-reduced-motion`.
+- **Themes:** light and dark, system default.
+
+### 4.9 Frontend architecture
+- **Build and language:** Vite + React + TypeScript (strict).
+- **Routing and data:**
+  - **TanStack Router:** type-safe routes, loaders;
+  - **TanStack Query:** server cache, optimistic updates;
+  - **TanStack Table + Virtual:** large tables.
+- **State and forms:** Zustand for UI state; react-hook-form + zod.
+- **Charts:** Recharts for standard charts; visx for the heatmap and treemap.
+- **Crypto:** libsodium in a **Web Worker**. Decrypted identities live only in that worker's memory and are wiped on lock or idle.
+- **API types:** generated from the FastAPI OpenAPI schema (no hand-written drift).
+- **Security on the page:**
+  - strict CSP (no inline scripts);
+  - Subresource Integrity;
+  - Trusted Types;
+  - **no third-party scripts or analytics on authenticated pages**.
+- **Testing:**
+  - Vitest + Testing Library;
+  - Playwright end-to-end with **axe accessibility checks**;
+  - Playwright screenshot tests for key screens;
+  - component catalogue (Ladle or Storybook).
+
+### 4.10 Budgets
+- **Bundle:** app shell < 250 KB gzipped; route-level code splitting.
+- **Speed:** LCP < 2.5 s on 4G; interactions < 100 ms.
+- **Accessibility:** 0 axe violations (serious or critical) in CI.
+
+---
+
 ## 5. Status checklist (living document)
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists, but must change) · Priority **P0** (blocking) → **P3** (later)
@@ -483,7 +616,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 | Validation framework L1/L2/L3 (§1.10) | ✅ | — |
 | Stack, zero-access design, data plan (§2, §2A, §2B) | ✅ | — |
 | §3 Architecture + data model | ✅ | — |
-| §4 UI/UX structure | ⬜ | P1 |
+| §4 UI/UX structure | ✅ | — |
+| Clickable UI prototype (to validate §4 before coding the frontend) | ⬜ | P1 |
 | Verify the 80C→s.123 and capital-gains section mapping against the official Act text | ⬜ | P0 (before tax engine) |
 | Verify Supabase Mumbai region, pgmq/cron on free tier, Oracle India capacity | ⬜ | P0 (day 1) |
 
