@@ -21,6 +21,17 @@ Distributor feeds         │  allocation drift              compliance (rules�
 Tradebook files           ┘  FIFO lots + FY tax rules       verifier: no unsupported numbers  → client
 ```
 
+## Screenshots
+Synthetic demo data: every client, firm and fund name is fictional.
+
+| Today (bento dashboard) | Client 360 · fund overlap |
+|---|---|
+| ![Today](docs/screenshots/today.png) | ![Overlap](docs/screenshots/overlap.png) |
+| **Every number explains itself** | **Review inbox (dark)** |
+| ![Explain drawer](docs/screenshots/explain-drawer.png) | ![Review inbox](docs/screenshots/review-inbox-dark.png) |
+
+<p align="center"><img src="docs/screenshots/tablet.png" alt="Tablet" width="300"> &nbsp; <img src="docs/screenshots/mobile.png" alt="Phone" width="200"></p>
+
 ## Design commitments
 - **Zero-access identity.** Client names and PAN are encrypted in the advisor's browser. The server stores pseudonymous portfolios only. See [ADR-0003](docs/adr/0003-zero-access-privacy.md).
 - **Read-only broker access.** The code contains no order-placement calls, and CI fails if any are added.
@@ -32,7 +43,7 @@ Tradebook files           ┘  FIFO lots + FY tax rules       verifier: no unsup
 | Path | Contents |
 |---|---|
 | `backend/` | FastAPI service, core maths, agents, RAG (Python 3.12, uv) |
-| `frontend/` | Advisor console (React + Vite + TS). Coming in phase 7 |
+| `frontend/` | Advisor console: React 19 + Vite + TypeScript, Tailwind v4, TanStack Router, Radix, Recharts (demo data for now) |
 | `infra/` | Docker Compose for local development |
 | `data/` | Dataset scripts and docs (raw data is git-ignored) |
 | `docs/plan/` | Project plans (v2 review, v3 B2B plan) |
@@ -46,6 +57,7 @@ make dev-up        # Postgres + pgvector, OpenBao (dev mode)
 make install       # backend dependencies
 make check         # lint, types, tests, guards
 make run           # API on http://localhost:8000 (GET /health)
+make web           # advisor console on http://localhost:5173 (synthetic demo data)
 ```
 
 ## Security

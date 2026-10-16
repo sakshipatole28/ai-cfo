@@ -1,4 +1,4 @@
-.PHONY: install check lint typecheck test guard run dev-up dev-down
+.PHONY: install check lint typecheck test guard run dev-up dev-down web web-check web-preview
 
 BACKEND := cd backend &&
 
@@ -27,3 +27,12 @@ dev-up:
 
 dev-down:
 	docker compose -f infra/docker-compose.yml down
+
+web:
+	cd frontend && npm install && npm run dev
+
+web-check:
+	cd frontend && npm run lint && npm run typecheck && npm run build
+
+web-preview:
+	cd frontend && npm run build:preview
