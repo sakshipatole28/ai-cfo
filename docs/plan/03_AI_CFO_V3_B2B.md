@@ -7,8 +7,8 @@
 |---|---|---|
 | 1 | §0 Direction, §1 Blockers → solutions | ✅ Done |
 | 2 | §2 Stack, §2A Zero-access privacy, §2B Development data | ✅ Done |
-| 3 | §3 Architecture + multi-tenant data model | ⬜ Next |
-| 4 | §4 UI/UX structure | ⬜ |
+| 3 | §3 Architecture + multi-tenant data model | ✅ Done |
+| 4 | §4 UI/UX structure | ⬜ Next |
 | 5 | §5 Status checklist + roadmap | ✅ Done (living document) |
 
 ---
@@ -223,7 +223,7 @@ Legend: 🟢 works now · 🟡 needs a partner or customer, but we build it now 
 | LLM tracing | **OpenTelemetry → Arize Phoenix (self-hosted)** | Traces include prompts, so we keep them on our own server | Free self-host | Langfuse cloud Hobby (50k units) **for synthetic data only** |
 | Backend | Python 3.12, **uv**, FastAPI, Pydantic v2, SQLAlchemy 2 (async), Alembic, httpx + tenacity | Same as v2 | Free | — |
 | Frontend | React + Vite + TypeScript, TanStack Router/Query/Table, Tailwind + shadcn/ui, Recharts, react-hook-form + zod | Detailed in §4 | Free | — |
-| Quality gates | ruff, mypy, pytest, hypothesis, respx, Playwright, vitest, gitleaks, pip-audit, CodeQL, Dependabot | — | Free on GitHub | — |
+| Quality gates | ruff, mypy, pytest, hypothesis, respx, Playwright, vitest, gitleaks, pip-audit, Semgrep, import-linter, Dependabot | — | Free on GitHub | — |
 
 > **Cost honesty:** ₹0 covers development, CI, demos and synthetic-data pilots. A production pilot with a real firm's client data needs India-resident compute and LLM. The Oracle free VM covers compute; the LLM needs Vertex (low cost for Flash) or the tenant's own key. Cloud startup-credit programmes can cover this.
 
@@ -286,6 +286,191 @@ The browser computes `HMAC(Firm Key, PAN)` and sends only that tag. The server m
 
 ---
 
+## 3. Architecture and multi-tenant data model
+
+### 3.1 Runtime components
+```
+┌──────────────────────── Advisor's browser (trusted for identity) ────────────────────────┐
+│ React SPA · Crypto worker (libsodium: Firm Key, Identity Vault, PAN blind index)         │
+│ CAS parser (spike S1: Pyodide/pdf.js) · Report renderer (fills {{CLIENT}}, builds PDF)    │
+└───────────────┬──────────────────────────────────────────────────────────────────────────┘
+                │ HTTPS · JWT (Supabase Auth, TOTP MFA) · only pseudonymous data + ciphertext
+┌───────────────▼───────────────── India region ───────────────────────────────────────────┐
+│ API (FastAPI)            Worker (Procrastinate)                 OpenBao (Transit KEKs)     │
+│  auth · RBAC · tenancy    ingest · reconcile · compute ·          ▲ wrap/unwrap tenant keys │
+│  REST /v1 · MCP (r/o)     agents · marketdata · rag · evals ──────┘                         │
+│        │                         │                                                         │
+│        └──────────┬──────────────┘                                                         │
+│                   ▼                                                                         │
+│   Postgres 17: tenant data (RLS) · market data · KB + pgvector + FTS · job queue · audit   │
+│   Phoenix (OpenTelemetry traces, self-hosted)                                               │
+└──────────┬─────────────────────────────┬──────────────────────────────────────────────────┘
+           ▼                             ▼
+   Broker APIs (Dhan, read-only)   LLM provider (Ollama dev · Vertex asia-south1 prod · tenant key)
+```
+
+### 3.2 Backend package layout and dependency rules
+```
+aicfo/
+  api/          thin HTTP routers (/v1): validation → service call → response
+  auth/         JWT verification, roles (owner/advisor/analyst/viewer), permission checks
+  tenancy/      request/job tenant context; sets Postgres `app.tenant_id` per transaction
+  crypto/       ✅ envelope encryption (TenantCipher, KeyProvider, rotation)
+  security/     ✅ log redaction; rate limits; CSP/SRI helpers
+  domain/       Pydantic contracts: NormalisedHolding, NormalisedTxn, Lot, Snapshot, Finding, Evidence
+  sources/      DataSourceAdapter + cas · dhan · tradebook · rta · synthetic
+  reconcile/    merge engine → snapshots + exceptions
+  marketdata/   amfi_nav · mfapi · nse · amc_disclosures (one parser plugin per AMC)
+  core/         PURE functions: lookthrough · overlap · drift · lots(FIFO) · tax/rulesets/fy2026_27
+  rag/          ingest · chunk · embed · hybrid search (pgvector + FTS → RRF) · rerank
+  agents/       LangGraph graphs · analysts · explainer · compliance · verifier · copilot · tools
+  llm/          LLMProvider adapters (ollama, gemini, groq, vertex, fake) · pseudonymisation gateway
+  ml/           compliance classifier (train/infer) · later: learning-to-rank
+  audit/        hash-chained, append-only log (IDs and hashes only)
+  jobs/         Procrastinate tasks and schedules
+  db/           SQLAlchemy models, sessions, Alembic migrations
+  evals/        L1 ingestion · L2 maths · L3 agents (datasets D4–D8)
+  mcp/          read-only MCP tools over the same services
+```
+**Rules (checked in CI with import-linter):**
+- `core` imports nothing from I/O layers. It is pure and deterministic.
+- `agents` get numbers only through tools that call `core`.
+- `api` never touches `db` models directly; it goes through services.
+- Only `llm/` talks to model providers, and only through the pseudonymisation gateway.
+
+### 3.3 Tenant isolation: request and job lifecycle
+1. The browser sends `Authorization: Bearer <JWT>`. The API verifies its signature, expiry and MFA claim, then loads `user_id`, `tenant_id` and `role`.
+2. Each request runs in one database transaction that begins with `SET LOCAL app.tenant_id = '<uuid>'`.
+3. Every tenant table has an **RLS policy**: `tenant_id = current_setting('app.tenant_id')::uuid`. The application's database role is **not** the table owner and has **no BYPASSRLS**.
+4. Workers set the same variable from the job payload. A job with no tenant can only touch global tables (market data, knowledge base).
+5. A test suite runs every repository query as tenant A against tenant B's rows and **must get zero rows**.
+
+### 3.4 Data model
+Column protection: **P** plain · **E** envelope-encrypted by the server (tenant data key) · **Z** zero-knowledge, encrypted in the browser with the Firm Key · **H** keyed hash or blind index (no plaintext)
+
+**Tenancy and people**
+| Table | Key columns (protection) |
+|---|---|
+| `tenants` | id, display_name P, firm_type P (RIA/MFD/BROKER_WL), compliance_profile P, data_region P, `wrapped_data_key` P (ciphertext), ai_enabled P, llm_mode P, created_at |
+| `users` | id (= auth uid), tenant_id, role P, status P, public_key P, `wrapped_private_key` Z, `wrapped_firm_key` Z, mfa_enrolled P |
+| `clients` | id (random), tenant_id, advisor_id, **`pan_tag` H**, **`identity_blob` Z** (name, PAN, DOB, contacts, notes), risk_category P, model_portfolio_id, status |
+| `consents` | id, tenant_id, client_id, purpose P, scopes P, sources P, granted_at, expires_at, withdrawn_at, captured_by, evidence_hash H |
+| `model_portfolios` | id, tenant_id, name P, targets P (asset-class weights) |
+
+**Ingestion and portfolio** (financial amounts are E; identifiers are H; ISIN and dates stay P because they are needed for joins with public market data)
+| Table | Key columns (protection) |
+|---|---|
+| `data_connections` | id, tenant_id, client_id, source P, mode P (owner_vault/session), status P, `token` E (owner mode only), token_expires_at, last_sync_at |
+| `ingestion_runs` | id, tenant_id, client_id, source P, parser_version P, status P, checks P (totals matched?), records P, error_code P |
+| `accounts` | id, tenant_id, client_id, **`account_ref_tag` H** (BO ID or folio), kind P (demat/folio), institution P |
+| `snapshots` | id, tenant_id, client_id, as_of P, coverage P (by source, freshness, look-through %), engine_version P |
+| `positions` | id, tenant_id, snapshot_id, account_id, isin P, asset_class P, units E, avg_cost E, value E, source P, source_as_of P, confidence P |
+| `lots` | id, tenant_id, account_id, isin P, acquired_on P, units E, cost E, verified P |
+| `transactions` | id, tenant_id, account_id, isin P, txn_date P, type P, units E, amount E, source P, dedupe_hash H |
+| `recon_exceptions` | id, tenant_id, client_id, snapshot_id, kind P, details E, status P, resolved_by |
+
+**Analytics, AI and review**
+| Table | Key columns (protection) |
+|---|---|
+| `computations` | id, tenant_id, snapshot_id, kind P (lookthrough/overlap/drift/tax), inputs_hash H, result E, engine_version P, ruleset_version P |
+| `evidence` | id, tenant_id, computation_id, path P (e.g. `overlap.pairs[2].pct`), value E, formula_ref P |
+| `findings` | id, tenant_id, client_id, run_id, kind P, severity P, impact_inr E, text_template E (with `{{CLIENT}}`), evidence_ids P, citations P (kb_chunk ids), compliance P (rule/classifier/judge results), status P |
+| `reviews` | id, tenant_id, client_id, version, status P (draft/approved/sent), approved_by, approved_at |
+| `decisions` | id, tenant_id, finding_id, user_id, action P (accept/dismiss/snooze/edit), reason E, snooze_until |
+| `agent_runs` | id, tenant_id, graph P, model P, tokens P, latency_ms P, cost P, trace_id P, outcome P |
+| `chat_messages` | id, tenant_id, thread_id, role P, content E, tool_calls E |
+
+**Global (public data, no tenant, no RLS)**
+| Table | Key columns |
+|---|---|
+| `securities` | isin PK, name, kind (equity/MF/ETF/bond/SGB), amfi_code, sector, active |
+| `nav_history` / `price_history` | isin, date, nav or close, source |
+| `fund_portfolios` | scheme_isin, month, security_isin, weight, source_url, fetched_at, validation_status |
+| `kb_documents` | id, issuer (SEBI/AMFI/CBDT), title, url, version, effective_from/to, sha256, fetched_at |
+| `kb_chunks` | id, document_id, ord, section_ref, text, `embedding vector(384)` (HNSW), `tsv tsvector` (GIN) |
+
+**Audit** (append-only; UPDATE/DELETE revoked for the application role)
+`audit_log`: seq, tenant_id, at, actor_id, action, object_type, object_id, details_hash, prev_hash, hash. **No personal data ever.**
+
+**Erasure:**
+- **Client erasure:** delete `identity_blob` and every row keyed by `client_id`, then write an audit entry.
+- **Tenant erasure:** destroy `wrapped_data_key` (crypto-shredding), then purge rows.
+
+### 3.5 Main flows
+**A. CAS ingestion**
+1. Consent check.
+2. Browser parses the PDF (S1), or uploads it to the fallback worker (memory only).
+3. Identity fields are dropped. The PAN becomes `pan_tag`; folio and BO IDs become `account_ref_tag`.
+4. Normalised records go to `ingestion_runs`.
+5. Checks run: parsed total equals the statement total, and `pan_tag` matches the client.
+6. Reconcile, write a `snapshot`, and log to audit.
+
+**B. Dhan sync**
+1. Consent flow, then a token.
+2. Allow-listed client: holdings and positions only.
+3. Normalise, then reconcile.
+4. The token is discarded (session mode) or stored E (owner mode). Expired tokens show a "Reconnect" state; there is never an automated re-login.
+
+**C. Review run** (weekly schedule or on demand)
+1. Load the latest snapshot.
+2. `core` computations, saved as `computations` + `evidence`.
+3. LangGraph runs: three analysts → rank → explainer (RAG) → rules → classifier → LLM judge → verifier.
+4. Draft `findings` → advisor's review inbox.
+
+**D. Approval and report**
+1. The advisor edits, accepts or dismisses findings (`decisions`).
+2. Approve creates a `reviews` version.
+3. The browser decrypts identity, fills in `{{CLIENT}}`, renders the branded PDF, and the advisor sends it.
+
+**E. Erasure:** as in §3.4. The audit chain stays verifiable.
+
+### 3.6 Agent contracts (from the 6-agent design)
+- **Analyst input:** `computations` for one snapshot plus the client's risk category and targets. No identity.
+- **Analyst output (Pydantic):** `[{kind, claim_template, evidence_ids[], severity_hint, rationale}]`
+- **Explainer output:** `[{finding_id, text_template, citations[kb_chunk_id]}]`
+- **Verifier** (deterministic) rejects text when:
+  - any number in it is not one of the referenced evidence values (after formatting rules);
+  - any citation does not resolve to a chunk;
+  - `{{CLIENT}}` placeholders are malformed.
+
+  It allows up to 2 rewrites, then drops the finding and logs it.
+- **Compliance:** rules (regex/lexicon per profile) → ML classifier (probability of advice) → LLM judge (only if uncertain).
+- **Copilot tools** (read-only, tenant-scoped): `get_snapshot_summary`, `get_holdings`, `get_overlap(a,b)`, `get_drift`, `get_tax_position(fy)`, `search_rules(q)`, `get_connection_status`.
+
+### 3.7 API surface (`/v1`, all tenant-scoped; roles in brackets)
+- **auth/session:** `GET /me`
+- **tenant:** `GET|PATCH /tenant`, `POST /tenant/ai-kill-switch` [owner]
+- **team:** `GET|POST /users`, `PATCH /users/{id}` [owner]
+- **clients:** `GET|POST /clients`, `GET|PATCH /clients/{id}`, `DELETE /clients/{id}` (erasure) [advisor]
+- **consents:** `POST /clients/{id}/consent-requests`, `POST /consents/{token}/accept` (public, OTP)
+- **ingest:** `POST /clients/{id}/ingest/cas` (pseudonymised records or fallback file), `POST /clients/{id}/ingest/tradebook`
+- **connections:** `POST /clients/{id}/connections/dhan/start`, `GET /connections/dhan/callback`, `DELETE /connections/{id}`
+- **portfolio:** `GET /clients/{id}/snapshots/latest`, `GET /clients/{id}/exceptions`
+- **analysis:** `POST /clients/{id}/reviews/run`, `GET /reviews/{id}`, `GET /findings/{id}/explain`
+- **decisions:** `POST /findings/{id}/decision`, `POST /reviews/{id}/approve` [advisor; analysts cannot approve]
+- **chat:** `POST /clients/{id}/chat`
+- **audit:** `GET /audit?from&to`, `GET /audit/verify` [owner/viewer]
+
+### 3.8 Background jobs
+| Job | Trigger |
+|---|---|
+| `ingest.parse_cas`, `ingest.sync_dhan`, `ingest.parse_tradebook` | On upload or connect |
+| `reconcile.build_snapshot` → `compute.run_core` | After ingestion |
+| `agents.review_run` | Weekly per client, or on demand |
+| `marketdata.amfi_nav` | Daily |
+| `marketdata.amc_disclosures` | Monthly (around the 12th) |
+| `rag.ingest_corpus` | Manual or monthly; versioned |
+| `evals.nightly` | Daily (synthetic data only) |
+| `ops.backup` | Nightly encrypted dump |
+| `ops.retention` | Daily: expire consents, purge per policy |
+
+### 3.9 Reproducibility and quality attributes
+- **Reproducibility:** every snapshot, computation and finding stores `engine_version`, `ruleset_version`, `parser_version`, model ID and prompt version, so any number shown can be regenerated exactly.
+- **Performance targets:** snapshot + core compute < 2 s for 50 holdings; review run < 60 s; API p95 < 300 ms (excluding LLM).
+- **Failure handling:** idempotent jobs (dedupe keys), retries with backoff, and a dead-letter state shown in an ops view.
+
+---
+
 ## 5. Status checklist (living document)
 
 Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists, but must change) · Priority **P0** (blocking) → **P3** (later)
@@ -297,7 +482,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · ♻️ needs update (exists
 | B2B pivot and blocker → solution map (§0–§1) | ✅ | — |
 | Validation framework L1/L2/L3 (§1.10) | ✅ | — |
 | Stack, zero-access design, data plan (§2, §2A, §2B) | ✅ | — |
-| §3 Architecture + data model | ⬜ | P0 |
+| §3 Architecture + data model | ✅ | — |
 | §4 UI/UX structure | ⬜ | P1 |
 | Verify the 80C→s.123 and capital-gains section mapping against the official Act text | ⬜ | P0 (before tax engine) |
 | Verify Supabase Mumbai region, pgmq/cron on free tier, Oracle India capacity | ⬜ | P0 (day 1) |
