@@ -24,25 +24,30 @@ Tradebook files           ┘  FIFO lots + FY tax rules       verifier: no unsup
 ## Screenshots
 Synthetic demo data: every client, firm and fund name is fictional. Mint marks computed, verified numbers; sky marks AI drafts.
 
-| Sign in (firm or client) | Today |
+| Agents: the multi-agent review | Agent run, replayed node by node |
 |---|---|
-| ![Sign in](docs/screenshots/signin.png) | ![Today](docs/screenshots/today.png) |
+| ![Agents](docs/screenshots/agents.png) | ![Agent run](docs/screenshots/agent-run.png) |
 | **Ask the rulebook (RAG with citations)** | **Every number explains itself** |
 | ![RAG](docs/screenshots/rag.png) | ![Explain drawer](docs/screenshots/explain-drawer.png) |
-| **Fund overlap** | **Review inbox (dark)** |
-| ![Overlap](docs/screenshots/overlap.png) | ![Review inbox](docs/screenshots/review-inbox-dark.png) |
-| **Team, roles and sessions** | **Client portal and adviser view on phones** |
-| ![Team](docs/screenshots/team.png) | <img src="docs/screenshots/portal-mobile.png" alt="Client portal" width="260"> <img src="docs/screenshots/mobile.png" alt="Phone" width="260"> |
+| **Today** | **Fund overlap** |
+| ![Today](docs/screenshots/today.png) | ![Overlap](docs/screenshots/overlap.png) |
+| **Review inbox (dark)** | **Team, roles and sessions (dark)** |
+| ![Review inbox](docs/screenshots/review-inbox-dark.png) | ![Team](docs/screenshots/team-dark.png) |
+| **Sign in (firm or client)** | **Client portal and adviser view on phones** |
+| ![Sign in](docs/screenshots/signin.png) | <img src="docs/screenshots/portal-mobile.png" alt="Client portal" width="260"> <img src="docs/screenshots/mobile.png" alt="Phone" width="260"> |
 
 ## What works today
 | Area | Status |
 |---|---|
+| **Multi-agent review** (backend) | LangGraph graph: 3 parallel analyst agents → rank → explainer (RAG-cited) → compliance (rules → ML classifier → LLM judge) → verifier. Works with any OpenAI-compatible model or falls back to firm policy. Copilot is a tool-using agent. See [docs/AGENTS.md](docs/AGENTS.md) |
+| **ML** | Advice-likelihood classifier (logistic regression, numpy), 5-fold CV F1 0.89 |
+| **Deterministic core** (Python) | Positions, lots, allocation, drift, look-through, overlap, tax position; every result is an Evidence record |
 | **RAG** (backend) | Corpus, chunking, BM25 + dense (bge-small or hashing), RRF fusion, relevance gate, cited extractive or LLM answers, citation and number verifier, compliance guard. API, CLI and golden-set eval. See [docs/RAG.md](docs/RAG.md) |
 | **RAG** (browser) | Same corpus in the console ("Ask the rulebook" and Copilot), works offline |
 | **Access control** (demo) | Firm sign-in with password + authenticator code; roles Owner, Adviser, Analyst, Compliance; adviser-scoped client lists; invites, role changes, suspension, device sessions, sign-out |
 | **Client consent** (demo) | Advisers request access; the client approves or declines in their portal with a one-time code and the firm sees it; clients share read-only views (e.g. with their CA) and revoke them |
 | **Security core** | Tenant envelope encryption (AES-256-GCM, rotation, crypto-shredding), log redaction, read-only broker guard |
-| **Analytics** | Look-through, overlap, drift, FIFO tax lots and findings (TypeScript demo engine; Python core is next) |
+| **Console** | Agents page with replayable runs from the Python pipeline; accessibility audited with axe (0 WCAG A/AA violations, light and dark) |
 
 ## Design commitments
 - **Zero-access identity.** Client names and PAN are encrypted in the advisor's browser. The server stores pseudonymous portfolios only. See [ADR-0003](docs/adr/0003-zero-access-privacy.md).
@@ -71,6 +76,7 @@ make check         # lint, types, tests, guards
 make run           # API on http://localhost:8000 (GET /health)
 make web           # advisor console on http://localhost:5173 (synthetic demo data)
 cd backend && uv run python -m aicfo.rag ask "How is LTCG on equity funds taxed?"
+cd backend && uv run python -m aicfo.agents review rohan-deshpande
 ```
 
 ## Security

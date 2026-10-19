@@ -160,10 +160,10 @@ export function Num({ e, children, className }: { e: Explanation; children: Reac
   );
 }
 
-export function Meter({ value, className, tone = "accent" }: { value: number; className?: string; tone?: "accent" | "warning" | "critical" }) {
+export function Meter({ value, className, tone = "accent", label = "Progress" }: { value: number; className?: string; tone?: "accent" | "warning" | "critical"; label?: string }) {
   const fill = { accent: "bg-accent", warning: "bg-warning", critical: "bg-critical" }[tone];
   return (
-    <div className={cn("h-1.5 w-full overflow-hidden rounded-full bg-surface-3", className)} role="meter" aria-valuenow={Math.round(value)} aria-valuemin={0} aria-valuemax={100}>
+    <div className={cn("h-1.5 w-full overflow-hidden rounded-full bg-surface-3", className)} role="meter" aria-label={label} aria-valuenow={Math.round(value)} aria-valuemin={0} aria-valuemax={100}>
       <div className={cn("h-full rounded-full", fill)} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
     </div>
   );

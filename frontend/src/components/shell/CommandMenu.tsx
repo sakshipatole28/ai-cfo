@@ -14,6 +14,7 @@ const PAGES = [
   ["/review", "Review inbox"],
   ["/data", "Data inbox"],
   ["/reports", "Reports"],
+  ["/agents", "Agents"],
   ["/knowledge", "Ask the rulebook"],
   ["/access", "Client access"],
   ["/team", "Team"],

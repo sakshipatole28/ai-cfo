@@ -1,0 +1,4214 @@
+{
+ "generated": "2026-10-18T12:49:17",
+ "runs": {
+  "rohan-deshpande": {
+   "client_id": "rohan-deshpande",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 2905000,
+    "allocation_pct": {
+     "Equity": 84.17,
+     "Debt": 10.67,
+     "Gold": 3.1,
+     "Cash": 2.07
+    }
+   },
+   "drafts": [
+    {
+     "id": "rohan-deshpande:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 411499.99999999977,
+     "rationale": "Drift +14.2 pts is outside the ±5 pt band.",
+     "text": "Equity is 84.2% of {client}'s portfolio against a 70% target for a moderately aggressive profile: +14.2 pts, about ₹4.11 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.085,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "rohan-deshpande:overlap:NSB:HN50",
+     "kind": "overlap",
+     "agent": "overlap_analyst",
+     "severity": "medium",
+     "title": "Two funds hold largely the same companies",
+     "evidence_ids": [
+      "overlap:NSB:HN50"
+     ],
+     "impact": 1170000.0,
+     "rationale": "Overlap 69.4% is above the 60% review threshold.",
+     "text": "{client}'s Northstar Bluechip and Harbor Nifty 50 share 69% of their portfolios. ₹11.7 L is spread across two funds that give very similar exposure, so the second fund adds little diversification [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.327,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "rohan-deshpande:exposure:HDFCBANK",
+     "kind": "concentration",
+     "agent": "overlap_analyst",
+     "severity": "medium",
+     "title": "Hidden concentration in HDFC Bank",
+     "evidence_ids": [
+      "exposure:HDFCBANK"
+     ],
+     "impact": 403110.0,
+     "rationale": "Single-company exposure 13.9% is above the 7% flag.",
+     "text": "Once fund holdings are looked through, HDFC Bank is 13.9% of {client}'s total portfolio (₹4,03,110), held through 4 funds and directly [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.135,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "rohan-deshpande:lot:MFC:2025-10-28",
+     "kind": "tax-timing",
+     "agent": "tax_analyst",
+     "severity": "medium",
+     "title": "A lot turns long-term soon",
+     "evidence_ids": [
+      "lot:MFC:2025-10-28"
+     ],
+     "impact": 3612.1320000000014,
+     "rationale": "Turns long-term in 12 days with a gain.",
+     "text": "A lot with an unrealised gain of ₹48,162 becomes long-term on 29 Oct 2026, in 12 days. If {client} plans to sell it, waiting until then lowers the tax by about ₹3,612 [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#2",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Short-term capital gains rate",
+       "issuer": "Income Tax Department",
+       "text": "Short-term capital gains on listed equity shares and units of equity-oriented funds, where securities transaction tax applies, are taxed at 20%. This rate applies to transfers on or after 23 July 2024."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.164,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "rohan-deshpande:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 10875.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹87,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹4,38,444 of unrealised gains. Booking gains within the exemption could avoid up to ₹10,875 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "overlap:NSB:HN50": {
+     "id": "overlap:NSB:HN50",
+     "title": "Overlap: Northstar Bluechip × Harbor Nifty 50",
+     "result": "69.4%",
+     "formula_words": "For every company both funds hold, take the smaller of the two weights, then add them up.",
+     "formula": "overlap = Σ min(wₐ, w_b)",
+     "inputs": [
+      [
+       "HDFC Bank",
+       "min(9.6%, 12.9%) = 9.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Reliance Industries",
+       "min(8.4%, 8.6%) = 8.4%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "ICICI Bank",
+       "min(8.1%, 8.9%) = 8.1%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Infosys",
+       "min(6.2%, 5.0%) = 5.0%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Bharti Airtel",
+       "min(4.8%, 4.6%) = 4.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Larsen & Toubro",
+       "min(4.1%, 3.9%) = 3.9%",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "20 companies appear in both portfolios.",
+      "Sum of the smaller weights = 69.4% (rounded 69%).",
+      "Combined value in the two funds = ₹11,70,000 (₹11.7 L)."
+     ],
+     "values": [
+      69.4,
+      1170000.0
+     ]
+    },
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Moderately aggressive model",
+     "result": "+14.2 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹24,45,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹29,05,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "84.2%",
+       ""
+      ],
+      [
+       "Model target",
+       "70%",
+       "IPS v3 · Moderately aggressive"
+      ]
+     ],
+     "steps": [
+      "₹24,45,000 ÷ ₹29,05,000 = 84.2%.",
+      "84.2% − 70% = +14.2 pts.",
+      "Gap ≈ ₹4,11,500 (₹4.11 L)."
+     ],
+     "values": [
+      84.16523235800344,
+      70,
+      14.165232358003436,
+      411499.99999999977
+     ]
+    },
+    "lot:MFC:2025-10-28": {
+     "id": "lot:MFC:2025-10-28",
+     "title": "Holding period: Meridian Flexi Cap lot",
+     "result": "12 days to long-term",
+     "formula_words": "A lot becomes long-term after 12 months; the saving is the gain times the difference between the 20% and 12.5% rates.",
+     "formula": "saving = gain × (20% − 12.5%)",
+     "inputs": [
+      [
+       "Acquired",
+       "28 Oct 2025",
+       "CAMS CAS"
+      ],
+      [
+       "Long-term from",
+       "29 Oct 2026",
+       ""
+      ],
+      [
+       "Unrealised gain",
+       "₹48,162",
+       ""
+      ]
+     ],
+     "steps": [
+      "Long-term from 29 Oct 2026, 12 days away.",
+      "Saving ≈ ₹48,162 × 7.5% = ₹3,612."
+     ],
+     "values": [
+      48161.76000000001,
+      12.0,
+      3612.1320000000014
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹87,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹38,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹4,38,444",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹38,000 = ₹87,000.",
+      "Usable = ₹87,000; at 12.5% that avoids up to ₹10,875 of future tax."
+     ],
+     "values": [
+      87000,
+      438444.0,
+      10875.0
+     ]
+    },
+    "exposure:HDFCBANK": {
+     "id": "exposure:HDFCBANK",
+     "title": "Look-through exposure: HDFC Bank",
+     "result": "13.9%",
+     "formula_words": "Direct shares plus each fund's value times its weight in the company, divided by the portfolio value.",
+     "formula": "exposure = (direct + Σ value × weight) ÷ portfolio",
+     "inputs": [
+      [
+       "Direct shares",
+       "₹2,13,840",
+       "Dhan"
+      ],
+      [
+       "via Northstar Bluechip (9.6%)",
+       "₹59,520",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Harbor Nifty 50 (12.9%)",
+       "₹70,950",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Meridian Flexi Cap (7.8%)",
+       "₹37,440",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Sapphire ELSS (8.9%)",
+       "₹21,360",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "₹4,03,110 ÷ ₹29,05,000 = 13.9%.",
+      "Held through 4 funds plus direct shares."
+     ],
+     "values": [
+      13.876419965576591,
+      403110.0,
+      4.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 1.05,
+     "summary": "11 positions, ₹29.1 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.83,
+     "summary": "13 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:NSB:HN50",
+       "overlap:NSB:SEL",
+       "overlap:HN50:SEL",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "lot:MFC:2025-10-28",
+       "lot:ITC:2025-11-04",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:INFY",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.09,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.09,
+     "summary": "3 of 6 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "overlap:NSB:HN50",
+       "exposure:HDFCBANK",
+       "exposure:INFY"
+      ]
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "3 of 3 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "lot:MFC:2025-10-28",
+       "lot:ITC:2025-11-04",
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 1.84,
+     "summary": "5 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "rohan-deshpande:drift:equity",
+       "rohan-deshpande:overlap:NSB:HN50",
+       "rohan-deshpande:exposure:HDFCBANK",
+       "rohan-deshpande:lot:MFC:2025-10-28",
+       "rohan-deshpande:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 28.08,
+     "summary": "5 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "rohan-deshpande:drift:equity": [
+        "firm-ips#1"
+       ],
+       "rohan-deshpande:overlap:NSB:HN50": [
+        "sebi-mf-disclosure#1"
+       ],
+       "rohan-deshpande:exposure:HDFCBANK": [
+        "sebi-mf-disclosure#1"
+       ],
+       "rohan-deshpande:lot:MFC:2025-10-28": [
+        "it-capital-gains#2"
+       ],
+       "rohan-deshpande:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 30.84,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "rohan-deshpande:drift:equity": 0.085,
+       "rohan-deshpande:overlap:NSB:HN50": 0.327,
+       "rohan-deshpande:exposure:HDFCBANK": 0.135,
+       "rohan-deshpande:lot:MFC:2025-10-28": 0.164,
+       "rohan-deshpande:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 1.0,
+     "summary": "5 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "meera-iyer": {
+   "client_id": "meera-iyer",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 2690000,
+    "allocation_pct": {
+     "Equity": 44.61,
+     "Debt": 40.89,
+     "Gold": 8.92,
+     "Cash": 5.58
+    }
+   },
+   "drafts": [
+    {
+     "id": "meera-iyer:drift:debt",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "medium",
+     "title": "Debt is above the agreed model",
+     "evidence_ids": [
+      "drift:debt"
+     ],
+     "impact": 158499.99999999994,
+     "rationale": "Drift +5.9 pts is outside the ±5 pt band.",
+     "text": "Debt is 40.9% of {client}'s portfolio against a 35% target for a moderate profile: +5.9 pts, about ₹1.58 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.089,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "meera-iyer:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 1875.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹15,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹4,68,000 of unrealised gains. Booking gains within the exemption could avoid up to ₹1,875 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:debt": {
+     "id": "drift:debt",
+     "title": "Debt drift vs Moderate model",
+     "result": "+5.9 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Debt value",
+       "₹11,00,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹26,90,000",
+       "Snapshot"
+      ],
+      [
+       "Actual debt share",
+       "40.9%",
+       ""
+      ],
+      [
+       "Model target",
+       "35%",
+       "IPS v3 · Moderate"
+      ]
+     ],
+     "steps": [
+      "₹11,00,000 ÷ ₹26,90,000 = 40.9%.",
+      "40.9% − 35% = +5.9 pts.",
+      "Gap ≈ ₹1,58,500 (₹1.58 L)."
+     ],
+     "values": [
+      40.89219330855018,
+      35,
+      5.892193308550183,
+      158499.99999999994
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹15,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹1,10,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹4,68,000",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹1,10,000 = ₹15,000.",
+      "Usable = ₹15,000; at 12.5% that avoids up to ₹1,875 of future tax."
+     ],
+     "values": [
+      15000,
+      468000.00000000006,
+      1875.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.53,
+     "summary": "5 positions, ₹26.9 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.38,
+     "summary": "9 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:HN50:SEL",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.05,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.04,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "meera-iyer:drift:debt",
+       "meera-iyer:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 16.76,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "meera-iyer:drift:debt": [
+        "firm-ips#1"
+       ],
+       "meera-iyer:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 24.92,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "meera-iyer:drift:debt": 0.089,
+       "meera-iyer:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 12.89,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "kavya-nair": {
+   "client_id": "kavya-nair",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1160000,
+    "allocation_pct": {
+     "Equity": 95.69,
+     "Debt": 0.0,
+     "Gold": 4.31,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "kavya-nair:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 182000.0,
+     "rationale": "Drift +15.7 pts is outside the ±5 pt band.",
+     "text": "Equity is 95.7% of {client}'s portfolio against a 80% target for a aggressive profile: +15.7 pts, about ₹1.82 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.089,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "kavya-nair:lot:MFC:2025-11-10",
+     "kind": "tax-timing",
+     "agent": "tax_analyst",
+     "severity": "medium",
+     "title": "A lot turns long-term soon",
+     "evidence_ids": [
+      "lot:MFC:2025-11-10"
+     ],
+     "impact": 3780.0000000000005,
+     "rationale": "Turns long-term in 25 days with a gain.",
+     "text": "A lot with an unrealised gain of ₹50,400 becomes long-term on 11 Nov 2026, in 25 days. If {client} plans to sell it, waiting until then lowers the tax by about ₹3,780 [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#2",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Short-term capital gains rate",
+       "issuer": "Income Tax Department",
+       "text": "Short-term capital gains on listed equity shares and units of equity-oriented funds, where securities transaction tax applies, are taxed at 20%. This rate applies to transfers on or after 23 July 2024."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.175,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "kavya-nair:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 15625.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,25,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹1,40,800 of unrealised gains. Booking gains within the exemption could avoid up to ₹15,625 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Aggressive model",
+     "result": "+15.7 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹11,10,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹11,60,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "95.7%",
+       ""
+      ],
+      [
+       "Model target",
+       "80%",
+       "IPS v3 · Aggressive"
+      ]
+     ],
+     "steps": [
+      "₹11,10,000 ÷ ₹11,60,000 = 95.7%.",
+      "95.7% − 80% = +15.7 pts.",
+      "Gap ≈ ₹1,82,000 (₹1.82 L)."
+     ],
+     "values": [
+      95.6896551724138,
+      80,
+      15.689655172413794,
+      182000.0
+     ]
+    },
+    "lot:MFC:2025-11-10": {
+     "id": "lot:MFC:2025-11-10",
+     "title": "Holding period: Meridian Flexi Cap lot",
+     "result": "25 days to long-term",
+     "formula_words": "A lot becomes long-term after 12 months; the saving is the gain times the difference between the 20% and 12.5% rates.",
+     "formula": "saving = gain × (20% − 12.5%)",
+     "inputs": [
+      [
+       "Acquired",
+       "10 Nov 2025",
+       "CAMS CAS"
+      ],
+      [
+       "Long-term from",
+       "11 Nov 2026",
+       ""
+      ],
+      [
+       "Unrealised gain",
+       "₹50,400",
+       ""
+      ]
+     ],
+     "steps": [
+      "Long-term from 11 Nov 2026, 25 days away.",
+      "Saving ≈ ₹50,400 × 7.5% = ₹3,780."
+     ],
+     "values": [
+      50400.0,
+      25.0,
+      3780.0000000000005
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,25,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹0",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹1,40,800",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹0 = ₹1,25,000.",
+      "Usable = ₹1,25,000; at 12.5% that avoids up to ₹15,625 of future tax."
+     ],
+     "values": [
+      125000,
+      140800.0,
+      15625.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 2.68,
+     "summary": "4 positions, ₹11.6 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.4,
+     "summary": "12 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:MFC:ILM",
+       "overlap:CSC:ILM",
+       "overlap:MFC:CSC",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "lot:MFC:2025-11-10",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:POLYCAB"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.05,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "0 of 6 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "2 of 2 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "lot:MFC:2025-11-10",
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.04,
+     "summary": "3 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "kavya-nair:drift:equity",
+       "kavya-nair:lot:MFC:2025-11-10",
+       "kavya-nair:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 46.69,
+     "summary": "3 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "kavya-nair:drift:equity": [
+        "firm-ips#1"
+       ],
+       "kavya-nair:lot:MFC:2025-11-10": [
+        "it-capital-gains#2"
+       ],
+       "kavya-nair:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 45.25,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "kavya-nair:drift:equity": 0.089,
+       "kavya-nair:lot:MFC:2025-11-10": 0.175,
+       "kavya-nair:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.42,
+     "summary": "3 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "arjun-malhotra": {
+   "client_id": "arjun-malhotra",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1750000,
+    "allocation_pct": {
+     "Equity": 86.29,
+     "Debt": 11.43,
+     "Gold": 0.0,
+     "Cash": 2.29
+    }
+   },
+   "drafts": [
+    {
+     "id": "arjun-malhotra:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 285000.0000000001,
+     "rationale": "Drift +16.3 pts is outside the ±5 pt band.",
+     "text": "Equity is 86.3% of {client}'s portfolio against a 70% target for a moderately aggressive profile: +16.3 pts, about ₹2.85 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.085,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "arjun-malhotra:overlap:NSB:HN50",
+     "kind": "overlap",
+     "agent": "overlap_analyst",
+     "severity": "medium",
+     "title": "Two funds hold largely the same companies",
+     "evidence_ids": [
+      "overlap:NSB:HN50"
+     ],
+     "impact": 1190000.0,
+     "rationale": "Overlap 69.4% is above the 60% review threshold.",
+     "text": "{client}'s Northstar Bluechip and Harbor Nifty 50 share 69% of their portfolios. ₹11.9 L is spread across two funds that give very similar exposure, so the second fund adds little diversification [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.327,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "arjun-malhotra:exposure:HDFCBANK",
+     "kind": "concentration",
+     "agent": "overlap_analyst",
+     "severity": "low",
+     "title": "Hidden concentration in HDFC Bank",
+     "evidence_ids": [
+      "exposure:HDFCBANK"
+     ],
+     "impact": 156250.0,
+     "rationale": "Single-company exposure 8.9% is above the 7% flag.",
+     "text": "Once fund holdings are looked through, HDFC Bank is 8.9% of {client}'s total portfolio (₹1,56,250), held through 3 funds [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.122,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "arjun-malhotra:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 8125.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹65,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹4,80,800 of unrealised gains. Booking gains within the exemption could avoid up to ₹8,125 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "overlap:NSB:HN50": {
+     "id": "overlap:NSB:HN50",
+     "title": "Overlap: Northstar Bluechip × Harbor Nifty 50",
+     "result": "69.4%",
+     "formula_words": "For every company both funds hold, take the smaller of the two weights, then add them up.",
+     "formula": "overlap = Σ min(wₐ, w_b)",
+     "inputs": [
+      [
+       "HDFC Bank",
+       "min(9.6%, 12.9%) = 9.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Reliance Industries",
+       "min(8.4%, 8.6%) = 8.4%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "ICICI Bank",
+       "min(8.1%, 8.9%) = 8.1%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Infosys",
+       "min(6.2%, 5.0%) = 5.0%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Bharti Airtel",
+       "min(4.8%, 4.6%) = 4.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Larsen & Toubro",
+       "min(4.1%, 3.9%) = 3.9%",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "20 companies appear in both portfolios.",
+      "Sum of the smaller weights = 69.4% (rounded 69%).",
+      "Combined value in the two funds = ₹11,90,000 (₹11.9 L)."
+     ],
+     "values": [
+      69.4,
+      1190000.0
+     ]
+    },
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Moderately aggressive model",
+     "result": "+16.3 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹15,10,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹17,50,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "86.3%",
+       ""
+      ],
+      [
+       "Model target",
+       "70%",
+       "IPS v3 · Moderately aggressive"
+      ]
+     ],
+     "steps": [
+      "₹15,10,000 ÷ ₹17,50,000 = 86.3%.",
+      "86.3% − 70% = +16.3 pts.",
+      "Gap ≈ ₹2,85,000 (₹2.85 L)."
+     ],
+     "values": [
+      86.28571428571429,
+      70,
+      16.285714285714292,
+      285000.0000000001
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹65,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹60,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹4,80,800",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹60,000 = ₹65,000.",
+      "Usable = ₹65,000; at 12.5% that avoids up to ₹8,125 of future tax."
+     ],
+     "values": [
+      65000,
+      480800.0,
+      8125.0
+     ]
+    },
+    "exposure:HDFCBANK": {
+     "id": "exposure:HDFCBANK",
+     "title": "Look-through exposure: HDFC Bank",
+     "result": "8.9%",
+     "formula_words": "Direct shares plus each fund's value times its weight in the company, divided by the portfolio value.",
+     "formula": "exposure = (direct + Σ value × weight) ÷ portfolio",
+     "inputs": [
+      [
+       "via Northstar Bluechip (9.6%)",
+       "₹74,880",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Sapphire ELSS (8.9%)",
+       "₹28,480",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Harbor Nifty 50 (12.9%)",
+       "₹52,890",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "₹1,56,250 ÷ ₹17,50,000 = 8.9%.",
+      "Held through 3 funds."
+     ],
+     "values": [
+      8.928571428571429,
+      156250.0,
+      3.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.51,
+     "summary": "5 positions, ₹17.5 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.44,
+     "summary": "11 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:NSB:HN50",
+       "overlap:NSB:SEL",
+       "overlap:SEL:HN50",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.06,
+     "summary": "3 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt",
+       "drift:gold"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.07,
+     "summary": "4 of 6 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "overlap:NSB:HN50",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.04,
+     "summary": "4 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "arjun-malhotra:drift:equity",
+       "arjun-malhotra:overlap:NSB:HN50",
+       "arjun-malhotra:exposure:HDFCBANK",
+       "arjun-malhotra:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 13.1,
+     "summary": "4 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "arjun-malhotra:drift:equity": [
+        "firm-ips#1"
+       ],
+       "arjun-malhotra:overlap:NSB:HN50": [
+        "sebi-mf-disclosure#1"
+       ],
+       "arjun-malhotra:exposure:HDFCBANK": [
+        "sebi-mf-disclosure#1"
+       ],
+       "arjun-malhotra:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 10.69,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "arjun-malhotra:drift:equity": 0.085,
+       "arjun-malhotra:overlap:NSB:HN50": 0.327,
+       "arjun-malhotra:exposure:HDFCBANK": 0.122,
+       "arjun-malhotra:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.62,
+     "summary": "4 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "ananya-rao": {
+   "client_id": "ananya-rao",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 660000,
+    "allocation_pct": {
+     "Equity": 100.0,
+     "Debt": 0.0,
+     "Gold": 0.0,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "ananya-rao:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 132000.0,
+     "rationale": "Drift +20.0 pts is outside the ±5 pt band.",
+     "text": "Equity is 100.0% of {client}'s portfolio against a 80% target for a aggressive profile: +20.0 pts, about ₹1.32 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.089,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "ananya-rao:lot:MFC:2025-10-30",
+     "kind": "tax-timing",
+     "agent": "tax_analyst",
+     "severity": "medium",
+     "title": "A lot turns long-term soon",
+     "evidence_ids": [
+      "lot:MFC:2025-10-30"
+     ],
+     "impact": 2437.5000000000005,
+     "rationale": "Turns long-term in 14 days with a gain.",
+     "text": "A lot with an unrealised gain of ₹32,500 becomes long-term on 31 Oct 2026, in 14 days. If {client} plans to sell it, waiting until then lowers the tax by about ₹2,438 [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#2",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Short-term capital gains rate",
+       "issuer": "Income Tax Department",
+       "text": "Short-term capital gains on listed equity shares and units of equity-oriented funds, where securities transaction tax applies, are taxed at 20%. This rate applies to transfers on or after 23 July 2024."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.164,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "ananya-rao:exposure:HDFCBANK",
+     "kind": "concentration",
+     "agent": "overlap_analyst",
+     "severity": "low",
+     "title": "Hidden concentration in HDFC Bank",
+     "evidence_ids": [
+      "exposure:HDFCBANK"
+     ],
+     "impact": 47880.0,
+     "rationale": "Single-company exposure 7.3% is above the 7% flag.",
+     "text": "Once fund holdings are looked through, HDFC Bank is 7.3% of {client}'s total portfolio (₹47,880), held through 2 funds [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.122,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "ananya-rao:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 7050.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,25,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹56,400 of unrealised gains. Booking gains within the exemption could avoid up to ₹7,050 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Aggressive model",
+     "result": "+20.0 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹6,60,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹6,60,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "100.0%",
+       ""
+      ],
+      [
+       "Model target",
+       "80%",
+       "IPS v3 · Aggressive"
+      ]
+     ],
+     "steps": [
+      "₹6,60,000 ÷ ₹6,60,000 = 100.0%.",
+      "100.0% − 80% = +20.0 pts.",
+      "Gap ≈ ₹1,32,000 (₹1.32 L)."
+     ],
+     "values": [
+      100.0,
+      80,
+      20.0,
+      132000.0
+     ]
+    },
+    "lot:MFC:2025-10-30": {
+     "id": "lot:MFC:2025-10-30",
+     "title": "Holding period: Meridian Flexi Cap lot",
+     "result": "14 days to long-term",
+     "formula_words": "A lot becomes long-term after 12 months; the saving is the gain times the difference between the 20% and 12.5% rates.",
+     "formula": "saving = gain × (20% − 12.5%)",
+     "inputs": [
+      [
+       "Acquired",
+       "30 Oct 2025",
+       "CAMS CAS"
+      ],
+      [
+       "Long-term from",
+       "31 Oct 2026",
+       ""
+      ],
+      [
+       "Unrealised gain",
+       "₹32,500",
+       ""
+      ]
+     ],
+     "steps": [
+      "Long-term from 31 Oct 2026, 14 days away.",
+      "Saving ≈ ₹32,500 × 7.5% = ₹2,438."
+     ],
+     "values": [
+      32500.0,
+      14.0,
+      2437.5000000000005
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,25,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹0",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹56,400",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹0 = ₹1,25,000.",
+      "Usable = ₹56,400; at 12.5% that avoids up to ₹7,050 of future tax."
+     ],
+     "values": [
+      125000,
+      56400.0,
+      7050.0
+     ]
+    },
+    "exposure:HDFCBANK": {
+     "id": "exposure:HDFCBANK",
+     "title": "Look-through exposure: HDFC Bank",
+     "result": "7.3%",
+     "formula_words": "Direct shares plus each fund's value times its weight in the company, divided by the portfolio value.",
+     "formula": "exposure = (direct + Σ value × weight) ÷ portfolio",
+     "inputs": [
+      [
+       "via Harbor Nifty 50 (12.9%)",
+       "₹28,380",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "via Meridian Flexi Cap (7.8%)",
+       "₹19,500",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "₹47,880 ÷ ₹6,60,000 = 7.3%.",
+      "Held through 2 funds."
+     ],
+     "values": [
+      7.254545454545455,
+      47880.0,
+      2.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 3.92,
+     "summary": "3 positions, ₹6.60 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 8.68,
+     "summary": "12 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:HN50:MFC",
+       "overlap:CSC:MFC",
+       "overlap:HN50:CSC",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "lot:MFC:2025-10-30",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:BHARTIARTL"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.06,
+     "summary": "3 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt",
+       "drift:gold"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "1 of 6 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "exposure:HDFCBANK"
+      ]
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "2 of 2 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "lot:MFC:2025-10-30",
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.04,
+     "summary": "4 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "ananya-rao:drift:equity",
+       "ananya-rao:lot:MFC:2025-10-30",
+       "ananya-rao:exposure:HDFCBANK",
+       "ananya-rao:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 29.49,
+     "summary": "4 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "ananya-rao:drift:equity": [
+        "firm-ips#1"
+       ],
+       "ananya-rao:lot:MFC:2025-10-30": [
+        "it-capital-gains#2"
+       ],
+       "ananya-rao:exposure:HDFCBANK": [
+        "sebi-mf-disclosure#1"
+       ],
+       "ananya-rao:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 25.39,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "ananya-rao:drift:equity": 0.089,
+       "ananya-rao:lot:MFC:2025-10-30": 0.164,
+       "ananya-rao:exposure:HDFCBANK": 0.122,
+       "ananya-rao:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.55,
+     "summary": "4 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "vikram-shetty": {
+   "client_id": "vikram-shetty",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 3350000,
+    "allocation_pct": {
+     "Equity": 29.85,
+     "Debt": 53.73,
+     "Gold": 8.96,
+     "Cash": 7.46
+    }
+   },
+   "drafts": [
+    {
+     "id": "vikram-shetty:overlap:HN50:NSB",
+     "kind": "overlap",
+     "agent": "overlap_analyst",
+     "severity": "medium",
+     "title": "Two funds hold largely the same companies",
+     "evidence_ids": [
+      "overlap:HN50:NSB"
+     ],
+     "impact": 1000000.0,
+     "rationale": "Overlap 69.4% is above the 60% review threshold.",
+     "text": "{client}'s Harbor Nifty 50 and Northstar Bluechip share 69% of their portfolios. ₹10.0 L is spread across two funds that give very similar exposure, so the second fund adds little diversification [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "sebi-mf-disclosure",
+       "chunk_id": "sebi-mf-disclosure#1",
+       "title": "Mutual fund portfolio disclosure and the riskometer",
+       "section": "Using disclosures for look-through analysis",
+       "issuer": "SEBI",
+       "text": "Because every scheme's holdings are public each month, an investor's true exposure to an individual company can be calculated by multiplying the value held in each fund by that fund's weight in the company and adding any shares held directly. The overlap between two funds can be measured by adding the smaller of the two weights for every company both funds hold. These figures are only as recent as the latest monthly disclosure."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.323,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "vikram-shetty:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 15625.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,25,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹4,57,000 of unrealised gains. Booking gains within the exemption could avoid up to ₹15,625 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "overlap:HN50:NSB": {
+     "id": "overlap:HN50:NSB",
+     "title": "Overlap: Harbor Nifty 50 × Northstar Bluechip",
+     "result": "69.4%",
+     "formula_words": "For every company both funds hold, take the smaller of the two weights, then add them up.",
+     "formula": "overlap = Σ min(wₐ, w_b)",
+     "inputs": [
+      [
+       "HDFC Bank",
+       "min(12.9%, 9.6%) = 9.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Reliance Industries",
+       "min(8.6%, 8.4%) = 8.4%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "ICICI Bank",
+       "min(8.9%, 8.1%) = 8.1%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Infosys",
+       "min(5.0%, 6.2%) = 5.0%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Bharti Airtel",
+       "min(4.6%, 4.8%) = 4.6%",
+       "AMC disclosure · Sep 2026"
+      ],
+      [
+       "Larsen & Toubro",
+       "min(3.9%, 4.1%) = 3.9%",
+       "AMC disclosure · Sep 2026"
+      ]
+     ],
+     "steps": [
+      "20 companies appear in both portfolios.",
+      "Sum of the smaller weights = 69.4% (rounded 69%).",
+      "Combined value in the two funds = ₹10,00,000 (₹10.0 L)."
+     ],
+     "values": [
+      69.4,
+      1000000.0
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,25,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹0",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹4,57,000",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹0 = ₹1,25,000.",
+      "Usable = ₹1,25,000; at 12.5% that avoids up to ₹15,625 of future tax."
+     ],
+     "values": [
+      125000,
+      457000.0,
+      15625.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.7,
+     "summary": "5 positions, ₹33.5 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.33,
+     "summary": "9 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:HN50:NSB",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.04,
+     "summary": "1 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "overlap:HN50:NSB"
+      ]
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.05,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "vikram-shetty:overlap:HN50:NSB",
+       "vikram-shetty:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 8.51,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "vikram-shetty:overlap:HN50:NSB": [
+        "sebi-mf-disclosure#1"
+       ],
+       "vikram-shetty:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 6.02,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "vikram-shetty:overlap:HN50:NSB": 0.323,
+       "vikram-shetty:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.37,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "neha-joshi": {
+   "client_id": "neha-joshi",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1420000,
+    "allocation_pct": {
+     "Equity": 66.2,
+     "Debt": 25.35,
+     "Gold": 8.45,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "neha-joshi:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 230000.00000000006,
+     "rationale": "Drift +16.2 pts is outside the ±5 pt band.",
+     "text": "Equity is 66.2% of {client}'s portfolio against a 50% target for a moderate profile: +16.2 pts, about ₹2.30 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.087,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "neha-joshi:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 12875.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,03,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,43,300 of unrealised gains. Booking gains within the exemption could avoid up to ₹12,875 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Moderate model",
+     "result": "+16.2 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹9,40,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹14,20,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "66.2%",
+       ""
+      ],
+      [
+       "Model target",
+       "50%",
+       "IPS v3 · Moderate"
+      ]
+     ],
+     "steps": [
+      "₹9,40,000 ÷ ₹14,20,000 = 66.2%.",
+      "66.2% − 50% = +16.2 pts.",
+      "Gap ≈ ₹2,30,000 (₹2.30 L)."
+     ],
+     "values": [
+      66.19718309859155,
+      50,
+      16.19718309859155,
+      230000.00000000006
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,03,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹22,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,43,300",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹22,000 = ₹1,03,000.",
+      "Usable = ₹1,03,000; at 12.5% that avoids up to ₹12,875 of future tax."
+     ],
+     "values": [
+      103000,
+      243300.0,
+      12875.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.38,
+     "summary": "4 positions, ₹14.2 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.33,
+     "summary": "9 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:MFC:ILM",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:BHARTIARTL"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.06,
+     "summary": "3 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt",
+       "drift:cash"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.04,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "neha-joshi:drift:equity",
+       "neha-joshi:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 4.52,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "neha-joshi:drift:equity": [
+        "firm-ips#1"
+       ],
+       "neha-joshi:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 5.17,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "neha-joshi:drift:equity": 0.087,
+       "neha-joshi:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.27,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "farhan-qureshi": {
+   "client_id": "farhan-qureshi",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1270000,
+    "allocation_pct": {
+     "Equity": 63.78,
+     "Debt": 25.2,
+     "Gold": 6.3,
+     "Cash": 4.72
+    }
+   },
+   "drafts": [
+    {
+     "id": "farhan-qureshi:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "medium",
+     "title": "Equity is below the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 79000.0,
+     "rationale": "Drift −6.2 pts is outside the ±5 pt band.",
+     "text": "Equity is 63.8% of {client}'s portfolio against a 70% target for a moderately aggressive profile: −6.2 pts, about ₹79,000 less than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.076,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "farhan-qureshi:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 10000.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹80,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,35,500 of unrealised gains. Booking gains within the exemption could avoid up to ₹10,000 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Moderately aggressive model",
+     "result": "−6.2 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹8,10,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹12,70,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "63.8%",
+       ""
+      ],
+      [
+       "Model target",
+       "70%",
+       "IPS v3 · Moderately aggressive"
+      ]
+     ],
+     "steps": [
+      "₹8,10,000 ÷ ₹12,70,000 = 63.8%.",
+      "63.8% − 70% = −6.2 pts.",
+      "Gap ≈ −₹79,000 (₹79,000)."
+     ],
+     "values": [
+      63.77952755905512,
+      70,
+      -6.2204724409448815,
+      -79000.0
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹80,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹45,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,35,500",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹45,000 = ₹80,000.",
+      "Usable = ₹80,000; at 12.5% that avoids up to ₹10,000 of future tax."
+     ],
+     "values": [
+      80000,
+      235500.0,
+      10000.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.39,
+     "summary": "5 positions, ₹12.7 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.29,
+     "summary": "9 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:ILM:CSC",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.06,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.05,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "farhan-qureshi:drift:equity",
+       "farhan-qureshi:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 3.69,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "farhan-qureshi:drift:equity": [
+        "firm-ips#1"
+       ],
+       "farhan-qureshi:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 5.52,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "farhan-qureshi:drift:equity": 0.076,
+       "farhan-qureshi:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.32,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "sneha-kulkarni": {
+   "client_id": "sneha-kulkarni",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1750000,
+    "allocation_pct": {
+     "Equity": 45.71,
+     "Debt": 45.71,
+     "Gold": 8.57,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "sneha-kulkarni:drift:debt",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Debt is above the agreed model",
+     "evidence_ids": [
+      "drift:debt"
+     ],
+     "impact": 187500.0,
+     "rationale": "Drift +10.7 pts is outside the ±5 pt band.",
+     "text": "Debt is 45.7% of {client}'s portfolio against a 35% target for a moderate profile: +10.7 pts, about ₹1.88 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.089,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "sneha-kulkarni:lot:MFC:2025-11-12",
+     "kind": "tax-timing",
+     "agent": "tax_analyst",
+     "severity": "medium",
+     "title": "A lot turns long-term soon",
+     "evidence_ids": [
+      "lot:MFC:2025-11-12"
+     ],
+     "impact": 2250.0000000000005,
+     "rationale": "Turns long-term in 27 days with a gain.",
+     "text": "A lot with an unrealised gain of ₹30,000 becomes long-term on 13 Nov 2026, in 27 days. If {client} plans to sell it, waiting until then lowers the tax by about ₹2,250 [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#2",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Short-term capital gains rate",
+       "issuer": "Income Tax Department",
+       "text": "Short-term capital gains on listed equity shares and units of equity-oriented funds, where securities transaction tax applies, are taxed at 20%. This rate applies to transfers on or after 23 July 2024."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.175,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "sneha-kulkarni:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 15625.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,25,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,00,000 of unrealised gains. Booking gains within the exemption could avoid up to ₹15,625 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:debt": {
+     "id": "drift:debt",
+     "title": "Debt drift vs Moderate model",
+     "result": "+10.7 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Debt value",
+       "₹8,00,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹17,50,000",
+       "Snapshot"
+      ],
+      [
+       "Actual debt share",
+       "45.7%",
+       ""
+      ],
+      [
+       "Model target",
+       "35%",
+       "IPS v3 · Moderate"
+      ]
+     ],
+     "steps": [
+      "₹8,00,000 ÷ ₹17,50,000 = 45.7%.",
+      "45.7% − 35% = +10.7 pts.",
+      "Gap ≈ ₹1,87,500 (₹1.88 L)."
+     ],
+     "values": [
+      45.714285714285715,
+      35,
+      10.714285714285715,
+      187500.0
+     ]
+    },
+    "lot:MFC:2025-11-12": {
+     "id": "lot:MFC:2025-11-12",
+     "title": "Holding period: Meridian Flexi Cap lot",
+     "result": "27 days to long-term",
+     "formula_words": "A lot becomes long-term after 12 months; the saving is the gain times the difference between the 20% and 12.5% rates.",
+     "formula": "saving = gain × (20% − 12.5%)",
+     "inputs": [
+      [
+       "Acquired",
+       "12 Nov 2025",
+       "CAMS CAS"
+      ],
+      [
+       "Long-term from",
+       "13 Nov 2026",
+       ""
+      ],
+      [
+       "Unrealised gain",
+       "₹30,000",
+       ""
+      ]
+     ],
+     "steps": [
+      "Long-term from 13 Nov 2026, 27 days away.",
+      "Saving ≈ ₹30,000 × 7.5% = ₹2,250."
+     ],
+     "values": [
+      30000.0,
+      27.0,
+      2250.0000000000005
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,25,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹0",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,00,000",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹0 = ₹1,25,000.",
+      "Usable = ₹1,25,000; at 12.5% that avoids up to ₹15,625 of future tax."
+     ],
+     "values": [
+      125000,
+      200000.0,
+      15625.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.5,
+     "summary": "4 positions, ₹17.5 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.42,
+     "summary": "10 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:NSB:MFC",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "lot:MFC:2025-11-12",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.05,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:debt",
+       "drift:cash"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "2 of 2 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "lot:MFC:2025-11-12",
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.03,
+     "summary": "3 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "sneha-kulkarni:drift:debt",
+       "sneha-kulkarni:lot:MFC:2025-11-12",
+       "sneha-kulkarni:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 7.69,
+     "summary": "3 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "sneha-kulkarni:drift:debt": [
+        "firm-ips#1"
+       ],
+       "sneha-kulkarni:lot:MFC:2025-11-12": [
+        "it-capital-gains#2"
+       ],
+       "sneha-kulkarni:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 6.39,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "sneha-kulkarni:drift:debt": 0.089,
+       "sneha-kulkarni:lot:MFC:2025-11-12": 0.175,
+       "sneha-kulkarni:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.34,
+     "summary": "3 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "ishaan-gupta": {
+   "client_id": "ishaan-gupta",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1300000,
+    "allocation_pct": {
+     "Equity": 100.0,
+     "Debt": 0.0,
+     "Gold": 0.0,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "ishaan-gupta:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is above the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 260000.0,
+     "rationale": "Drift +20.0 pts is outside the ±5 pt band.",
+     "text": "Equity is 100.0% of {client}'s portfolio against a 80% target for a aggressive profile: +20.0 pts, about ₹2.60 L more than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.089,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "ishaan-gupta:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 15625.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,25,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,89,500 of unrealised gains. Booking gains within the exemption could avoid up to ₹15,625 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Aggressive model",
+     "result": "+20.0 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹13,00,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹13,00,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "100.0%",
+       ""
+      ],
+      [
+       "Model target",
+       "80%",
+       "IPS v3 · Aggressive"
+      ]
+     ],
+     "steps": [
+      "₹13,00,000 ÷ ₹13,00,000 = 100.0%.",
+      "100.0% − 80% = +20.0 pts.",
+      "Gap ≈ ₹2,60,000 (₹2.60 L)."
+     ],
+     "values": [
+      100.0,
+      80,
+      20.0,
+      260000.0
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,25,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹0",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,89,500",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹0 = ₹1,25,000.",
+      "Usable = ₹1,25,000; at 12.5% that avoids up to ₹15,625 of future tax."
+     ],
+     "values": [
+      125000,
+      289500.0,
+      15625.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.53,
+     "summary": "4 positions, ₹13.0 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 1.55,
+     "summary": "11 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:MFC:HN50",
+       "overlap:ILM:MFC",
+       "overlap:ILM:HN50",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:BHARTIARTL"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.07,
+     "summary": "3 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt",
+       "drift:gold"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 6 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.04,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.06,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "ishaan-gupta:drift:equity",
+       "ishaan-gupta:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 4.17,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "ishaan-gupta:drift:equity": [
+        "firm-ips#1"
+       ],
+       "ishaan-gupta:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 3.76,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "ishaan-gupta:drift:equity": 0.089,
+       "ishaan-gupta:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.3,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "priyanka-das": {
+   "client_id": "priyanka-das",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1540000,
+    "allocation_pct": {
+     "Equity": 38.96,
+     "Debt": 45.45,
+     "Gold": 9.09,
+     "Cash": 6.49
+    }
+   },
+   "drafts": [
+    {
+     "id": "priyanka-das:drift:equity",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "high",
+     "title": "Equity is below the agreed model",
+     "evidence_ids": [
+      "drift:equity"
+     ],
+     "impact": 169999.99999999994,
+     "rationale": "Drift −11.0 pts is outside the ±5 pt band.",
+     "text": "Equity is 39.0% of {client}'s portfolio against a 50% target for a moderate profile: −11.0 pts, about ₹1.70 L less than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.081,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "priyanka-das:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 13750.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹1,10,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,28,000 of unrealised gains. Booking gains within the exemption could avoid up to ₹13,750 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:equity": {
+     "id": "drift:equity",
+     "title": "Equity drift vs Moderate model",
+     "result": "−11.0 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Equity value",
+       "₹6,00,000",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹15,40,000",
+       "Snapshot"
+      ],
+      [
+       "Actual equity share",
+       "39.0%",
+       ""
+      ],
+      [
+       "Model target",
+       "50%",
+       "IPS v3 · Moderate"
+      ]
+     ],
+     "steps": [
+      "₹6,00,000 ÷ ₹15,40,000 = 39.0%.",
+      "39.0% − 50% = −11.0 pts.",
+      "Gap ≈ −₹1,70,000 (₹1.70 L)."
+     ],
+     "values": [
+      38.961038961038966,
+      50,
+      -11.038961038961034,
+      -169999.99999999994
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹1,10,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹15,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,28,000",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹15,000 = ₹1,10,000.",
+      "Usable = ₹1,10,000; at 12.5% that avoids up to ₹13,750 of future tax."
+     ],
+     "values": [
+      110000,
+      228000.0,
+      13750.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.53,
+     "summary": "4 positions, ₹15.4 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.45,
+     "summary": "8 evidence records computed",
+     "detail": {
+      "ids": [
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.04,
+     "summary": "2 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:equity",
+       "drift:debt"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.01,
+     "summary": "0 of 3 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.01,
+     "summary": "1 of 1 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.03,
+     "summary": "2 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "priyanka-das:drift:equity",
+       "priyanka-das:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 3.78,
+     "summary": "2 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "priyanka-das:drift:equity": [
+        "firm-ips#1"
+       ],
+       "priyanka-das:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 4.42,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "priyanka-das:drift:equity": 0.081,
+       "priyanka-das:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.31,
+     "summary": "2 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  },
+  "aditya-menon": {
+   "client_id": "aditya-menon",
+   "as_of": "2026-10-17",
+   "engine": "core-py 0.1.0",
+   "summary": {
+    "total": 1220000,
+    "allocation_pct": {
+     "Equity": 68.03,
+     "Debt": 24.59,
+     "Gold": 7.38,
+     "Cash": 0.0
+    }
+   },
+   "drafts": [
+    {
+     "id": "aditya-menon:drift:cash",
+     "kind": "drift",
+     "agent": "allocation_analyst",
+     "severity": "medium",
+     "title": "Cash is below the agreed model",
+     "evidence_ids": [
+      "drift:cash"
+     ],
+     "impact": 61000.0,
+     "rationale": "Drift −5.0 pts is outside the ±5 pt band.",
+     "text": "Cash is 0.0% of {client}'s portfolio against a 5% target for a moderately aggressive profile: −5.0 pts, about ₹61,000 less than the model allows [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "firm-ips",
+       "chunk_id": "firm-ips#1",
+       "title": "Anand Wealth Partners — Investment Policy Statement (fictional demo firm)",
+       "section": "Rebalancing bands",
+       "issuer": "Firm policy",
+       "text": "A review is triggered when any asset class drifts more than 5 percentage points from the client's model. Drift is measured as the actual share of the portfolio minus the model's target share, and the rupee gap is that difference multiplied by the portfolio value."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.076,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "aditya-menon:lot:ILM:2025-10-24",
+     "kind": "tax-timing",
+     "agent": "tax_analyst",
+     "severity": "medium",
+     "title": "A lot turns long-term soon",
+     "evidence_ids": [
+      "lot:ILM:2025-10-24"
+     ],
+     "impact": 3990.0000000000005,
+     "rationale": "Turns long-term in 8 days with a gain.",
+     "text": "A lot with an unrealised gain of ₹53,200 becomes long-term on 25 Oct 2026, in 8 days. If {client} plans to sell it, waiting until then lowers the tax by about ₹3,990 [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#2",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Short-term capital gains rate",
+       "issuer": "Income Tax Department",
+       "text": "Short-term capital gains on listed equity shares and units of equity-oriented funds, where securities transaction tax applies, are taxed at 20%. This rate applies to transfers on or after 23 July 2024."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.164,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    },
+    {
+     "id": "aditya-menon:tax:exemption",
+     "kind": "harvest",
+     "agent": "tax_analyst",
+     "severity": "low",
+     "title": "Unused long-term gains exemption this year",
+     "evidence_ids": [
+      "tax:exemption"
+     ],
+     "impact": 6625.0,
+     "rationale": "Exemption headroom and unrealised long-term gains both exist.",
+     "text": "{client} has ₹53,000 of the ₹1.25 lakh long-term gains exemption left in FY 2026-27, and long-term lots hold ₹2,02,500 of unrealised gains. Booking gains within the exemption could avoid up to ₹6,625 of future tax [1].",
+     "citations": [
+      {
+       "n": "1",
+       "doc_id": "it-capital-gains",
+       "chunk_id": "it-capital-gains#3",
+       "title": "Income-tax Act, 2025 — capital gains on listed equity and mutual funds",
+       "section": "Long-term capital gains and the ₹1.25 lakh exemption",
+       "issuer": "Income Tax Department",
+       "text": "Long-term capital gains on listed equity shares and equity-oriented fund units are taxed at 12.5% on the amount above ₹1.25 lakh in a year, without indexation. The ₹1.25 lakh threshold applies to the total of such long-term gains in the year, not separately to each investment. Booking gains up to the unused part of the threshold within the year (often called tax-gain harvesting) can reduce future tax."
+      }
+     ],
+     "author": "template",
+     "compliance": {
+      "profile": "RIA",
+      "rules": "pass",
+      "classifier": 0.063,
+      "judge": "skipped",
+      "advice_like": false
+     },
+     "verifier": {
+      "passed": true,
+      "issues": [],
+      "rewrites": 0
+     },
+     "status": "draft"
+    }
+   ],
+   "evidence": {
+    "drift:cash": {
+     "id": "drift:cash",
+     "title": "Cash drift vs Moderately aggressive model",
+     "result": "−5.0 pts",
+     "formula_words": "Actual share minus the model's target share; the rupee gap is that difference times the portfolio value.",
+     "formula": "drift = actual% − target%;  gap = drift × value",
+     "inputs": [
+      [
+       "Cash value",
+       "₹0",
+       "Snapshot"
+      ],
+      [
+       "Portfolio value",
+       "₹12,20,000",
+       "Snapshot"
+      ],
+      [
+       "Actual cash share",
+       "0.0%",
+       ""
+      ],
+      [
+       "Model target",
+       "5%",
+       "IPS v3 · Moderately aggressive"
+      ]
+     ],
+     "steps": [
+      "₹0 ÷ ₹12,20,000 = 0.0%.",
+      "0.0% − 5% = −5.0 pts.",
+      "Gap ≈ −₹61,000 (₹61,000)."
+     ],
+     "values": [
+      0.0,
+      5,
+      -5.0,
+      -61000.0
+     ]
+    },
+    "lot:ILM:2025-10-24": {
+     "id": "lot:ILM:2025-10-24",
+     "title": "Holding period: Indus Large & Mid lot",
+     "result": "8 days to long-term",
+     "formula_words": "A lot becomes long-term after 12 months; the saving is the gain times the difference between the 20% and 12.5% rates.",
+     "formula": "saving = gain × (20% − 12.5%)",
+     "inputs": [
+      [
+       "Acquired",
+       "24 Oct 2025",
+       "KFintech CAS"
+      ],
+      [
+       "Long-term from",
+       "25 Oct 2026",
+       ""
+      ],
+      [
+       "Unrealised gain",
+       "₹53,200",
+       ""
+      ]
+     ],
+     "steps": [
+      "Long-term from 25 Oct 2026, 8 days away.",
+      "Saving ≈ ₹53,200 × 7.5% = ₹3,990."
+     ],
+     "values": [
+      53200.0,
+      8.0,
+      3990.0000000000005
+     ]
+    },
+    "tax:exemption": {
+     "id": "tax:exemption",
+     "title": "LTCG exemption headroom · FY 2026-27",
+     "result": "₹53,000",
+     "formula_words": "The yearly exemption minus long-term gains already realised this financial year.",
+     "formula": "headroom = ₹1,25,000 − realised LTCG",
+     "inputs": [
+      [
+       "Annual exemption",
+       "₹1,25,000",
+       "Income-tax Act, 2025"
+      ],
+      [
+       "Realised LTCG this FY",
+       "₹72,000",
+       "Transactions"
+      ],
+      [
+       "Unrealised long-term gains",
+       "₹2,02,500",
+       "Lots held > 12 months"
+      ]
+     ],
+     "steps": [
+      "₹1,25,000 − ₹72,000 = ₹53,000.",
+      "Usable = ₹53,000; at 12.5% that avoids up to ₹6,625 of future tax."
+     ],
+     "values": [
+      53000,
+      202499.99999999997,
+      6625.0
+     ]
+    }
+   },
+   "trace": [
+    {
+     "node": "load_snapshot",
+     "kind": "tool",
+     "ms": 0.5,
+     "summary": "4 positions, ₹12.2 L",
+     "detail": {
+      "engine": "core-py 0.1.0",
+      "as_of": "2026-10-17"
+     }
+    },
+    {
+     "node": "compute_evidence",
+     "kind": "tool",
+     "ms": 0.41,
+     "summary": "10 evidence records computed",
+     "detail": {
+      "ids": [
+       "overlap:NSB:ILM",
+       "drift:equity",
+       "drift:debt",
+       "drift:gold",
+       "drift:cash",
+       "lot:ILM:2025-10-24",
+       "tax:exemption",
+       "exposure:HDFCBANK",
+       "exposure:ICICIBANK",
+       "exposure:RELIANCE"
+      ]
+     }
+    },
+    {
+     "node": "allocation_analyst",
+     "kind": "agent",
+     "ms": 0.03,
+     "summary": "1 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "drift:cash"
+      ]
+     }
+    },
+    {
+     "node": "overlap_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "0 of 4 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": []
+     }
+    },
+    {
+     "node": "tax_analyst",
+     "kind": "agent",
+     "ms": 0.02,
+     "summary": "2 of 2 items flagged (policy)",
+     "detail": {
+      "mode": "policy",
+      "flagged": [
+       "lot:ILM:2025-10-24",
+       "tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "rank",
+     "kind": "tool",
+     "ms": 0.03,
+     "summary": "3 findings ranked, 0 previously dismissed skipped",
+     "detail": {
+      "order": [
+       "aditya-menon:drift:cash",
+       "aditya-menon:lot:ILM:2025-10-24",
+       "aditya-menon:tax:exemption"
+      ]
+     }
+    },
+    {
+     "node": "explainer",
+     "kind": "agent",
+     "ms": 15.1,
+     "summary": "3 drafts written, each with a cited rule",
+     "detail": {
+      "retrieved": {
+       "aditya-menon:drift:cash": [
+        "firm-ips#1"
+       ],
+       "aditya-menon:lot:ILM:2025-10-24": [
+        "it-capital-gains#2"
+       ],
+       "aditya-menon:tax:exemption": [
+        "it-capital-gains#3"
+       ]
+      }
+     }
+    },
+    {
+     "node": "compliance",
+     "kind": "guard",
+     "ms": 10.03,
+     "summary": "0 blocked for profile RIA",
+     "detail": {
+      "scores": {
+       "aditya-menon:drift:cash": 0.076,
+       "aditya-menon:lot:ILM:2025-10-24": 0.164,
+       "aditya-menon:tax:exemption": 0.063
+      }
+     }
+    },
+    {
+     "node": "verifier",
+     "kind": "guard",
+     "ms": 0.79,
+     "summary": "3 passed, 0 rewritten, 0 dropped",
+     "detail": {}
+    }
+   ],
+   "_day": "17 Oct 2026"
+  }
+ }
+}
