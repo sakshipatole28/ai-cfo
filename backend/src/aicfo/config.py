@@ -28,6 +28,12 @@ class Settings(BaseSettings):
     llm_model: str = "llama3.1:8b"
     cors_origins: list[str] = ["http://localhost:5173"]
 
+    # Live broker connection. "sandbox" runs the full flow against recorded responses.
+    dhan_mode: Literal["off", "sandbox", "live"] = "sandbox"
+    dhan_app_id: str | None = None
+    dhan_app_secret: SecretStr | None = None
+    dhan_client_id: str | None = None
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -21,6 +21,8 @@ import { Client360 } from "@/pages/Client360";
 import { Clients } from "@/pages/Clients";
 import { ReviewInbox } from "@/pages/ReviewInbox";
 import { Agents } from "@/pages/Agents";
+import { Anonymise } from "@/pages/Anonymise";
+import { Guide } from "@/pages/Guide";
 import { Access, Team } from "@/pages/Firm";
 import { Knowledge } from "@/pages/Knowledge";
 import { Portal } from "@/pages/Portal";
@@ -68,6 +70,8 @@ const portalRoute = createRoute({ getParentRoute: () => rootRoute, path: "/porta
 const teamRoute = createRoute({ getParentRoute: () => rootRoute, path: "/team", component: Team });
 const accessRoute = createRoute({ getParentRoute: () => rootRoute, path: "/access", component: Access });
 const agentsRoute = createRoute({ getParentRoute: () => rootRoute, path: "/agents", component: Agents });
+const anonymiseRoute = createRoute({ getParentRoute: () => rootRoute, path: "/anonymise", component: Anonymise });
+const guideRoute = createRoute({ getParentRoute: () => rootRoute, path: "/guide", component: Guide });
 
 const routeTree = rootRoute.addChildren([
   todayRoute,
@@ -85,6 +89,8 @@ const routeTree = rootRoute.addChildren([
   teamRoute,
   accessRoute,
   agentsRoute,
+  anonymiseRoute,
+  guideRoute,
 ]);
 
 // The shareable preview runs inside a sandboxed frame, so it keeps routes in memory.

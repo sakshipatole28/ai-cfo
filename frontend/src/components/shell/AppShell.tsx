@@ -8,7 +8,9 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Database,
+  EyeOff,
   FileText,
+  GraduationCap,
   Handshake,
   Inbox,
   LayoutGrid,
@@ -52,6 +54,7 @@ const GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { to: "/agents", label: "Agents", icon: BrainCircuit },
       { to: "/knowledge", label: "Ask the rulebook", icon: BookOpen },
+      { to: "/guide", label: "How it works", icon: GraduationCap },
     ],
   },
   {
@@ -59,6 +62,7 @@ const GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { to: "/data", label: "Data inbox", icon: Database, badge: "data", needs: "ingest" },
       { to: "/access", label: "Client access", icon: Handshake, badge: "access" },
+      { to: "/anonymise", label: "Share without identities", icon: EyeOff },
       { to: "/reports", label: "Reports", icon: FileText },
     ],
   },

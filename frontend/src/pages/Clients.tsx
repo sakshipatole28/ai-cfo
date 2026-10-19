@@ -13,7 +13,7 @@ import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
 type Filter = "all" | "review" | "stale" | "drift";
 
 export function Clients() {
-  const { decisions, approved, locked } = useApp();
+  const { decisions, approved, locked, dhanStatus } = useApp();
   const portfolios = useVisiblePortfolios();
   const displayName = useClientName();
   const [q, setQ] = useState("");
@@ -27,7 +27,7 @@ export function Clients() {
       portfolios
         .filter((p) => (locked ? true : `${p.spec.name} ${p.spec.city}`.toLowerCase().includes(q.toLowerCase())))
         .filter((p) =>
-          filter === "review" ? due(p) || openCount(p) > 0 : filter === "stale" ? p.spec.dhan === "expired" : filter === "drift" ? Math.abs(p.drift.Equity) >= 5 : true,
+          filter === "review" ? due(p) || openCount(p) > 0 : filter === "stale" ? dhanStatus(p.spec.id) === "expired" : filter === "drift" ? Math.abs(p.drift.Equity) >= 5 : true,
         )
         .sort((a, b) => openCount(b) - openCount(a) || b.total - a.total),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,7 +38,7 @@ export function Clients() {
     ["all", "All", portfolios.length],
     ["review", "Needs review", portfolios.filter((p) => due(p) || openCount(p) > 0).length],
     ["drift", "Off model", portfolios.filter((p) => Math.abs(p.drift.Equity) >= 5).length],
-    ["stale", "Reconnect", portfolios.filter((p) => p.spec.dhan === "expired").length],
+    ["stale", "Reconnect", portfolios.filter((p) => dhanStatus(p.spec.id) === "expired").length],
   ];
 
   return (
@@ -132,8 +132,8 @@ export function Clients() {
                     </td>
                     <td className="px-3 py-3">
                       <span className="flex items-center gap-1.5 text-[12.5px] text-fg-2">
-                        <span className={cn("size-2 rounded-full", p.spec.dhan === "expired" ? "bg-warning" : "bg-good")} aria-hidden />
-                        {p.spec.dhan === "expired" ? "Reconnect Dhan" : `${p.freshnessDays} days old`}
+                        <span className={cn("size-2 rounded-full", dhanStatus(p.spec.id) === "expired" ? "bg-warning" : "bg-good")} aria-hidden />
+                        {dhanStatus(p.spec.id) === "expired" ? "Reconnect Dhan" : `${p.freshnessDays} days old`}
                       </span>
                     </td>
                     <td className="w-36 px-3 py-3">
@@ -179,7 +179,7 @@ export function Clients() {
                     {n > 0 && <Badge tone="accent">{n} drafts</Badge>}
                     {Math.abs(p.drift.Equity) >= 5 && <Badge tone="critical">Equity {signedPts(p.drift.Equity)}</Badge>}
                     {due(p) && <Badge tone="warning">Review due</Badge>}
-                    {p.spec.dhan === "expired" && <Badge tone="warning">Reconnect Dhan</Badge>}
+                    {dhanStatus(p.spec.id) === "expired" && <Badge tone="warning">Reconnect Dhan</Badge>}
                   </div>
                 </Card>
               </Link>

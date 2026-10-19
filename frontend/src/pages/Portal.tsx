@@ -3,6 +3,7 @@ import { Check, Clock, Eye, FileText, Link2Off, LogOut, Plus, ShieldCheck, Trash
 import { type FormEvent, useState } from "react";
 import { toast } from "sonner";
 
+import { LiveConnectSheet } from "@/components/live/LiveConnect";
 import { Logo } from "@/components/shell/Logo";
 import { Avatar, Badge, Button, Card, CardHeader, Sheet } from "@/components/ui";
 import { type ClientShare, firm, primaryAdviser, type Scope } from "@/data/demo";
@@ -14,7 +15,8 @@ import { useApp } from "@/state/app";
 const SHARE_SCOPES: Scope[] = ["Tax summary", "Reports", "Mutual fund statements", "Dhan holdings"];
 
 export function Portal() {
-  const { clientId, clientSignOut, requests, decideRequest, shares, addShare, revokeShare, members, audit } = useApp();
+  const { clientId, clientSignOut, requests, decideRequest, shares, addShare, revokeShare, members, audit, dhanStatus, liveSync } = useApp();
+  const [liveOpen, setLiveOpen] = useState(false);
   const navigate = useNavigate();
   const [shareOpen, setShareOpen] = useState(false);
   const [confirming, setConfirming] = useState<string | null>(null);
@@ -182,7 +184,7 @@ export function Portal() {
             {pf.sourceMix.map((s) => (
               <li key={s.source} className="flex items-center gap-3 px-4 py-3 sm:px-5">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-surface-2 text-accent">
-                  {s.source === "Dhan" && pf.spec.dhan === "expired" ? <Link2Off className="size-4 text-warning-text" /> : <FileText className="size-4" />}
+                  {s.source === "Dhan" && dhanStatus(id) !== "connected" ? <Link2Off className="size-4 text-warning-text" /> : <FileText className="size-4" />}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[13.5px] font-medium text-fg">{s.source}</p>
@@ -190,10 +192,14 @@ export function Portal() {
                     {s.source === "Dhan" ? "Read-only · signs in on Dhan's own page · access lasts 24 hours" : "Monthly statement, forwarded automatically"} · last {fmtDate(s.asOf)}
                   </p>
                 </div>
-                {s.source === "Dhan" && pf.spec.dhan === "expired" ? (
-                  <Button size="sm" variant="outline" onClick={() => toast("Opening Dhan sign-in", { description: "Demo: you would sign in on dhan.co, never here." })}>
-                    Reconnect
-                  </Button>
+                {s.source === "Dhan" ? (
+                  dhanStatus(id) === "connected" && liveSync[id] ? (
+                    <Badge tone="good">Live · just synced</Badge>
+                  ) : (
+                    <Button size="sm" variant="primary" onClick={() => setLiveOpen(true)}>
+                      Connect live
+                    </Button>
+                  )
                 ) : (
                   <Badge tone="good">Active</Badge>
                 )}
@@ -226,6 +232,7 @@ export function Portal() {
         </p>
       </main>
 
+      <LiveConnectSheet clientId={id} open={liveOpen} onOpenChange={setLiveOpen} audience="client" />
       <ShareSheet
         open={shareOpen}
         onOpenChange={setShareOpen}

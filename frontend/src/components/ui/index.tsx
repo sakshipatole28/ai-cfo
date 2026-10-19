@@ -4,6 +4,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { AlertOctagon, AlertTriangle, Info, X } from "lucide-react";
 import { type ButtonHTMLAttributes, type ComponentProps, forwardRef, type HTMLAttributes, type ReactNode } from "react";
 
+import { glossaryIndex } from "@/data/glossary";
 import { cn } from "@/lib/cn";
 import type { Explanation, Severity } from "@/lib/engine";
 import { initials } from "@/lib/format";
@@ -297,5 +298,31 @@ export function EmptyState({ icon, title, children }: { icon: ReactNode; title: 
       <p className="text-[14px] font-semibold text-fg">{title}</p>
       {children && <div className="max-w-sm text-[13px] text-muted">{children}</div>}
     </div>
+  );
+}
+
+/* Explains a short form or financial term on hover, focus or tap */
+
+export function Term({ k, children }: { k: string; children?: ReactNode }) {
+  const g = glossaryIndex[k.toLowerCase()];
+  if (!g) return <>{children ?? k}</>;
+  return (
+    <TooltipPrimitive.Root>
+      <TooltipPrimitive.Trigger asChild>
+        <button type="button" className="cursor-help rounded-sm underline decoration-muted/60 decoration-dotted underline-offset-[3px] hover:decoration-accent">
+          {children ?? g.term}
+        </button>
+      </TooltipPrimitive.Trigger>
+      <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Content side="top" sideOffset={6} className="z-50 max-w-72 rounded-lg border border-line bg-surface p-3 text-left text-[12.5px] leading-relaxed text-fg-2 shadow-pop">
+          <p className="font-semibold text-fg">
+            {g.term}
+            {g.full && <span className="font-normal text-fg-2"> · {g.full}</span>}
+          </p>
+          <p className="mt-1">{g.plain}</p>
+          {g.example && <p className="mt-1 text-fg-2">Example: {g.example}</p>}
+        </TooltipPrimitive.Content>
+      </TooltipPrimitive.Portal>
+    </TooltipPrimitive.Root>
   );
 }

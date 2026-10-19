@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { Avatar, Badge, Button, Card, CardHeader, Switch } from "@/components/ui";
 import { firm } from "@/data/demo";
 import { verify } from "@/lib/audit";
+import { portfolios } from "@/lib/engine";
 import { cn } from "@/lib/cn";
 import { fmtDate, inrShort } from "@/lib/format";
 import { useApp, useClientName, useVisiblePortfolios } from "@/state/app";
@@ -33,7 +34,7 @@ function Page({ children }: { children: ReactNode }) {
 /* Data inbox */
 export function DataInbox() {
   const displayName = useClientName();
-  const { log } = useApp();
+  const { log, dhanStatus, liveSync } = useApp();
   const [resolved, setResolved] = useState<"dhan" | "cas" | null>(null);
   const jobs = [
     { client: "Kavya Nair", what: "CAMS CAS · Detailed", status: "done", checks: "5/5 checks", at: "14 Oct, 10:14" },
@@ -54,6 +55,27 @@ export function DataInbox() {
         <Button variant="primary" onClick={() => toast("Choose a statement", { description: "Demo: uploads are disabled. No real files are processed." })}>
           Choose files
         </Button>
+      </Card>
+
+      <Card>
+        <CardHeader title="Live broker connections" description="Read-only links to clients' Dhan accounts. Access passes last up to 24 hours and are never stored." />
+        <ul className="mt-2 divide-y divide-line">
+          {portfolios.filter((p) => p.spec.dhan !== "none").map((p) => {
+            const st = dhanStatus(p.spec.id);
+            return (
+              <li key={p.spec.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
+                <span className={cn("size-2.5 shrink-0 rounded-full", st === "connected" ? "bg-good" : "bg-warning")} aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-medium text-fg">{displayName(p.spec.name)}</p>
+                  <p className="text-[12px] text-fg-2">{liveSync[p.spec.id] ? "Synced just now" : st === "connected" ? "Connected · last sync 16 Oct" : "Access expired · client must approve again"}</p>
+                </div>
+                <Link to="/clients/$clientId" params={{ clientId: p.spec.id }} className="text-[12.5px] font-medium text-accent hover:underline">
+                  {st === "connected" ? "Open" : "Reconnect"}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-12">

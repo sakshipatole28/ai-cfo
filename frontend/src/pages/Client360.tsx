@@ -20,6 +20,7 @@ import { toast } from "sonner";
 
 import { AllocationDonut, assetColor, DriftBars, ExemptionBar, ExposureTreemap, OverlapHeatmap } from "@/components/charts";
 import { AgentRunSheet } from "@/components/agents/AgentRun";
+import { LiveConnectSheet } from "@/components/live/LiveConnect";
 import { FindingBody } from "@/components/FindingBody";
 import {
   Avatar,
@@ -36,6 +37,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  Term,
 } from "@/components/ui";
 import { DISCLOSURE_MONTH, FY_LABEL, LTCG_EXEMPTION, sourceAsOf, TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
@@ -53,7 +55,8 @@ const sourceTone: Record<string, string> = {
 export function Client360() {
   const { clientId } = useParams({ from: "/clients/$clientId" });
   const pf = portfolioById[clientId];
-  const { openCopilot, decisions, approved, log } = useApp();
+  const { openCopilot, decisions, approved, log, dhanStatus, liveSync } = useApp();
+  const [liveOpen, setLiveOpen] = useState(false);
   const displayName = useClientName();
   const [lotsFor, setLotsFor] = useState<Position | null>(null);
   const [pair, setPair] = useState<OverlapPair | undefined>(pf?.overlaps[0]);
@@ -134,11 +137,20 @@ export function Client360() {
             </div>
           </div>
         </div>
-        {pf.spec.dhan === "expired" && (
+        {liveSync[pf.spec.id] && (
+          <div className="mt-4 flex flex-col gap-2 rounded-lg border border-good/40 bg-good-soft px-3.5 py-2.5 text-[13px] sm:flex-row sm:items-center">
+            <span className="size-2 shrink-0 rounded-full bg-good" aria-hidden />
+            <p className="flex-1 text-fg">Live from Dhan · synced just now · read-only · the access pass was discarded after the sync.</p>
+            <Button size="sm" variant="outline" onClick={() => setLiveOpen(true)}>
+              Sync again
+            </Button>
+          </div>
+        )}
+        {dhanStatus(pf.spec.id) === "expired" && (
           <div className="mt-4 flex flex-col gap-2 rounded-lg border border-warning/40 bg-warning-soft px-3.5 py-2.5 text-[13px] sm:flex-row sm:items-center">
             <Link2Off className="size-4 shrink-0 text-warning-text" aria-hidden />
             <p className="flex-1 text-fg-2">
-              Dhan access expired. Direct shares are shown from the last sync on {fmtDate(sourceAsOf.Dhan)}. Dhan tokens last 24 hours and are never refreshed automatically.
+              Dhan access expired. Direct shares are shown from the last sync on {fmtDate(sourceAsOf.Dhan)}. Dhan access passes last up to 24 hours and are never renewed without the client.
             </p>
             <Button
               size="sm"
@@ -149,6 +161,9 @@ export function Client360() {
               }}
             >
               <Link2 /> Send reconnect link
+            </Button>
+            <Button size="sm" variant="primary" onClick={() => setLiveOpen(true)}>
+              See how the client connects
             </Button>
           </div>
         )}
@@ -183,19 +198,19 @@ export function Client360() {
         {/* Overview */}
         <TabsContent value="overview" className="mt-4 grid gap-4 lg:grid-cols-12">
           <Card className="lg:col-span-6">
-            <CardHeader title="Allocation vs model" description={`${pf.spec.risk} model · Investment Policy Statement v3`} />
+            <CardHeader title={<><Term k="Asset allocation">Allocation</Term> vs <Term k="Model portfolio">model</Term></>} description={`${pf.spec.risk} model · Investment Policy Statement v3`} />
             <div className="p-4 sm:p-5">
               <AllocationDonut pf={pf} />
             </div>
           </Card>
           <Card className="lg:col-span-6">
-            <CardHeader title="Drift from model" description="Percentage points and rupees; review band is ±5 pts" />
+            <CardHeader title={<><Term k="Drift" /> from model</>} description="Percentage points and rupees; a review is due beyond ±5 points" />
             <div className="p-4 sm:p-5">
               <DriftBars pf={pf} />
             </div>
           </Card>
           <Card className="lg:col-span-5">
-            <CardHeader title="Largest true exposures" description={`Direct shares plus fund holdings · disclosures ${DISCLOSURE_MONTH}`} />
+            <CardHeader title={<>Largest true exposures (<Term k="Look-through" />)</>} description={`Direct shares plus what the funds hold · fund disclosures of ${DISCLOSURE_MONTH}`} />
             <ul className="space-y-2.5 p-4 sm:p-5">
               {pf.exposures.slice(0, 7).map((e) => (
                 <li key={e.symbol} className="grid grid-cols-[minmax(0,1fr)_96px_48px] items-center gap-3 text-[12.5px]">
@@ -336,7 +351,7 @@ export function Client360() {
         {/* Overlap */}
         <TabsContent value="overlap" className="mt-4 grid gap-4 lg:grid-cols-12">
           <Card className="lg:col-span-7">
-            <CardHeader title="Fund overlap" description={`Σ min(weightₐ, weight_b) over shared companies · ${DISCLOSURE_MONTH} disclosures`} />
+            <CardHeader title={<>Fund <Term k="Overlap">overlap</Term></>} description={`Add the smaller weight of every company two funds both hold · ${DISCLOSURE_MONTH} disclosures`} />
             <div className="p-4 sm:p-5">
               <OverlapHeatmap pf={pf} selected={pair} onSelect={setPair} />
             </div>
@@ -376,9 +391,9 @@ export function Client360() {
         {/* Tax */}
         <TabsContent value="tax" className="mt-4 grid gap-4 lg:grid-cols-12">
           <Card className="p-4 sm:p-5 lg:col-span-5">
-            <p className="eyebrow">LTCG exemption · {FY_LABEL}</p>
+            <p className="eyebrow">Tax-free long-term gain allowance (<Term k="LTCG" />) · <Term k="FY">{FY_LABEL}</Term></p>
             <p className="tabular mt-1 text-[24px] font-semibold tracking-tight text-fg">{inr(pf.exemptionLeft)} left</p>
-            <p className="mb-3 text-[12.5px] text-muted">of {inr(LTCG_EXEMPTION)} per financial year · equity and equity-oriented funds</p>
+            <p className="mb-3 text-[12.5px] text-muted">of {inr(LTCG_EXEMPTION)} each financial year on shares and equity funds held over 12 months</p>
             <ExemptionBar used={pf.spec.realisedLtcg} total={LTCG_EXEMPTION} />
             <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-line pt-4 text-[12.5px]">
               <div>
@@ -392,7 +407,7 @@ export function Client360() {
             </dl>
           </Card>
           <Card className="lg:col-span-7">
-            <CardHeader title="Equity lots and holding period" description="Long-term after 12 months · ELSS locked for 3 years · ruleset FY 2026-27" />
+            <CardHeader title={<>Each purchase (<Term k="Lot">lot</Term>) and its <Term k="Holding period">holding period</Term></>} description="Long-term after 12 months · tax-saving ELSS funds are locked for 3 years" />
             <div className="scrollbar-thin overflow-x-auto">
               <table className="mt-2 w-full min-w-[560px] text-[12.5px]">
                 <thead className="text-left text-[11px] uppercase tracking-wider text-muted">
@@ -457,7 +472,7 @@ export function Client360() {
             <Card key={s.source} className="p-4 sm:p-5">
               <div className="flex items-center justify-between">
                 <p className="text-[14px] font-semibold text-fg">{s.source}</p>
-                {s.source === "Dhan" && pf.spec.dhan === "expired" ? <Badge tone="warning">Token expired</Badge> : <Badge tone="good">Verified</Badge>}
+                {s.source === "Dhan" && dhanStatus(pf.spec.id) === "expired" ? <Badge tone="warning">Access expired</Badge> : <Badge tone="good">Verified</Badge>}
               </div>
               <p className="mt-1 text-[12.5px] text-muted">
                 {inrShort(s.value)} · {pct((s.value / pf.total) * 100)} of portfolio · as of {fmtDate(s.asOf)}
@@ -500,6 +515,7 @@ export function Client360() {
       </Tabs>
 
       <AgentRunSheet clientId={pf.spec.id} open={runOpen} onOpenChange={setRunOpen} />
+      <LiveConnectSheet clientId={pf.spec.id} open={liveOpen} onOpenChange={setLiveOpen} audience="adviser" />
 
       {/* Lots drawer */}
       <Sheet open={!!lotsFor} onOpenChange={(o) => !o && setLotsFor(null)} title={lotsFor?.name ?? ""} description={lotsFor ? `${lotsFor.account} · ${lotsFor.source}` : undefined}>

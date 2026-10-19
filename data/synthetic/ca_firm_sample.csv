@@ -1,0 +1,5 @@
+Client name,PAN,Mobile,Email,Folio number,Scheme or share,ISIN,Units,Purchase date,Purchase value,Current value,Remarks
+Asha Verma,ABCPV1234K,9876501234,asha.v@example.com,1234567/89,Northstar Bluechip Fund,INF0DEMO0001,1850.25,2023-06-05,120000,171000,SIP since 2023
+Asha Verma,ABCPV1234K,9876501234,asha.v@example.com,1234567/89,Harbor Nifty 50 Index Fund,INF0DEMO0002,3100.10,2024-08-19,105000,129400,
+Rakesh Iyer,BCDRI5678L,9123409876,rakesh@example.com,7654321/01,Meridian Flexi Cap Fund,INF0DEMO0003,950.00,2025-10-28,56000,64650,call on 9123409876 before switching
+Rakesh Iyer,BCDRI5678L,9123409876,rakesh@example.com,DEMAT 1208160000001234,Infosys,INE009A01021,40,2023-01-18,60300,65520,
