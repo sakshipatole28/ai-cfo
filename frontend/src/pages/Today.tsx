@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 import { Sparkline } from "@/components/charts";
 import { usePendingCount } from "@/components/shell/AppShell";
-import { Avatar, Badge, Button, buttonClass, Card, CardHeader, Tip } from "@/components/ui";
+import { Avatar, Badge, Button, buttonClass, Card, CardHeader, Term, Tip } from "@/components/ui";
 import { aumHistoryFactors, firm, FY_LABEL, TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
 
@@ -43,7 +43,7 @@ function Kpi({ label, value, sub, children, to }: { label: string; value: ReactN
 }
 
 export function Today() {
-  const { decisions, approved, openCopilot, me } = useApp();
+  const { decisions, approved, openCopilot, me, dhanStatus } = useApp();
   const portfolios = useVisiblePortfolios();
   const allFindings = portfolios.flatMap((p) => p.findings);
   const bookAum = portfolios.reduce((s, p) => s + p.total, 0);
@@ -52,7 +52,7 @@ export function Today() {
   const open = allFindings.filter((f) => !decisions[f.id] && !approved[f.clientId]);
   const high = open.filter((f) => f.severity === "high").length;
   const due = portfolios.filter((p) => daysBetween(p.spec.lastReview, TODAY) > 90);
-  const expired = portfolios.filter((p) => p.spec.dhan === "expired");
+  const expired = portfolios.filter((p) => dhanStatus(p.spec.id) === "expired");
   const lots = portfolios
     .flatMap((p) => p.upcomingLots.map((u) => ({ p, ...u })))
     .sort((a, b) => a.lot.daysToLong - b.lot.daysToLong);
@@ -183,7 +183,7 @@ export function Today() {
         </Card>
 
         <Card className="lg:col-span-5">
-          <CardHeader title="Tax calendar" description="Lots turning long-term in the next 30 days" action={<CalendarClock className="size-4 text-muted" />} />
+          <CardHeader title="Tax calendar" description={<>Purchases (<Term k="Lot">lots</Term>) turning long-term in the next 30 days</>} action={<CalendarClock className="size-4 text-muted" />} />
           <ul className="mt-3 space-y-1 px-2 pb-3">
             {lots.slice(0, 5).map(({ p, position, lot }) => (
               <li key={lot.id}>

@@ -1,0 +1,6 @@
+[
+  {"exchange": "ALL", "tradingSymbol": "HDFCBANK", "securityId": "1333", "isin": "INE040A01034", "totalQty": 120, "dpQty": 120, "t1Qty": 0, "availableQty": 120, "collateralQty": 0, "avgCostPrice": 1229.58},
+  {"exchange": "ALL", "tradingSymbol": "INFY", "securityId": "1594", "isin": "INE009A01021", "totalQty": 80, "dpQty": 75, "t1Qty": 5, "availableQty": 80, "collateralQty": 0, "avgCostPrice": 1506.96},
+  {"exchange": "ALL", "tradingSymbol": "RELIANCE", "securityId": "2885", "isin": "INE002A01018", "totalQty": 60, "dpQty": 60, "t1Qty": 0, "availableQty": 60, "collateralQty": 0, "avgCostPrice": 1581.44},
+  {"exchange": "ALL", "tradingSymbol": "ITC", "securityId": "1660", "isin": "INE154A01025", "totalQty": 300, "dpQty": 300, "t1Qty": 0, "availableQty": 300, "collateralQty": 0, "avgCostPrice": 388.74}
+]

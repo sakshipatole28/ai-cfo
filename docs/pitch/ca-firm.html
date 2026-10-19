@@ -1,0 +1,223 @@
+<title>AI CFO for CA Firms</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Geist:wght@400;500;600&display=swap">
+<style>
+/* Layout: one calm reading column with wide diagram bands; mint = computed and verified, sky = AI-drafted. */
+:root {
+  --bg: #f1f7f6; --surface: #ffffff; --surface-2: #eaf3f2; --line: #d9e7e4;
+  --fg: #0a1f24; --fg-2: #2c4750; --accent: #066a56; --accent-soft: #daf4ec;
+  --ai: #085c99; --ai-soft: #e0f1fd; --warn: #875800; --warn-soft: #fdf2d9;
+  --mint: #5ee6c1; --sky: #38b6ff;
+  --display: "Bricolage Grotesque", "Geist", system-ui, sans-serif;
+  --body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #061418; --surface: #0b1e24; --surface-2: #10272e; --line: #17313a;
+    --fg: #e2f3f1; --fg-2: #b9d3d4; --accent: #3fddb4; --accent-soft: #0d3a32;
+    --ai: #5cc8ff; --ai-soft: #0d2f45; --warn: #fab219; --warn-soft: #2d2410;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #061418; --surface: #0b1e24; --surface-2: #10272e; --line: #17313a;
+  --fg: #e2f3f1; --fg-2: #b9d3d4; --accent: #3fddb4; --accent-soft: #0d3a32;
+  --ai: #5cc8ff; --ai-soft: #0d2f45; --warn: #fab219; --warn-soft: #2d2410;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); margin: 0; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(32px, 5vw, 50px); line-height: 1.05; }
+h2 { font-size: clamp(24px, 3.4vw, 32px); line-height: 1.15; }
+h3 { font-size: 18px; }
+p { margin: 0; }
+.muted { color: var(--fg-2); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2); }
+section { margin-top: 56px; display: grid; gap: 18px; }
+.lead { font-size: 19px; color: var(--fg-2); max-width: 62ch; }
+.hero { position: relative; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); padding: clamp(24px, 5vw, 48px);
+  background: radial-gradient(60% 90% at 8% 0%, color-mix(in oklab, var(--mint) 45%, transparent), transparent 60%),
+              radial-gradient(55% 80% at 100% 10%, color-mix(in oklab, var(--sky) 38%, transparent), transparent 62%), var(--surface); display: grid; gap: 18px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 600; font-size: 20px; }
+.logo { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--mint), var(--sky)); display: grid; place-items: end center; padding: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 13px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg-2); }
+.chip b { color: var(--fg); font-weight: 600; }
+.grid2 { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 8px; min-width: 0; }
+.card p { color: var(--fg-2); font-size: 15px; }
+.num { font-family: var(--display); font-weight: 700; font-size: 30px; color: var(--accent); line-height: 1; }
+.flow { display: grid; gap: 10px; counter-reset: s; }
+.step { display: grid; grid-template-columns: 46px 1fr; gap: 14px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.step::before { counter-increment: s; content: counter(s); width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 20px; background: var(--accent-soft); color: var(--accent); }
+.step.ai::before { background: var(--ai-soft); color: var(--ai); }
+.step h3 { font-size: 17px; margin-bottom: 2px; }
+.step p { color: var(--fg-2); font-size: 15px; }
+.tag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-left: 6px; vertical-align: 2px; background: var(--surface-2); color: var(--fg-2); }
+.tag.ai { background: var(--ai-soft); color: var(--ai); }
+.tag.code { background: var(--accent-soft); color: var(--accent); }
+.live { border-radius: 22px; border: 1px solid var(--line); background: var(--surface); padding: clamp(20px, 4vw, 32px); display: grid; gap: 18px; }
+.lane { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.lane div { border-radius: 14px; padding: 14px; background: var(--surface-2); font-size: 14.5px; color: var(--fg-2); }
+.lane b { display: block; color: var(--fg); margin-bottom: 4px; font-size: 15px; }
+.note { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; color: var(--fg-2); }
+.ask { counter-reset: a; display: grid; gap: 12px; }
+.ask li { list-style: none; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 18px 64px; position: relative; }
+.ask li::before { counter-increment: a; content: counter(a); position: absolute; left: 18px; top: 18px; width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--mint), var(--sky)); color: #05303a; display: grid; place-items: center; font-weight: 700; }
+.ask { padding: 0; margin: 0; }
+.ask p { color: var(--fg-2); font-size: 15px; margin-top: 2px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-2); background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+.out { color: #b42f2f; } @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .out { color: #f07a7a; } } :root[data-theme="dark"] .out { color: #f07a7a; }
+.keep { color: var(--accent); font-weight: 600; }
+.qs { display: grid; gap: 10px; padding: 0; margin: 0; }
+.qs li { list-style: none; padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--fg-2); font-size: 15px; }
+dl.glossary { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 0; }
+dl.glossary div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+dl.glossary dt { font-weight: 600; } dl.glossary dd { margin: 4px 0 0; color: var(--fg-2); font-size: 14.5px; }
+.footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; color: var(--fg-2); font-size: 14px; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="brand"><span class="logo" aria-hidden="true"></span> AI CFO</div>
+    <p class="eyebrow">A short introduction for a chartered accountant firm</p>
+    <h1>Every client's investments in one place, checked, explained and ready for review.</h1>
+    <p class="lead">AI CFO collects a client's shares and mutual funds from their statements and, with their permission, directly from their broker. It works out the exact numbers, and then drafts plain-language notes with the rule behind each one. A professional approves everything before the client sees it.</p>
+    <div class="chips">
+      <span class="chip"><b>Status:</b> working prototype with fictional data</span>
+      <span class="chip"><b>Built by:</b> Sakshi Patole</span>
+      <span class="chip"><b>Looking for:</b> your insight and a small anonymised sample</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">The problem</p>
+    <h2>Investment records are scattered, and reviewing them by hand takes hours.</h2>
+    <div class="grid2">
+      <div class="card"><span class="num">3–5</span><h3>Places per client</h3><p>Shares sit with a broker, mutual funds with several fund houses, and statements arrive as separate PDFs every month.</p></div>
+      <div class="card"><span class="num">Hours</span><h3>Per review</h3><p>Working out what a client really owns, how similar their funds are and which purchases turn long-term for tax is slow, manual work.</p></div>
+      <div class="card"><span class="num">31 Mar</span><h3>Tax deadlines</h3><p>The ₹1.25 lakh yearly tax-free allowance on long-term gains is easy to miss when nobody is tracking each purchase date.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">What it does</p>
+    <h2>Four things, done carefully.</h2>
+    <div class="grid2">
+      <div class="card"><h3>1. Shows what the client really owns</h3><p>It opens up every mutual fund to see the actual companies inside, so you can see, for example, that 14% of the money is in one bank.</p></div>
+      <div class="card"><h3>2. Checks the plan</h3><p>It compares the client's split between shares, bonds, gold and cash with the agreed target and shows the gap in rupees.</p></div>
+      <div class="card"><h3>3. Tracks tax timing</h3><p>It tracks each purchase date, flags purchases about to become long-term (taxed at 12.5% instead of 20%), and shows the unused tax-free allowance.</p></div>
+      <div class="card"><h3>4. Explains, with sources</h3><p>It drafts short notes in plain English that quote the rule they rely on, such as the Income-tax Act 2025 or SEBI regulations. It never gives buy or sell tips.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">How it works</p>
+    <h2>From scattered statements to an approved review.</h2>
+    <div class="flow">
+      <div class="step"><div><h3>The firm adds a client <span class="tag">You</span></h3><p>The client's name and PAN (Permanent Account Number) are locked inside your own browser. Our servers only see a code such as C-7F3A.</p></div></div>
+      <div class="step"><div><h3>The client gives permission <span class="tag">Client</span></h3><p>The client reads what will be shared and why, and agrees with a one-time code on their phone. They can withdraw at any time.</p></div></div>
+      <div class="step"><div><h3>Holdings come in, from statements and live from the broker <span class="tag">Data</span></h3><p>The monthly Consolidated Account Statement (one PDF that lists all mutual funds or all demat shares) covers everything. The live connection to the client's broker (below) shows today's shares. The two are compared, and any difference is flagged.</p></div></div>
+      <div class="step"><div><h3>Exact calculations <span class="tag code">Tested code, no AI</span></h3><p>Every number, including allocation, gaps from target, fund overlap, company exposure and tax on each purchase, is calculated by tested code and shows its formula and inputs.</p></div></div>
+      <div class="step ai"><div><h3>AI agents decide what matters and explain it <span class="tag ai">AI</span></h3><p>Three "analyst" programs look at overlap, allocation and tax side by side. A writer drafts each finding and quotes the rule. A checker rejects advice-like wording and any number the calculations did not produce.</p></div></div>
+      <div class="step"><div><h3>A professional approves <span class="tag">You</span></h3><p>You accept, edit or dismiss each finding, add your reasoning, and approve. Every action is recorded in a tamper-evident log.</p></div></div>
+    </div>
+  </section>
+
+  <section class="live">
+    <p class="eyebrow">Main feature · live connection to the client's broker</p>
+    <h2>Today's holdings, not last month's statement.</h2>
+    <p class="muted">The client connects their Dhan account once. This uses Dhan's official programming interface: the standard way one program asks another for data, with the account holder's approval.</p>
+    <div class="lane">
+      <div><b>1. Client signs in on Dhan</b>On Dhan's own website, with their own password and phone code. AI CFO never sees either.</div>
+      <div><b>2. Client approves "view only"</b>Dhan shows exactly what is shared: holdings and positions. Nothing else.</div>
+      <div><b>3. A 24-hour pass</b>Dhan gives a temporary pass. AI CFO uses it once to read the holdings and then throws it away.</div>
+      <div><b>4. Compared and flagged</b>Live quantities are matched with the latest statement. Differences go to you, never merged silently.</div>
+    </div>
+    <p class="note"><b>Read-only by design:</b> the software contains no instruction that can buy, sell or move money, and an automatic check blocks anyone from adding one.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Keeping data safe</p>
+    <h2>Built so that even we cannot see who your clients are.</h2>
+    <div class="grid2">
+      <div class="card"><h3>Names stay with you</h3><p>Client names and PAN are encrypted in your browser with a key only your firm holds.</p></div>
+      <div class="card"><h3>Kept in India</h3><p>Real client data is stored and processed only in Indian data centres.</p></div>
+      <div class="card"><h3>Consent and deletion</h3><p>It follows the Digital Personal Data Protection Act, 2023: clear consent, use only for the stated purpose, and erasure on request.</p></div>
+      <div class="card"><h3>Every action recorded</h3><p>Who looked at what, and when, is kept in a log that shows any tampering.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">What I am asking for</p>
+    <h2>Three small things, all optional.</h2>
+    <ol class="ask">
+      <li><h3>A 45-minute conversation</h3><p>How your firm handles clients' investments today, what takes the most time, and what would make you trust a tool like this.</p></li>
+      <li><h3>A small sample with identities removed</h3><p>Ten to twenty rows of real holdings with no names, PAN, phone, email, address or account numbers. The next section shows how; it takes about five minutes.</p></li>
+      <li><h3>Feedback on the demo</h3><p>A short look at the working prototype, and whether the notes it writes would be useful to you and your clients.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">How to share data without identities</p>
+    <h2>You remove identities on your own computer, before anything is sent.</h2>
+    <p class="muted">A small tool runs on your computer (or in your browser, without uploading). It removes identity columns and replaces each client and folio (fund account) number with a code made from a secret key that only your firm keeps. The same client always gets the same code, but the code cannot be turned back into a name without your key.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Column in your sheet</th><th>What happens</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Client name, PAN, mobile, email, address, date of birth</td><td class="out">Removed completely</td><td>Not needed for any calculation</td></tr>
+          <tr><td>Folio, demat or account number</td><td class="keep">Replaced by a code</td><td>To keep holdings in the same account together</td></tr>
+          <tr><td>Client</td><td class="keep">Replaced by a code (from PAN)</td><td>To keep one client's holdings together</td></tr>
+          <tr><td>Scheme or share name, ISIN (the 12-character ID of each investment)</td><td class="keep">Kept</td><td>To know what is held</td></tr>
+          <tr><td>Units, purchase date, purchase value, current value</td><td class="keep">Kept</td><td>Needed for allocation and tax calculations</td></tr>
+          <tr><td>Notes or remarks</td><td class="keep">Kept, after removing anything that looks like a PAN, email or phone number</td><td>Context only</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">You can see the result before sharing it. Nothing is uploaded until you decide to send the file.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Questions I would value your view on</p>
+    <h2>Your experience shapes what gets built next.</h2>
+    <ul class="qs">
+      <li>How do your clients' investment records reach you today: statements, broker reports, spreadsheets?</li>
+      <li>Which part of preparing capital gains for tax filing takes the longest?</li>
+      <li>Would clients agree to a read-only live connection to their broker? What would reassure them?</li>
+      <li>What would you need to see before trusting numbers prepared by software?</li>
+      <li>Which output would be most useful: a review report, a tax-gain schedule, or alerts during the year?</li>
+      <li>If this saved your team time every month, how would you expect it to be priced?</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Words used on this page</p>
+    <h2>Glossary</h2>
+    <dl class="glossary">
+      <div><dt>Consolidated Account Statement</dt><dd>One PDF listing everything a person holds: mutual funds (from CAMS or KFintech) or demat shares (from NSDL or CDSL).</dd></div>
+      <div><dt>Demat account</dt><dd>An electronic account that holds shares, opened through a broker.</dd></div>
+      <div><dt>Broker</dt><dd>The company and app used to buy and sell shares, such as Dhan.</dd></div>
+      <div><dt>ISIN</dt><dd>International Securities Identification Number: the 12-character ID of every share and fund.</dd></div>
+      <div><dt>Folio</dt><dd>A client's account number with a mutual fund house.</dd></div>
+      <div><dt>Long-term and short-term gains</dt><dd>Profit on listed shares or equity funds held more than 12 months is long-term (12.5%, with ₹1.25 lakh a year tax-free); 12 months or less is short-term (20%).</dd></div>
+      <div><dt>Fund overlap</dt><dd>How much two funds hold the same companies. High overlap means paying for two funds that behave like one.</dd></div>
+      <div><dt>Programming interface (API)</dt><dd>The official way one program asks another for data, here with the account holder's approval.</dd></div>
+      <div><dt>AI agent</dt><dd>A program that uses an AI model to decide or write something, within limits we set and check.</dd></div>
+      <div><dt>SEBI</dt><dd>Securities and Exchange Board of India, the market regulator.</dd></div>
+    </dl>
+  </section>
+
+  <footer class="footer">
+    <span><b style="color:var(--fg)">Sakshi Patole</b> · AI CFO · contact details on request</span>
+    <span>This page uses fictional examples only. AI CFO is decision-support software for professionals, not investment advice.</span>
+  </footer>
+</div>

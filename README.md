@@ -39,6 +39,8 @@ Synthetic demo data: every client, firm and fund name is fictional. Mint marks c
 ## What works today
 | Area | Status |
 |---|---|
+| **Live broker connection** | Real Dhan connector (official consent sign-in → 24-hour access pass → read-only holdings), only allow-listed read-only endpoints, retries, expiry handling, comparison with the depository statement; sandbox mode runs the whole flow without credentials; API `/v1/connections/dhan/*` |
+| **Share without identities** | Anonymiser for firms (command line and in-browser): removes names, PAN, phone, email, address; codes clients and folios with the firm's secret key |
 | **Multi-agent review** (backend) | LangGraph graph: 3 parallel analyst agents → rank → explainer (RAG-cited) → compliance (rules → ML classifier → LLM judge) → verifier. Works with any OpenAI-compatible model or falls back to firm policy. Copilot is a tool-using agent. See [docs/AGENTS.md](docs/AGENTS.md) |
 | **ML** | Advice-likelihood classifier (logistic regression, numpy), 5-fold CV F1 0.89 |
 | **Deterministic core** (Python) | Positions, lots, allocation, drift, look-through, overlap, tax position; every result is an Evidence record |

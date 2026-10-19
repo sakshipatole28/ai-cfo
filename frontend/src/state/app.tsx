@@ -53,6 +53,10 @@ interface AppState {
   shares: ClientShare[];
   addShare: (s: Omit<ClientShare, "id" | "status">) => void;
   revokeShare: (id: string) => void;
+  // Live broker connections (demo state on top of the synthetic book)
+  liveSync: Record<string, { at: string; expires: string }>;
+  markSynced: (clientId: string) => void;
+  dhanStatus: (clientId: string) => "connected" | "expired" | "none";
   // Workspace
   aiEnabled: boolean;
   setAiEnabled: (on: boolean) => void;
@@ -94,6 +98,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [clientId, setClientId] = useState<string | null>(null);
   const [requests, setRequests] = useState<AccessRequest[]>(initialRequests);
   const [shares, setShares] = useState<ClientShare[]>(initialShares);
+  const [liveSync, setLiveSync] = useState<Record<string, { at: string; expires: string }>>({});
   const [aiEnabled, setAiEnabledState] = useState(true);
   const [locked, setLockedState] = useState(false);
   const [copilot, setCopilot] = useState<{ open: boolean; clientId?: string }>({ open: false });
@@ -193,6 +198,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setShares((all) => all.map((x) => (x.id === id ? { ...x, status: "Revoked" } : x)));
         if (s) log("share.revoked_by_client", `share/${id}`, `client:${s.clientId}`);
       },
+      liveSync,
+      markSynced: (id) => {
+        const now = new Date();
+        const exp = new Date(now.getTime() + 24 * 3600 * 1000);
+        setLiveSync((m) => ({ ...m, [id]: { at: now.toISOString(), expires: exp.toISOString() } }));
+        log("connection.dhan.synced", `client/${id} (read-only; access pass discarded)`, `client:${id}`);
+      },
+      dhanStatus: (id) => (liveSync[id] ? "connected" : (portfolios.find((p) => p.spec.id === id)?.spec.dhan ?? "none")),
       aiEnabled,
       setAiEnabled: (on) => {
         setAiEnabledState(on);
@@ -228,7 +241,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       audit,
       log,
     };
-  }, [theme, me, members, sessions, clientId, requests, shares, aiEnabled, locked, copilot, commandOpen, explanation, decisions, approved, audit, log]);
+  }, [theme, me, members, sessions, clientId, requests, shares, liveSync, aiEnabled, locked, copilot, commandOpen, explanation, decisions, approved, audit, log]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

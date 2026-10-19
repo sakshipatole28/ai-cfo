@@ -15,6 +15,8 @@ const PAGES = [
   ["/data", "Data inbox"],
   ["/reports", "Reports"],
   ["/agents", "Agents"],
+  ["/guide", "How it works and glossary"],
+  ["/anonymise", "Share data without identities"],
   ["/knowledge", "Ask the rulebook"],
   ["/access", "Client access"],
   ["/team", "Team"],
