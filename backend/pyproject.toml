@@ -8,6 +8,7 @@ license = { text = "Proprietary" }
 dependencies = [
     "cryptography>=50.0.2",
     "fastapi>=0.143.3",
+    "langgraph>=1.2.15",
     "numpy>=2.5.4",
     "pydantic-settings>=2.16.0",
     "snowballstemmer>=3.1.1",
@@ -32,7 +33,13 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "N"]
-ignore = ["S101", "E501"]  # line length is handled by the formatter
+ignore = [
+    "S101",
+    "E501",    # line length is handled by the formatter
+    "RUF001",  # ₹, ×, − and Σ are intentional in user-facing finance text
+    "RUF002",
+    "RUF003",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S", "SLF001"]

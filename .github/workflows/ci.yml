@@ -53,6 +53,11 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm audit --omit=dev --audit-level=high
+      - name: Accessibility audit (axe, light + dark)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run build:preview
+          npm run audit:a11y
 
   guards:
     runs-on: ubuntu-latest

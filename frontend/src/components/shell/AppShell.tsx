@@ -3,6 +3,8 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import {
   BookOpen,
   Bot,
+  BrainCircuit,
+  ChevronRight,
   ChevronsLeft,
   ChevronsRight,
   Database,
@@ -36,18 +38,40 @@ import { cn } from "@/lib/cn";
 import { type Capability, type Theme, useApp, useVisiblePortfolios } from "@/state/app";
 
 type NavItem = { to: string; label: string; icon: typeof Inbox; badge?: "review" | "data" | "access"; needs?: Capability };
-const NAV: NavItem[] = [
-  { to: "/", label: "Today", icon: LayoutGrid },
-  { to: "/clients", label: "Clients", icon: Users },
-  { to: "/review", label: "Review inbox", icon: Inbox, badge: "review" },
-  { to: "/data", label: "Data inbox", icon: Database, badge: "data", needs: "ingest" },
-  { to: "/access", label: "Client access", icon: Handshake, badge: "access" },
-  { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/knowledge", label: "Ask the rulebook", icon: BookOpen },
-  { to: "/team", label: "Team", icon: UserCog },
-  { to: "/audit", label: "Audit trail", icon: ShieldCheck, needs: "audit" },
-  { to: "/settings", label: "Settings", icon: Settings },
+const GROUPS: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Work",
+    items: [
+      { to: "/", label: "Today", icon: LayoutGrid },
+      { to: "/review", label: "Review inbox", icon: Inbox, badge: "review" },
+      { to: "/clients", label: "Clients", icon: Users },
+    ],
+  },
+  {
+    label: "Intelligence",
+    items: [
+      { to: "/agents", label: "Agents", icon: BrainCircuit },
+      { to: "/knowledge", label: "Ask the rulebook", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Data and access",
+    items: [
+      { to: "/data", label: "Data inbox", icon: Database, badge: "data", needs: "ingest" },
+      { to: "/access", label: "Client access", icon: Handshake, badge: "access" },
+      { to: "/reports", label: "Reports", icon: FileText },
+    ],
+  },
+  {
+    label: "Firm",
+    items: [
+      { to: "/team", label: "Team", icon: UserCog },
+      { to: "/audit", label: "Audit trail", icon: ShieldCheck, needs: "audit" },
+      { to: "/settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
+const NAV: NavItem[] = GROUPS.flatMap((g) => g.items);
 
 export function usePendingCount() {
   const { decisions, approved } = useApp();
@@ -168,7 +192,7 @@ function AiPill() {
 
 export function AppShell() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const { setCommandOpen, openCopilot, can, requests } = useApp();
+  const { setCommandOpen, openCopilot, can, requests, me } = useApp();
   const pending = usePendingCount();
   const nav = NAV.filter((n) => !n.needs || can(n.needs));
   const waitingAccess = requests.filter((r) => r.status === "Waiting for client").length;
@@ -182,79 +206,124 @@ export function AppShell() {
 
   return (
     <div className="flex h-full min-h-0">
-      {/* Sidebar (tablet and up) */}
+      {/* Sidebar (tablet and up): a floating rail on the page canvas */}
       <aside
-        className={cn(
-          "hidden shrink-0 flex-col bg-nav text-nav-fg transition-[width] duration-200 md:flex",
-          collapsed ? "w-[68px]" : "w-[232px]",
-        )}
-        style={{ paddingLeft: "env(safe-area-inset-left, 0px)" }}
+        className={cn("hidden shrink-0 flex-col p-3 pr-0 transition-[width] duration-200 md:flex", collapsed ? "w-[84px]" : "w-[260px]")}
+        style={{ paddingLeft: "max(12px, env(safe-area-inset-left, 0px))" }}
       >
-        <div className={cn("flex h-14 items-center gap-2.5 border-b border-nav-line", collapsed ? "justify-center px-0" : "px-4")}>
-          <Logo />
-          {!collapsed && (
-            <div className="min-w-0 leading-tight">
-              <p className="font-display text-[16px] font-semibold text-white">AI CFO</p>
-              <p className="truncate text-[11.5px] text-nav-muted">{firm.name}</p>
-            </div>
-          )}
-        </div>
-        <nav className="scrollbar-thin flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Main">
-          {nav.map(({ to, label, icon: Icon, badge }) => {
-            const active = isActive(path, to);
-            const count = badgeFor(badge);
-            const link = (
-              <Link
-                key={to}
-                to={to}
-                className={cn(
-                  "group relative flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium transition-colors",
-                  active ? "bg-nav-active text-nav-active-fg" : "text-nav-fg/80 hover:bg-white/5 hover:text-white",
-                  collapsed && "justify-center px-0",
-                )}
-              >
-                <Icon className="size-[18px] shrink-0" aria-hidden />
-                {!collapsed && <span className="flex-1 truncate">{label}</span>}
-                {count > 0 && !collapsed && (
-                  <span className={cn("tabular rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-mint text-[#04201a]" : "bg-white/10 text-nav-fg")}>
-                    {count}
+        <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-line bg-surface/70 shadow-card backdrop-blur-sm">
+          {/* Firm switcher */}
+          <Link
+            to="/team"
+            className={cn("m-2 flex items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-surface-2", collapsed && "justify-center")}
+          >
+            <Logo size={32} />
+            {!collapsed && (
+              <span className="min-w-0 flex-1 leading-tight">
+                <span className="block font-display text-[16px] font-semibold text-fg">AI CFO</span>
+                <span className="block truncate text-[12px] text-fg-2">{firm.name}</span>
+                <span className="mt-1 inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-[11px] font-semibold text-accent">
+                  {me?.name.split(" ")[0]} · {me?.role}
+                </span>
+              </span>
+            )}
+          </Link>
+          <nav className="scrollbar-thin flex-1 overflow-y-auto px-2 pb-2" aria-label="Main">
+            {GROUPS.map((g) => {
+              const items = g.items.filter((n) => !n.needs || can(n.needs));
+              if (!items.length) return null;
+              return (
+                <div key={g.label} className="mt-3 first:mt-1">
+                  {!collapsed ? (
+                    <p className="px-2.5 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-2">{g.label}</p>
+                  ) : (
+                    <div className="mx-auto mb-1 h-px w-6 bg-line" aria-hidden />
+                  )}
+                  <ul className="space-y-0.5">
+                    {items.map(({ to, label, icon: Icon, badge }) => {
+                      const active = isActive(path, to);
+                      const count = badgeFor(badge);
+                      const link = (
+                        <Link
+                          to={to}
+                          aria-current={active ? "page" : undefined}
+                          className={cn(
+                            "group relative flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-[13.5px] font-medium transition-all",
+                            active ? "bg-surface text-fg shadow-card ring-1 ring-line" : "text-fg-2 hover:bg-surface-2 hover:text-fg",
+                            collapsed && "justify-center px-0",
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              "flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors [&_svg]:size-[17px]",
+                              active ? "bg-gradient-to-br from-[var(--mint)] to-[var(--sky)] text-[#05303a]" : "text-fg-2 group-hover:text-fg",
+                            )}
+                          >
+                            <Icon aria-hidden />
+                          </span>
+                          {!collapsed && <span className="flex-1 truncate">{label}</span>}
+                          {count > 0 && !collapsed && (
+                            <span className={cn("tabular rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-accent text-accent-fg" : "bg-surface-3 text-fg")}>
+                              {count}
+                            </span>
+                          )}
+                          {count > 0 && collapsed && <span className="absolute right-3 top-1.5 size-2 rounded-full bg-accent ring-2 ring-surface" aria-hidden />}
+                        </Link>
+                      );
+                      return (
+                        <li key={to}>
+                          {collapsed ? (
+                            <Tip label={count ? `${label} (${count})` : label} side="right">
+                              {link}
+                            </Tip>
+                          ) : (
+                            link
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </nav>
+
+          {/* Agents pulse + Copilot */}
+          <div className="space-y-2 border-t border-line p-2">
+            {!collapsed && (
+              <Link to="/agents" className="block rounded-xl bg-gradient-to-br from-[var(--accent-soft)] to-[var(--ai-soft)] p-3 transition-transform hover:-translate-y-0.5">
+                <p className="flex items-center gap-1.5 text-[12px] font-semibold text-fg">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
+                    <span className="relative inline-flex size-2 rounded-full bg-accent" />
                   </span>
-                )}
-                {count > 0 && collapsed && <span className="absolute right-2.5 top-2 size-2 rounded-full bg-mint" aria-hidden />}
-                {active && <span className="absolute -left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-mint" aria-hidden />}
+                  Agents ran at 08:30
+                </p>
+                <p className="mt-0.5 text-[12px] text-fg-2">12 portfolios · 0 unsupported numbers</p>
+                <p className="mt-1 flex items-center text-[12px] font-medium text-accent">
+                  See the run <ChevronRight className="size-3.5" aria-hidden />
+                </p>
               </Link>
-            );
-            return collapsed ? (
-              <Tip key={to} label={count ? `${label} (${count})` : label} side="right">
-                {link}
-              </Tip>
-            ) : (
-              link
-            );
-          })}
-        </nav>
-        <div className="border-t border-nav-line p-2">
-          <button
-            onClick={() => openCopilot()}
-            className={cn(
-              "flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] font-medium text-sky hover:bg-white/5",
-              collapsed && "justify-center px-0",
             )}
-          >
-            <Bot className="size-[18px]" aria-hidden />
-            {!collapsed && <span>Ask Copilot</span>}
-          </button>
-          <button
-            onClick={() => setCollapsed((c) => !c)}
-            className={cn(
-              "mt-0.5 flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 text-[13px] text-nav-muted hover:bg-white/5 hover:text-white",
-              collapsed && "justify-center px-0",
-            )}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? <ChevronsRight className="size-[18px]" /> : <ChevronsLeft className="size-[18px]" />}
-            {!collapsed && <span>Collapse</span>}
-          </button>
+            <button
+              onClick={() => openCopilot()}
+              className={cn(
+                "flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-ai/30 bg-surface px-3 text-[13px] text-fg-2 transition-colors hover:border-ai hover:text-fg",
+                collapsed && "justify-center px-0",
+              )}
+            >
+              <Bot className="size-4 text-ai" aria-hidden />
+              {!collapsed && <span className="flex-1 text-left">Ask Copilot…</span>}
+            </button>
+            <button
+              onClick={() => setCollapsed((c) => !c)}
+              className={cn("flex h-8 w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-[12.5px] text-fg-2 hover:bg-surface-2 hover:text-fg", collapsed && "justify-center px-0")}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {collapsed ? <ChevronsRight className="size-4" /> : <ChevronsLeft className="size-4" />}
+              {!collapsed && <span>Collapse</span>}
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -262,14 +331,14 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="gutter-x flex h-8 shrink-0 items-center justify-center gap-2 bg-gradient-to-r from-[var(--accent)] to-[var(--ai)] text-[12px] text-white">
           <span className="font-medium">Demo workspace</span>
-          <span className="hidden opacity-85 sm:inline">· Synthetic clients and funds. No real person's data.</span>
-          <span className="hidden items-center gap-3 pl-3 opacity-90 lg:flex">
+          <span className="hidden sm:inline">· Synthetic clients and funds. No real person's data.</span>
+          <span className="hidden items-center gap-3 pl-3 lg:flex">
             <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-mint" /> computed</span>
             <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-sky" /> AI draft</span>
           </span>
         </div>
         <header
-          className="gutter-x sticky z-20 flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface/85 backdrop-blur-md"
+          className="gutter-x sticky z-20 flex h-14 shrink-0 items-center gap-2 border-b border-line/70 bg-bg/80 backdrop-blur-md"
           style={{ top: "env(safe-area-inset-top, 0px)" }}
         >
           <div className="flex min-w-0 flex-1 items-center gap-2.5">

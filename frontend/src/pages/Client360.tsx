@@ -19,6 +19,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AllocationDonut, assetColor, DriftBars, ExemptionBar, ExposureTreemap, OverlapHeatmap } from "@/components/charts";
+import { AgentRunSheet } from "@/components/agents/AgentRun";
 import { FindingBody } from "@/components/FindingBody";
 import {
   Avatar,
@@ -56,6 +57,7 @@ export function Client360() {
   const displayName = useClientName();
   const [lotsFor, setLotsFor] = useState<Position | null>(null);
   const [pair, setPair] = useState<OverlapPair | undefined>(pf?.overlaps[0]);
+  const [runOpen, setRunOpen] = useState(false);
 
   if (!pf) {
     return (
@@ -124,7 +126,7 @@ export function Client360() {
                 className="flex-1 sm:flex-none"
                 onClick={() => {
                   log("review.run.requested", `client/${pf.spec.id}`);
-                  toast.success("Review run started", { description: `${pf.findings.length} findings drafted from snapshot ${TODAY}.` });
+                  setRunOpen(true);
                 }}
               >
                 <Play /> Run review
@@ -198,7 +200,7 @@ export function Client360() {
               {pf.exposures.slice(0, 7).map((e) => (
                 <li key={e.symbol} className="grid grid-cols-[minmax(0,1fr)_96px_48px] items-center gap-3 text-[12.5px]">
                   <span className="truncate text-fg">{e.name}</span>
-                  <Meter value={(e.pctOfTotal / (pf.exposures[0]?.pctOfTotal ?? 1)) * 100} />
+                  <Meter value={(e.pctOfTotal / (pf.exposures[0]?.pctOfTotal ?? 1)) * 100} label={`${e.name} exposure`} />
                   <span className="tabular text-right font-medium text-fg">{pct(e.pctOfTotal)}</span>
                 </li>
               ))}
@@ -496,6 +498,8 @@ export function Client360() {
           )}
         </TabsContent>
       </Tabs>
+
+      <AgentRunSheet clientId={pf.spec.id} open={runOpen} onOpenChange={setRunOpen} />
 
       {/* Lots drawer */}
       <Sheet open={!!lotsFor} onOpenChange={(o) => !o && setLotsFor(null)} title={lotsFor?.name ?? ""} description={lotsFor ? `${lotsFor.account} · ${lotsFor.source}` : undefined}>

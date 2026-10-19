@@ -1,0 +1,1395 @@
+{
+ "_note": "Synthetic demo book. All people, firm and fund names are fictional; weights and prices are invented.",
+ "today": "2026-10-17",
+ "fy_label": "FY 2026-27",
+ "ltcg_exemption": 125000,
+ "ltcg_rate": 0.125,
+ "stcg_rate": 0.2,
+ "disclosure_month": "Sep 2026",
+ "source_as_of": {
+  "Dhan": "2026-10-16",
+  "CDSL CAS": "2026-09-30",
+  "CAMS CAS": "2026-09-30",
+  "KFintech CAS": "2026-09-30"
+ },
+ "models": {
+  "Conservative": {
+   "Equity": 30,
+   "Debt": 55,
+   "Gold": 10,
+   "Cash": 5
+  },
+  "Moderate": {
+   "Equity": 50,
+   "Debt": 35,
+   "Gold": 10,
+   "Cash": 5
+  },
+  "Moderately aggressive": {
+   "Equity": 70,
+   "Debt": 20,
+   "Gold": 5,
+   "Cash": 5
+  },
+  "Aggressive": {
+   "Equity": 80,
+   "Debt": 12,
+   "Gold": 5,
+   "Cash": 3
+  }
+ },
+ "stocks": {
+  "HDFCBANK": {
+   "symbol": "HDFCBANK",
+   "name": "HDFC Bank",
+   "sector": "Financials",
+   "isin": "INE040A01034",
+   "price": 1782
+  },
+  "ICICIBANK": {
+   "symbol": "ICICIBANK",
+   "name": "ICICI Bank",
+   "sector": "Financials",
+   "isin": "INE090A01021",
+   "price": 1388
+  },
+  "RELIANCE": {
+   "symbol": "RELIANCE",
+   "name": "Reliance Industries",
+   "sector": "Energy",
+   "isin": "INE002A01018",
+   "price": 1412
+  },
+  "INFY": {
+   "symbol": "INFY",
+   "name": "Infosys",
+   "sector": "IT",
+   "isin": "INE009A01021",
+   "price": 1638
+  },
+  "TCS": {
+   "symbol": "TCS",
+   "name": "Tata Consultancy Services",
+   "sector": "IT",
+   "isin": "INE467B01029",
+   "price": 3346
+  },
+  "BHARTIARTL": {
+   "symbol": "BHARTIARTL",
+   "name": "Bharti Airtel",
+   "sector": "Telecom",
+   "isin": "INE397D01024",
+   "price": 1915
+  },
+  "LT": {
+   "symbol": "LT",
+   "name": "Larsen & Toubro",
+   "sector": "Industrials",
+   "isin": "INE018A01030",
+   "price": 3620
+  },
+  "ITC": {
+   "symbol": "ITC",
+   "name": "ITC",
+   "sector": "Consumer staples",
+   "isin": "INE154A01025",
+   "price": 418
+  },
+  "SBIN": {
+   "symbol": "SBIN",
+   "name": "State Bank of India",
+   "sector": "Financials",
+   "isin": "INE062A01020",
+   "price": 842
+  },
+  "AXISBANK": {
+   "symbol": "AXISBANK",
+   "name": "Axis Bank",
+   "sector": "Financials",
+   "isin": "INE238A01034",
+   "price": 1176
+  },
+  "HINDUNILVR": {
+   "symbol": "HINDUNILVR",
+   "name": "Hindustan Unilever",
+   "sector": "Consumer staples",
+   "isin": "INE030A01027",
+   "price": 2510
+  },
+  "KOTAKBANK": {
+   "symbol": "KOTAKBANK",
+   "name": "Kotak Mahindra Bank",
+   "sector": "Financials",
+   "price": 2140
+  },
+  "BAJFINANCE": {
+   "symbol": "BAJFINANCE",
+   "name": "Bajaj Finance",
+   "sector": "Financials",
+   "price": 1012
+  },
+  "MARUTI": {
+   "symbol": "MARUTI",
+   "name": "Maruti Suzuki",
+   "sector": "Auto",
+   "price": 15880
+  },
+  "SUNPHARMA": {
+   "symbol": "SUNPHARMA",
+   "name": "Sun Pharmaceutical",
+   "sector": "Healthcare",
+   "price": 1745
+  },
+  "TITAN": {
+   "symbol": "TITAN",
+   "name": "Titan Company",
+   "sector": "Consumer discretionary",
+   "price": 3710
+  },
+  "M&M": {
+   "symbol": "M&M",
+   "name": "Mahindra & Mahindra",
+   "sector": "Auto",
+   "price": 3480
+  },
+  "NTPC": {
+   "symbol": "NTPC",
+   "name": "NTPC",
+   "sector": "Utilities",
+   "price": 352
+  },
+  "ULTRACEMCO": {
+   "symbol": "ULTRACEMCO",
+   "name": "UltraTech Cement",
+   "sector": "Materials",
+   "price": 12450
+  },
+  "HCLTECH": {
+   "symbol": "HCLTECH",
+   "name": "HCL Technologies",
+   "sector": "IT",
+   "price": 1588
+  },
+  "TRENT": {
+   "symbol": "TRENT",
+   "name": "Trent",
+   "sector": "Consumer discretionary",
+   "price": 5410
+  },
+  "PERSISTENT": {
+   "symbol": "PERSISTENT",
+   "name": "Persistent Systems",
+   "sector": "IT",
+   "price": 6120
+  },
+  "DIXON": {
+   "symbol": "DIXON",
+   "name": "Dixon Technologies",
+   "sector": "Industrials",
+   "price": 16200
+  },
+  "POLYCAB": {
+   "symbol": "POLYCAB",
+   "name": "Polycab India",
+   "sector": "Industrials",
+   "price": 7380
+  },
+  "MAXHEALTH": {
+   "symbol": "MAXHEALTH",
+   "name": "Max Healthcare",
+   "sector": "Healthcare",
+   "price": 1190
+  },
+  "COFORGE": {
+   "symbol": "COFORGE",
+   "name": "Coforge",
+   "sector": "IT",
+   "price": 1810
+  },
+  "INDHOTEL": {
+   "symbol": "INDHOTEL",
+   "name": "Indian Hotels",
+   "sector": "Consumer discretionary",
+   "price": 768
+  },
+  "KPITTECH": {
+   "symbol": "KPITTECH",
+   "name": "KPIT Technologies",
+   "sector": "IT",
+   "price": 1342
+  },
+  "CDSL": {
+   "symbol": "CDSL",
+   "name": "Central Depository Services",
+   "sector": "Financials",
+   "price": 1620
+  }
+ },
+ "funds": {
+  "NSB": {
+   "id": "NSB",
+   "isin": "INF0DEMO0001",
+   "name": "Northstar Bluechip Fund",
+   "shortName": "Northstar Bluechip",
+   "category": "Large Cap",
+   "assetClass": "Equity",
+   "nav": 92.41,
+   "weights": {
+    "HDFCBANK": 9.6,
+    "ICICIBANK": 8.1,
+    "RELIANCE": 8.4,
+    "INFY": 6.2,
+    "TCS": 4.3,
+    "BHARTIARTL": 4.8,
+    "LT": 4.1,
+    "ITC": 3.6,
+    "SBIN": 3.2,
+    "AXISBANK": 3,
+    "HINDUNILVR": 2.5,
+    "KOTAKBANK": 2.9,
+    "BAJFINANCE": 2.2,
+    "MARUTI": 1.8,
+    "SUNPHARMA": 1.9,
+    "TITAN": 1.5,
+    "M&M": 1.9,
+    "NTPC": 1.6,
+    "ULTRACEMCO": 1.3,
+    "HCLTECH": 1.7
+   }
+  },
+  "HN50": {
+   "id": "HN50",
+   "isin": "INF0DEMO0002",
+   "name": "Harbor Nifty 50 Index Fund",
+   "shortName": "Harbor Nifty 50",
+   "category": "Index",
+   "assetClass": "Equity",
+   "nav": 41.73,
+   "weights": {
+    "HDFCBANK": 12.9,
+    "ICICIBANK": 8.9,
+    "RELIANCE": 8.6,
+    "INFY": 5,
+    "BHARTIARTL": 4.6,
+    "LT": 3.9,
+    "ITC": 3.4,
+    "TCS": 3,
+    "SBIN": 2.9,
+    "AXISBANK": 3,
+    "KOTAKBANK": 2.7,
+    "M&M": 2.6,
+    "BAJFINANCE": 2.3,
+    "HINDUNILVR": 2,
+    "SUNPHARMA": 1.6,
+    "HCLTECH": 1.6,
+    "MARUTI": 1.6,
+    "NTPC": 1.4,
+    "TITAN": 1.3,
+    "ULTRACEMCO": 1.2
+   }
+  },
+  "MFC": {
+   "id": "MFC",
+   "isin": "INF0DEMO0003",
+   "name": "Meridian Flexi Cap Fund",
+   "shortName": "Meridian Flexi Cap",
+   "category": "Flexi Cap",
+   "assetClass": "Equity",
+   "nav": 68.05,
+   "weights": {
+    "HDFCBANK": 7.8,
+    "ICICIBANK": 6,
+    "BAJFINANCE": 4.1,
+    "ITC": 3.9,
+    "HCLTECH": 3.5,
+    "INFY": 3.2,
+    "BHARTIARTL": 3.6,
+    "MARUTI": 3,
+    "TRENT": 2.8,
+    "PERSISTENT": 2.6,
+    "MAXHEALTH": 2.5,
+    "COFORGE": 2.4,
+    "INDHOTEL": 2.2,
+    "DIXON": 2,
+    "POLYCAB": 1.9,
+    "KOTAKBANK": 2.1,
+    "SUNPHARMA": 2.3
+   }
+  },
+  "ILM": {
+   "id": "ILM",
+   "isin": "INF0DEMO0004",
+   "name": "Indus Large & Midcap Fund",
+   "shortName": "Indus Large & Mid",
+   "category": "Large & Mid Cap",
+   "assetClass": "Equity",
+   "nav": 54.88,
+   "weights": {
+    "ICICIBANK": 6.1,
+    "HDFCBANK": 6.8,
+    "RELIANCE": 4.2,
+    "TRENT": 3.4,
+    "PERSISTENT": 3.1,
+    "MAXHEALTH": 3,
+    "INDHOTEL": 2.7,
+    "COFORGE": 2.5,
+    "POLYCAB": 2.6,
+    "DIXON": 2.4,
+    "BHARTIARTL": 3.3,
+    "LT": 2.9,
+    "SBIN": 2.2,
+    "KPITTECH": 2,
+    "CDSL": 1.6
+   }
+  },
+  "SEL": {
+   "id": "SEL",
+   "isin": "INF0DEMO0005",
+   "name": "Sapphire ELSS Tax Saver Fund",
+   "shortName": "Sapphire ELSS",
+   "category": "ELSS",
+   "assetClass": "Equity",
+   "nav": 118.6,
+   "weights": {
+    "HDFCBANK": 8.9,
+    "ICICIBANK": 7.7,
+    "RELIANCE": 7.1,
+    "INFY": 5.8,
+    "TCS": 3.9,
+    "BHARTIARTL": 4.4,
+    "LT": 4,
+    "ITC": 3.8,
+    "AXISBANK": 3.4,
+    "SBIN": 3.1,
+    "KOTAKBANK": 2.5,
+    "HCLTECH": 2,
+    "M&M": 2.2,
+    "SUNPHARMA": 1.8
+   }
+  },
+  "CSC": {
+   "id": "CSC",
+   "isin": "INF0DEMO0006",
+   "name": "Coastal Small Cap Fund",
+   "shortName": "Coastal Small Cap",
+   "category": "Small Cap",
+   "assetClass": "Equity",
+   "nav": 37.12,
+   "weights": {
+    "KPITTECH": 3.1,
+    "CDSL": 3.4,
+    "POLYCAB": 2.8,
+    "DIXON": 2.6,
+    "COFORGE": 2.2,
+    "INDHOTEL": 1.9
+   }
+  },
+  "BSD": {
+   "id": "BSD",
+   "isin": "INF0DEMO0007",
+   "name": "Banyan Short Duration Fund",
+   "shortName": "Banyan Short Duration",
+   "category": "Short Duration Debt",
+   "assetClass": "Debt",
+   "nav": 31.44,
+   "weights": {}
+  },
+  "KGF": {
+   "id": "KGF",
+   "isin": "INF0DEMO0008",
+   "name": "Kaveri Gold ETF Fund of Fund",
+   "shortName": "Kaveri Gold FoF",
+   "category": "Gold FoF",
+   "assetClass": "Gold",
+   "nav": 27.9,
+   "weights": {}
+  },
+  "LLQ": {
+   "id": "LLQ",
+   "isin": "INF0DEMO0009",
+   "name": "Lakeview Liquid Fund",
+   "shortName": "Lakeview Liquid",
+   "category": "Liquid",
+   "assetClass": "Cash",
+   "nav": 3120.5,
+   "weights": {}
+  }
+ },
+ "clients": [
+  {
+   "id": "rohan-deshpande",
+   "name": "Rohan Deshpande",
+   "city": "Pune",
+   "age": 41,
+   "risk": "Moderately aggressive",
+   "lastReview": "2026-04-11",
+   "realisedLtcg": 38000,
+   "dhan": "expired",
+   "holdings": [
+    {
+     "ref": "NSB",
+     "kind": "fund",
+     "value": 620000,
+     "source": "CAMS CAS",
+     "account": "Folio ••4821",
+     "lots": [
+      {
+       "acquired": "2023-06-05",
+       "share": 1,
+       "costRatio": 0.66
+      }
+     ]
+    },
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 550000,
+     "source": "KFintech CAS",
+     "account": "Folio ••1907",
+     "lots": [
+      {
+       "acquired": "2024-08-19",
+       "share": 1,
+       "costRatio": 0.78
+      }
+     ]
+    },
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 480000,
+     "source": "CAMS CAS",
+     "account": "Folio ••5530",
+     "lots": [
+      {
+       "acquired": "2024-02-12",
+       "share": 0.254,
+       "costRatio": 0.755
+      },
+      {
+       "acquired": "2025-10-28",
+       "share": 0.746,
+       "costRatio": 0.8655
+      }
+     ]
+    },
+    {
+     "ref": "SEL",
+     "kind": "fund",
+     "value": 240000,
+     "source": "KFintech CAS",
+     "account": "Folio ••6612",
+     "lots": [
+      {
+       "acquired": "2024-01-15",
+       "share": 1,
+       "costRatio": 0.75
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 310000,
+     "source": "CAMS CAS",
+     "account": "Folio ••4821",
+     "lots": [
+      {
+       "acquired": "2023-03-01",
+       "share": 1,
+       "costRatio": 0.84
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 90000,
+     "source": "CAMS CAS",
+     "account": "Folio ••4821",
+     "lots": [
+      {
+       "acquired": "2024-11-20",
+       "share": 1,
+       "costRatio": 0.8
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 60000,
+     "source": "CAMS CAS",
+     "account": "Folio ••4821",
+     "lots": [
+      {
+       "acquired": "2026-09-02",
+       "share": 1,
+       "costRatio": 0.995
+      }
+     ]
+    },
+    {
+     "ref": "HDFCBANK",
+     "kind": "stock",
+     "qty": 120,
+     "source": "Dhan",
+     "account": "Dhan demat ••7731",
+     "lots": [
+      {
+       "acquired": "2022-03-10",
+       "share": 1,
+       "costRatio": 0.69
+      }
+     ]
+    },
+    {
+     "ref": "INFY",
+     "kind": "stock",
+     "qty": 80,
+     "source": "Dhan",
+     "account": "Dhan demat ••7731",
+     "lots": [
+      {
+       "acquired": "2023-01-18",
+       "share": 1,
+       "costRatio": 0.92
+      }
+     ]
+    },
+    {
+     "ref": "RELIANCE",
+     "kind": "stock",
+     "qty": 60,
+     "source": "Dhan",
+     "account": "Dhan demat ••7731",
+     "lots": [
+      {
+       "acquired": "2024-07-08",
+       "share": 1,
+       "costRatio": 1.12
+      }
+     ]
+    },
+    {
+     "ref": "ITC",
+     "kind": "stock",
+     "qty": 300,
+     "source": "Dhan",
+     "account": "Dhan demat ••7731",
+     "lots": [
+      {
+       "acquired": "2025-11-04",
+       "share": 1,
+       "costRatio": 0.93
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "meera-iyer",
+   "name": "Meera Iyer",
+   "city": "Chennai",
+   "age": 58,
+   "risk": "Moderate",
+   "lastReview": "2026-07-02",
+   "realisedLtcg": 110000,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 900000,
+     "source": "KFintech CAS",
+     "account": "Folio ••3310",
+     "lots": [
+      {
+       "acquired": "2021-04-12",
+       "share": 1,
+       "costRatio": 0.58
+      }
+     ]
+    },
+    {
+     "ref": "SEL",
+     "kind": "fund",
+     "value": 300000,
+     "source": "KFintech CAS",
+     "account": "Folio ••3311",
+     "lots": [
+      {
+       "acquired": "2023-02-01",
+       "share": 1,
+       "costRatio": 0.7
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 1100000,
+     "source": "CAMS CAS",
+     "account": "Folio ••8120",
+     "lots": [
+      {
+       "acquired": "2022-07-01",
+       "share": 1,
+       "costRatio": 0.83
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 240000,
+     "source": "CAMS CAS",
+     "account": "Folio ••8120",
+     "lots": [
+      {
+       "acquired": "2023-09-01",
+       "share": 1,
+       "costRatio": 0.74
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 150000,
+     "source": "CAMS CAS",
+     "account": "Folio ••8120",
+     "lots": [
+      {
+       "acquired": "2026-08-14",
+       "share": 1,
+       "costRatio": 0.996
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kavya-nair",
+   "name": "Kavya Nair",
+   "city": "Kochi",
+   "age": 33,
+   "risk": "Aggressive",
+   "lastReview": "2026-05-20",
+   "realisedLtcg": 0,
+   "dhan": "connected",
+   "holdings": [
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 420000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2207",
+     "lots": [
+      {
+       "acquired": "2025-11-10",
+       "share": 1,
+       "costRatio": 0.88
+      }
+     ]
+    },
+    {
+     "ref": "CSC",
+     "kind": "fund",
+     "value": 380000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2207",
+     "lots": [
+      {
+       "acquired": "2024-05-01",
+       "share": 1,
+       "costRatio": 0.76
+      }
+     ]
+    },
+    {
+     "ref": "ILM",
+     "kind": "fund",
+     "value": 310000,
+     "source": "KFintech CAS",
+     "account": "Folio ••9902",
+     "lots": [
+      {
+       "acquired": "2025-03-15",
+       "share": 1,
+       "costRatio": 0.84
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 50000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2207",
+     "lots": [
+      {
+       "acquired": "2025-06-01",
+       "share": 1,
+       "costRatio": 0.86
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "arjun-malhotra",
+   "name": "Arjun Malhotra",
+   "city": "New Delhi",
+   "age": 46,
+   "risk": "Moderately aggressive",
+   "lastReview": "2026-03-28",
+   "realisedLtcg": 60000,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "NSB",
+     "kind": "fund",
+     "value": 780000,
+     "source": "CAMS CAS",
+     "account": "Folio ••1188",
+     "lots": [
+      {
+       "acquired": "2022-11-07",
+       "share": 1,
+       "costRatio": 0.62
+      }
+     ]
+    },
+    {
+     "ref": "SEL",
+     "kind": "fund",
+     "value": 320000,
+     "source": "KFintech CAS",
+     "account": "Folio ••4407",
+     "lots": [
+      {
+       "acquired": "2023-03-20",
+       "share": 1,
+       "costRatio": 0.68
+      }
+     ]
+    },
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 410000,
+     "source": "KFintech CAS",
+     "account": "Folio ••4408",
+     "lots": [
+      {
+       "acquired": "2024-02-26",
+       "share": 1,
+       "costRatio": 0.8
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 200000,
+     "source": "CAMS CAS",
+     "account": "Folio ••1188",
+     "lots": [
+      {
+       "acquired": "2024-06-10",
+       "share": 1,
+       "costRatio": 0.9
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 40000,
+     "source": "CAMS CAS",
+     "account": "Folio ••1188",
+     "lots": [
+      {
+       "acquired": "2026-10-01",
+       "share": 1,
+       "costRatio": 0.998
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ananya-rao",
+   "name": "Ananya Rao",
+   "city": "Bengaluru",
+   "age": 29,
+   "risk": "Aggressive",
+   "lastReview": "2026-08-09",
+   "realisedLtcg": 0,
+   "dhan": "connected",
+   "holdings": [
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 220000,
+     "source": "KFintech CAS",
+     "account": "Folio ••7012",
+     "lots": [
+      {
+       "acquired": "2024-09-02",
+       "share": 1,
+       "costRatio": 0.83
+      }
+     ]
+    },
+    {
+     "ref": "CSC",
+     "kind": "fund",
+     "value": 190000,
+     "source": "CAMS CAS",
+     "account": "Folio ••6634",
+     "lots": [
+      {
+       "acquired": "2024-12-16",
+       "share": 1,
+       "costRatio": 0.9
+      }
+     ]
+    },
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 250000,
+     "source": "CAMS CAS",
+     "account": "Folio ••6634",
+     "lots": [
+      {
+       "acquired": "2025-10-30",
+       "share": 1,
+       "costRatio": 0.87
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vikram-shetty",
+   "name": "Vikram Shetty",
+   "city": "Mumbai",
+   "age": 62,
+   "risk": "Conservative",
+   "lastReview": "2026-09-18",
+   "realisedLtcg": 0,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 1800000,
+     "source": "CAMS CAS",
+     "account": "Folio ••0459",
+     "lots": [
+      {
+       "acquired": "2021-01-11",
+       "share": 1,
+       "costRatio": 0.8
+      }
+     ]
+    },
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 650000,
+     "source": "KFintech CAS",
+     "account": "Folio ••2290",
+     "lots": [
+      {
+       "acquired": "2020-12-07",
+       "share": 1,
+       "costRatio": 0.48
+      }
+     ]
+    },
+    {
+     "ref": "NSB",
+     "kind": "fund",
+     "value": 350000,
+     "source": "CAMS CAS",
+     "account": "Folio ••0459",
+     "lots": [
+      {
+       "acquired": "2022-05-16",
+       "share": 1,
+       "costRatio": 0.66
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 300000,
+     "source": "CAMS CAS",
+     "account": "Folio ••0459",
+     "lots": [
+      {
+       "acquired": "2022-02-02",
+       "share": 1,
+       "costRatio": 0.6
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 250000,
+     "source": "CAMS CAS",
+     "account": "Folio ••0459",
+     "lots": [
+      {
+       "acquired": "2026-07-21",
+       "share": 1,
+       "costRatio": 0.99
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "neha-joshi",
+   "name": "Neha Joshi",
+   "city": "Nagpur",
+   "age": 37,
+   "risk": "Moderate",
+   "lastReview": "2026-02-14",
+   "realisedLtcg": 22000,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 510000,
+     "source": "CAMS CAS",
+     "account": "Folio ••5108",
+     "lots": [
+      {
+       "acquired": "2023-08-21",
+       "share": 1,
+       "costRatio": 0.7
+      }
+     ]
+    },
+    {
+     "ref": "ILM",
+     "kind": "fund",
+     "value": 430000,
+     "source": "KFintech CAS",
+     "account": "Folio ••5109",
+     "lots": [
+      {
+       "acquired": "2024-04-08",
+       "share": 1,
+       "costRatio": 0.79
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 360000,
+     "source": "CAMS CAS",
+     "account": "Folio ••5108",
+     "lots": [
+      {
+       "acquired": "2024-01-05",
+       "share": 1,
+       "costRatio": 0.88
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 120000,
+     "source": "CAMS CAS",
+     "account": "Folio ••5108",
+     "lots": [
+      {
+       "acquired": "2024-10-14",
+       "share": 1,
+       "costRatio": 0.82
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "farhan-qureshi",
+   "name": "Farhan Qureshi",
+   "city": "Hyderabad",
+   "age": 44,
+   "risk": "Moderately aggressive",
+   "lastReview": "2026-06-30",
+   "realisedLtcg": 45000,
+   "dhan": "connected",
+   "holdings": [
+    {
+     "ref": "ILM",
+     "kind": "fund",
+     "value": 600000,
+     "source": "KFintech CAS",
+     "account": "Folio ••8810",
+     "lots": [
+      {
+       "acquired": "2023-05-15",
+       "share": 1,
+       "costRatio": 0.66
+      }
+     ]
+    },
+    {
+     "ref": "CSC",
+     "kind": "fund",
+     "value": 210000,
+     "source": "CAMS CAS",
+     "account": "Folio ••3361",
+     "lots": [
+      {
+       "acquired": "2024-03-11",
+       "share": 1,
+       "costRatio": 0.85
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 320000,
+     "source": "CAMS CAS",
+     "account": "Folio ••3361",
+     "lots": [
+      {
+       "acquired": "2023-12-01",
+       "share": 1,
+       "costRatio": 0.87
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 80000,
+     "source": "CAMS CAS",
+     "account": "Folio ••3361",
+     "lots": [
+      {
+       "acquired": "2024-01-29",
+       "share": 1,
+       "costRatio": 0.78
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 60000,
+     "source": "CAMS CAS",
+     "account": "Folio ••3361",
+     "lots": [
+      {
+       "acquired": "2026-09-25",
+       "share": 1,
+       "costRatio": 0.997
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sneha-kulkarni",
+   "name": "Sneha Kulkarni",
+   "city": "Pune",
+   "age": 51,
+   "risk": "Moderate",
+   "lastReview": "2026-08-27",
+   "realisedLtcg": 0,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "NSB",
+     "kind": "fund",
+     "value": 500000,
+     "source": "CAMS CAS",
+     "account": "Folio ••7720",
+     "lots": [
+      {
+       "acquired": "2021-09-13",
+       "share": 1,
+       "costRatio": 0.6
+      }
+     ]
+    },
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 300000,
+     "source": "CAMS CAS",
+     "account": "Folio ••7720",
+     "lots": [
+      {
+       "acquired": "2025-11-12",
+       "share": 1,
+       "costRatio": 0.9
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 800000,
+     "source": "CAMS CAS",
+     "account": "Folio ••7720",
+     "lots": [
+      {
+       "acquired": "2022-10-03",
+       "share": 1,
+       "costRatio": 0.85
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 150000,
+     "source": "CAMS CAS",
+     "account": "Folio ••7720",
+     "lots": [
+      {
+       "acquired": "2023-06-19",
+       "share": 1,
+       "costRatio": 0.71
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ishaan-gupta",
+   "name": "Ishaan Gupta",
+   "city": "Gurugram",
+   "age": 35,
+   "risk": "Aggressive",
+   "lastReview": "2026-01-19",
+   "realisedLtcg": 0,
+   "dhan": "expired",
+   "holdings": [
+    {
+     "ref": "CSC",
+     "kind": "fund",
+     "value": 400000,
+     "source": "CAMS CAS",
+     "account": "Folio ••9041",
+     "lots": [
+      {
+       "acquired": "2023-07-24",
+       "share": 1,
+       "costRatio": 0.62
+      }
+     ]
+    },
+    {
+     "ref": "ILM",
+     "kind": "fund",
+     "value": 350000,
+     "source": "KFintech CAS",
+     "account": "Folio ••9042",
+     "lots": [
+      {
+       "acquired": "2024-08-05",
+       "share": 1,
+       "costRatio": 0.83
+      }
+     ]
+    },
+    {
+     "ref": "MFC",
+     "kind": "fund",
+     "value": 350000,
+     "source": "CAMS CAS",
+     "account": "Folio ••9041",
+     "lots": [
+      {
+       "acquired": "2024-09-09",
+       "share": 1,
+       "costRatio": 0.84
+      }
+     ]
+    },
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 200000,
+     "source": "KFintech CAS",
+     "account": "Folio ••9043",
+     "lots": [
+      {
+       "acquired": "2025-01-13",
+       "share": 1,
+       "costRatio": 0.89
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "priyanka-das",
+   "name": "Priyanka Das",
+   "city": "Kolkata",
+   "age": 49,
+   "risk": "Moderate",
+   "lastReview": "2026-09-05",
+   "realisedLtcg": 15000,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "HN50",
+     "kind": "fund",
+     "value": 600000,
+     "source": "KFintech CAS",
+     "account": "Folio ••6501",
+     "lots": [
+      {
+       "acquired": "2022-01-24",
+       "share": 1,
+       "costRatio": 0.62
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 700000,
+     "source": "CAMS CAS",
+     "account": "Folio ••6502",
+     "lots": [
+      {
+       "acquired": "2023-04-17",
+       "share": 1,
+       "costRatio": 0.86
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 140000,
+     "source": "CAMS CAS",
+     "account": "Folio ••6502",
+     "lots": [
+      {
+       "acquired": "2023-11-06",
+       "share": 1,
+       "costRatio": 0.76
+      }
+     ]
+    },
+    {
+     "ref": "LLQ",
+     "kind": "fund",
+     "value": 100000,
+     "source": "CAMS CAS",
+     "account": "Folio ••6502",
+     "lots": [
+      {
+       "acquired": "2026-09-30",
+       "share": 1,
+       "costRatio": 0.998
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aditya-menon",
+   "name": "Aditya Menon",
+   "city": "Thiruvananthapuram",
+   "age": 55,
+   "risk": "Moderately aggressive",
+   "lastReview": "2026-05-04",
+   "realisedLtcg": 72000,
+   "dhan": "none",
+   "holdings": [
+    {
+     "ref": "NSB",
+     "kind": "fund",
+     "value": 450000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2318",
+     "lots": [
+      {
+       "acquired": "2021-02-15",
+       "share": 1,
+       "costRatio": 0.55
+      }
+     ]
+    },
+    {
+     "ref": "ILM",
+     "kind": "fund",
+     "value": 380000,
+     "source": "KFintech CAS",
+     "account": "Folio ••2319",
+     "lots": [
+      {
+       "acquired": "2025-10-24",
+       "share": 1,
+       "costRatio": 0.86
+      }
+     ]
+    },
+    {
+     "ref": "BSD",
+     "kind": "fund",
+     "value": 300000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2318",
+     "lots": [
+      {
+       "acquired": "2022-08-08",
+       "share": 1,
+       "costRatio": 0.84
+      }
+     ]
+    },
+    {
+     "ref": "KGF",
+     "kind": "fund",
+     "value": 90000,
+     "source": "CAMS CAS",
+     "account": "Folio ••2318",
+     "lots": [
+      {
+       "acquired": "2023-03-27",
+       "share": 1,
+       "costRatio": 0.72
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "primary_adviser": {
+  "rohan-deshpande": "m-priya",
+  "meera-iyer": "m-priya",
+  "arjun-malhotra": "m-priya",
+  "vikram-shetty": "m-priya",
+  "sneha-kulkarni": "m-priya",
+  "priyanka-das": "m-priya",
+  "aditya-menon": "m-priya",
+  "kavya-nair": "m-arun",
+  "ananya-rao": "m-arun",
+  "neha-joshi": "m-arun",
+  "farhan-qureshi": "m-arun",
+  "ishaan-gupta": "m-arun"
+ }
+}

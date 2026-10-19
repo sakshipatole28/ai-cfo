@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from aicfo import __version__
-from aicfo.api import rag
+from aicfo.api import agents, rag
 from aicfo.config import get_settings
 from aicfo.security import redaction
 
@@ -25,6 +25,7 @@ def create_app() -> FastAPI:
         return {"status": "ok", "version": __version__, "env": settings.env}
 
     app.include_router(rag.router)
+    app.include_router(agents.router)
     return app
 
 

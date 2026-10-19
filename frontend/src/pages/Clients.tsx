@@ -138,7 +138,7 @@ export function Clients() {
                     </td>
                     <td className="w-36 px-3 py-3">
                       <div className="flex items-center gap-2">
-                        <Meter value={p.lookThroughPct} />
+                        <Meter value={p.lookThroughPct} label="Look-through coverage" />
                         <span className="tabular w-9 text-right text-[12px] text-muted">{Math.round(p.lookThroughPct)}%</span>
                       </div>
                     </td>
