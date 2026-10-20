@@ -204,7 +204,9 @@ export function AppShell() {
   const [moreOpen, setMoreOpen] = useState(false);
   const title = useTitle(path);
 
-  useEffect(() => setMoreOpen(false), [path]);
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [path]);
 
   const badgeFor = (b?: NavItem["badge"]) => (b === "review" ? pending : b === "data" ? 3 : b === "access" ? waitingAccess : 0);
 

@@ -108,8 +108,13 @@ export function CopilotPanel() {
   const [thinking, setThinking] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => setMessages([]), [pf.spec.id]);
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), [messages, thinking]);
+  useEffect(() => {
+    setMessages([]);
+  }, [pf.spec.id]);
+  // Effects must not return a value: newer browsers return a Promise from scrollIntoView.
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, thinking]);
 
   const ask = (q: string) => {
     if (!q.trim() || thinking) return;
