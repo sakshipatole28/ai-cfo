@@ -11,7 +11,9 @@ import { useApp } from "@/state/app";
 
 function CodeInput({ value, onChange, id }: { value: string; onChange: (v: string) => void; id: string }) {
   const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => ref.current?.focus(), []);
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
   return (
     <div className="relative">
       <input
