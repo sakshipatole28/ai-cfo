@@ -1,4 +1,6 @@
-# False positives: the "generic-api-key" rule misreads `trigger="api", latency_ms=5` in two tests as a key.
-# Fingerprints are commit:file:rule:line, so these entries cover only those exact historical lines.
+# Known false positives, matched by commit:file:rule:line (so only these exact historical lines).
+# Two test lines were misread as keys by the generic-api-key rule; the third entry is the first
+# version of this file, whose explanatory comment quoted one of those lines.
 613b0b3b26971e90733917385ba7cceefa3f079e:backend/tests/test_db_pipeline.py:generic-api-key:101
 613b0b3b26971e90733917385ba7cceefa3f079e:backend/tests/test_db_pipeline.py:generic-api-key:288
+7d1b73e5221e487bcc4b12dd2fb30b07a9e8946c:.gitleaksignore:generic-api-key:1
