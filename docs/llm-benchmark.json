@@ -1,0 +1,37 @@
+{
+ "measured": "2026-10-31",
+ "what": "Each provider ran 4 full multi-agent reviews and 10 RAG questions on synthetic data (python -m aicfo.llm bench). Scores count how much model output survived this app's own guards.",
+ "caveat": "Free-tier keys, one run, small sample. Gemini errors were quota (429) and timeout (504) responses, not wrong answers.",
+ "results": [
+  {
+   "provider": "groq:openai/gpt-oss-120b",
+   "calls": 31,
+   "errors": 0,
+   "p50_ms": 1612,
+   "p95_ms": 5539,
+   "analyst_json_ok": 1.0,
+   "rewrites_verified": 1.0,
+   "rag_verified": 1.0,
+   "score": 1.0
+  },
+  {
+   "provider": "gemini:gemini-3-flash-preview",
+   "calls": 38,
+   "errors": 17,
+   "p50_ms": 3006,
+   "p95_ms": 40116,
+   "analyst_json_ok": 0.75,
+   "rewrites_verified": 0.714,
+   "rag_verified": 0.1,
+   "score": 0.524
+  }
+ ],
+ "gemini_models_tried_on_this_key": {
+  "gemini-3.6-flash": "quota exhausted (429)",
+  "gemini-3.7-flash": "timeout (504)",
+  "gemini-3.5-flash-lite": "ok",
+  "gemini-3-flash-preview": "ok",
+  "gemini-2.5-flash": "not found (404)",
+  "gemini-flash-latest": "timeout (504)"
+ }
+}

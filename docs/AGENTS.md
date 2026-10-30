@@ -23,9 +23,11 @@ load_snapshot → compute_evidence ─┬─ overlap_analyst ────┐
 The three analysts run **in parallel** (fan-out from `compute_evidence`, fan-in at `rank`). Every node records a trace event: duration, a summary, and details such as which evidence it flagged and which passages it retrieved.
 
 ## Without a model
-If no LLM is configured, each agent falls back to its deterministic **firm policy** (thresholds from `data/kb/firm-ips.md`). The pipeline therefore always runs, in CI and in the demo, and the trace says which mode was used. Connect any OpenAI-compatible endpoint to let agents decide and write:
+If no LLM is configured, each agent falls back to its deterministic **firm policy** (thresholds from `data/kb/firm-ips.md`). The pipeline therefore always runs, in CI and in the demo, and the trace says which mode was used. Connect a model to let agents decide and write. Groq and Gemini go through LangChain (`aicfo/llm/providers.py`), with automatic fallback from one to the other; any OpenAI-compatible endpoint also works:
 ```bash
-AICFO_LLM_BASE_URL=http://localhost:11434/v1 AICFO_LLM_MODEL=llama3.1:8b uv run python -m aicfo.agents review rohan-deshpande
+AICFO_GROQ_API_KEY=gsk_... AICFO_GEMINI_API_KEY=... uv run python -m aicfo.agents review rohan-deshpande
+AICFO_LLM_PROVIDER=openai AICFO_LLM_BASE_URL=http://localhost:11434/v1 uv run python -m aicfo.agents review rohan-deshpande
+uv run python -m aicfo.llm bench    # compare Groq and Gemini on this pipeline's guards
 ```
 Model output never adds numbers. Analyst JSON is schema-checked against known evidence IDs, and rewritten text goes back through the verifier.
 
