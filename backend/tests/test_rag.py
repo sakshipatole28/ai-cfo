@@ -188,3 +188,37 @@ def test_api_search_and_validation() -> None:
     ).json()
     assert hits[0]["doc_id"] == "sebi-mf-disclosure"
     assert client.post("/v1/rag/ask", json={"question": "x"}).status_code == 422
+
+
+def test_fullwidth_citations_are_normalised() -> None:
+    """gpt-oss (Groq) writes 【1】; the verifier reads [1]. Only the brackets change."""
+    from aicfo.rag.text import normalise_citations
+
+    assert (
+        normalise_citations("Default regime【1】 and ［2］ 〔 3 〕.")
+        == "Default regime[1] and [2] [3]."
+    )
+    assert normalise_citations("No markers, 12% stays.") == "No markers, 12% stays."
+
+
+def test_llm_answer_with_fullwidth_citation_is_accepted() -> None:
+    from aicfo.llm import FakeLLM
+    from aicfo.rag.answer import Answerer
+    from aicfo.rag.service import get_rag
+
+    answer = Answerer(
+        get_rag().retriever, FakeLLM("The new tax regime is the default for individuals【1】.")
+    )
+    a = answer.ask("Which tax regime applies by default to individuals?")
+    assert a.mode == "llm" and a.text.endswith("[1].")
+
+
+def test_hard_paraphrase_set_is_retrievable_even_without_real_embeddings() -> None:
+    """16 paraphrased questions: the right document must be within the top 5 for nearly all."""
+    from aicfo.evals.rag_eval import HARD, evaluate, load_golden
+    from aicfo.rag.service import get_rag
+
+    rows = load_golden(HARD)
+    assert len(rows) >= 16
+    report = evaluate(get_rag().retriever, "hybrid", rows)
+    assert report.hit_at_5 >= 0.9  # offline fallback; real embeddings reach 1.00 (see README)

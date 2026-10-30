@@ -1,0 +1,18 @@
+[
+  {"q": "A client sold some investments after eleven months and made a profit; how heavily is that profit taxed?", "docs": ["it-capital-gains"]},
+  {"q": "What annual tax-free allowance exists on profits from shares held for a long time?", "docs": ["it-capital-gains"]},
+  {"q": "For how many years is money stuck if I put it in a tax-saving equity fund through monthly instalments?", "docs": ["it-deductions-regimes", "sebi-mf-categorisation"]},
+  {"q": "Which income tax system applies to a person who has not made any special election?", "docs": ["it-deductions-regimes"]},
+  {"q": "How often does a fund house have to publish everything it owns?", "docs": ["sebi-mf-disclosure"]},
+  {"q": "What does the coloured dial on a fund's factsheet showing six danger levels mean?", "docs": ["sebi-mf-disclosure"]},
+  {"q": "How can someone work out how much of one company they secretly own through several funds?", "docs": ["sebi-mf-disclosure"]},
+  {"q": "What is the smallest share of assets a fund labelled for the biggest companies must put in them?", "docs": ["sebi-mf-categorisation"]},
+  {"q": "Who is on the hook if the software we bought from a vendor produces a wrong output?", "docs": ["sebi-ai-accountability"]},
+  {"q": "Can the same firm both advise a client and sell them products?", "docs": ["sebi-ia-regulations"]},
+  {"q": "What paperwork must an adviser keep to justify a recommendation?", "docs": ["sebi-ia-regulations"]},
+  {"q": "If a customer changes their mind about letting us use their information, how quickly must we stop?", "docs": ["dpdp-act"]},
+  {"q": "What must we do when there is a leak of customers' personal details?", "docs": ["dpdp-act"]},
+  {"q": "How does a regulated bank share a customer's holdings with another licensed firm with their permission?", "docs": ["account-aggregator"]},
+  {"q": "At what point does the firm say a portfolio has wandered too far from the plan agreed with the client?", "docs": ["firm-ips"]},
+  {"q": "How soon after the last check must we look at a client's portfolio again?", "docs": ["firm-ips"]}
+]
