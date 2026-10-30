@@ -18,6 +18,13 @@ for (const dark of [false, true]) {
     for (const v of r.violations) failures.push(`${dark ? "dark" : "light"} ${name}: ${v.id} (${v.nodes.length})`);
   };
   await check("Sign in");
+  // The two other ways in: create a firm (Owner) and join with an invite code (employee).
+  await p.getByRole("button", { name: /Create a firm account/ }).click();
+  await check("Create firm");
+  await p.getByRole("button", { name: /Back to sign in/ }).click();
+  await p.getByRole("button", { name: /Join with an invite code/ }).click();
+  await check("Join firm");
+  await p.getByRole("button", { name: /Back to sign in/ }).click();
   await p.getByRole("button", { name: /Priya Anand/ }).first().click();
   await p.getByRole("button", { name: "Continue" }).click();
   await p.locator("#totp").fill("123456");
@@ -27,6 +34,11 @@ for (const dark of [false, true]) {
     await p.waitForTimeout(400);
     await check(label);
   }
+  // The "give someone access" sheet on the Team page.
+  await p.getByRole("link", { name: "Team" }).first().click();
+  await p.getByRole("button", { name: /Invite someone/ }).click();
+  await p.waitForTimeout(400);
+  await check("Invite sheet");
   await ctx.close();
 }
 await browser.close();
@@ -34,4 +46,4 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exit(1);
 }
-console.log(`axe: 0 violations on ${pages.length + 1} pages in light and dark`);
+console.log(`axe: 0 violations on ${pages.length + 4} screens in light and dark`);

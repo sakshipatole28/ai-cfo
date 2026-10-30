@@ -1,48 +1,13 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Building2, CheckCircle2, KeyRound, Loader2, Mail, ShieldCheck, Smartphone, Sparkles, UserRound } from "lucide-react";
-import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { ArrowRight, Building2, CheckCircle2, ShieldCheck, Smartphone, Sparkles, UserRound } from "lucide-react";
+import { type FormEvent, type ReactNode, useState } from "react";
 
+import { CodeInput } from "@/components/auth/CodeInput";
+import { FirmAuth } from "@/components/auth/FirmAuth";
 import { Logo } from "@/components/shell/Logo";
-import { Avatar, Badge, Button } from "@/components/ui";
-import { firm } from "@/data/demo";
+import { Badge, Button } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { useApp } from "@/state/app";
-
-function CodeInput({ value, onChange, id }: { value: string; onChange: (v: string) => void; id: string }) {
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
-  return (
-    <div className="relative">
-      <input
-        ref={ref}
-        id={id}
-        inputMode="numeric"
-        autoComplete="one-time-code"
-        maxLength={6}
-        value={value}
-        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 6))}
-        className="absolute inset-0 h-full w-full cursor-text opacity-0"
-        aria-label="6-digit code"
-      />
-      <div className="grid grid-cols-6 gap-2" aria-hidden>
-        {Array.from({ length: 6 }, (_, i) => (
-          <div
-            key={i}
-            className={cn(
-              "tabular flex h-12 items-center justify-center rounded-xl border bg-surface text-[20px] font-semibold text-fg transition-colors",
-              i === value.length ? "border-accent ring-2 ring-accent/25" : "border-line",
-            )}
-          >
-            {value[i] ?? ""}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function FloatingChip({ className, children, delay = 0 }: { className: string; children: ReactNode; delay?: number }) {
   return (
@@ -56,41 +21,12 @@ function FloatingChip({ className, children, delay = 0 }: { className: string; c
 }
 
 export function SignIn() {
-  const { members, signIn, clientSignIn } = useApp();
+  const { clientSignIn } = useApp();
   const navigate = useNavigate();
   const [tab, setTab] = useState<"firm" | "client">("firm");
-  const [step, setStep] = useState<"password" | "code" | "unlock">("password");
-  const [email, setEmail] = useState(members[0]!.email);
-  const [password, setPassword] = useState("demo-password");
-  const [code, setCode] = useState("");
   const [clientStep, setClientStep] = useState<"phone" | "code">("phone");
   const [phone, setPhone] = useState("98•••• 4821");
   const [clientCode, setClientCode] = useState("");
-
-  const member = members.find((m) => m.email === email.trim().toLowerCase());
-
-  const submitPassword = (e: FormEvent) => {
-    e.preventDefault();
-    if (!member) return toast.error("No account with that email", { description: "Pick one of the demo accounts below." });
-    if (member.status === "Suspended") return toast.error("This account is suspended", { description: "Ask your firm owner to restore access." });
-    setStep("code");
-  };
-
-  const submitCode = (e?: FormEvent) => {
-    e?.preventDefault();
-    if (code.length !== 6 || !member) return;
-    setStep("unlock");
-    setTimeout(() => {
-      signIn(member.id);
-      navigate({ to: "/" });
-      toast.success(`Welcome back, ${member.name.split(" ")[0]}`, { description: "Vault unlocked in this browser." });
-    }, 900);
-  };
-
-  useEffect(() => {
-    if (code.length === 6) submitCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]);
 
   const submitClient = (e: FormEvent) => {
     e.preventDefault();
@@ -171,82 +107,9 @@ export function SignIn() {
           </div>
 
           {tab === "firm" ? (
+            // Firm employees: sign in, create a firm (Owner) or join with an invite code.
             <div className="mt-7">
-              {step === "password" && (
-                <form onSubmit={submitPassword} className="space-y-4">
-                  <div>
-                    <h2 className="font-display text-[26px] font-semibold text-fg">Sign in to your firm</h2>
-                    <p className="mt-1 text-[13.5px] text-muted">{firm.name} · SEBI RIA {firm.registration}</p>
-                  </div>
-                  <label className="block">
-                    <span className="text-[12.5px] font-medium text-fg">Work email</span>
-                    <span className="mt-1.5 flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3 focus-within:border-accent">
-                      <Mail className="size-4 text-muted" aria-hidden />
-                      <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" className="flex-1 bg-transparent text-[14px] text-fg outline-none" />
-                    </span>
-                  </label>
-                  <label className="block">
-                    <span className="flex justify-between text-[12.5px] font-medium text-fg">
-                      Password
-                      <button type="button" className="cursor-pointer font-normal text-accent" onClick={() => toast("Reset link sent", { description: "Demo: no email is sent." })}>
-                        Forgot?
-                      </button>
-                    </span>
-                    <span className="mt-1.5 flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3 focus-within:border-accent">
-                      <KeyRound className="size-4 text-muted" aria-hidden />
-                      <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="flex-1 bg-transparent text-[14px] text-fg outline-none" />
-                    </span>
-                  </label>
-                  <Button type="submit" variant="primary" className="h-11 w-full text-[14px]">
-                    Continue <ArrowRight />
-                  </Button>
-                  <div>
-                    <p className="mb-2 text-[12px] font-medium uppercase tracking-wider text-muted">Demo accounts, one per role</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {members.filter((m) => m.status !== "Invited").map((m) => (
-                        <button
-                          type="button"
-                          key={m.id}
-                          onClick={() => setEmail(m.email)}
-                          className={cn(
-                            "flex cursor-pointer items-center gap-2 rounded-xl border p-2 text-left transition-colors",
-                            email === m.email ? "border-accent bg-accent-soft/60" : "border-line hover:border-line-strong",
-                          )}
-                        >
-                          <Avatar name={m.name} className="size-7 text-[10px]" />
-                          <span className="min-w-0">
-                            <span className="block truncate text-[12.5px] font-medium text-fg">{m.name}</span>
-                            <span className="block text-[11px] text-muted">{m.role}</span>
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </form>
-              )}
-              {step === "code" && member && (
-                <form onSubmit={submitCode} className="space-y-5">
-                  <div>
-                    <span className="flex size-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
-                      <Smartphone className="size-5" aria-hidden />
-                    </span>
-                    <h2 className="mt-4 font-display text-[26px] font-semibold text-fg">Two-step check</h2>
-                    <p className="mt-1 text-[13.5px] text-muted">Enter the 6-digit code from the authenticator app for {member.email}.</p>
-                  </div>
-                  <CodeInput id="totp" value={code} onChange={setCode} />
-                  <p className="text-[12px] text-muted">Demo: any 6 digits work.</p>
-                  <button type="button" onClick={() => setStep("password")} className="cursor-pointer text-[13px] text-accent">
-                    ← Use a different account
-                  </button>
-                </form>
-              )}
-              {step === "unlock" && (
-                <div className="flex flex-col items-center gap-3 py-12 text-center">
-                  <Loader2 className="size-8 animate-spin text-accent" aria-hidden />
-                  <p className="font-display text-[20px] font-semibold text-fg">Unlocking your vault</p>
-                  <p className="max-w-xs text-[13px] text-muted">Deriving your key in this browser. Client names are decrypted here and never sent to our servers.</p>
-                </div>
-              )}
+              <FirmAuth />
             </div>
           ) : (
             <form onSubmit={submitClient} className="mt-7 space-y-5">

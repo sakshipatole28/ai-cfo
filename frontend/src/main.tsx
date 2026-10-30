@@ -36,15 +36,16 @@ const PUBLIC = new Set(["/signin", "/consent"]);
 /** Route guard: firm pages need a signed-in team member; the portal needs a signed-in client. */
 function Root() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const { theme, me, clientId } = useApp();
+  const { theme, me, clientId, restoring } = useApp();
   const navigate = useNavigate();
   const isPublic = PUBLIC.has(path);
   const isPortal = path === "/portal";
   const allowed = isPublic || (isPortal ? !!clientId : !!me);
 
   useEffect(() => {
-    if (!allowed) void navigate({ to: "/signin", replace: true });
-  }, [allowed, navigate]);
+    // Wait for a saved session to be checked before sending anyone to the sign-in page.
+    if (!allowed && !restoring) void navigate({ to: "/signin", replace: true });
+  }, [allowed, restoring, navigate]);
 
   return (
     <>

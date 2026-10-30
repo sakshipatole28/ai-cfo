@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { FindingBody } from "@/components/FindingBody";
 import { Logo } from "@/components/shell/Logo";
 import { Avatar, Badge, Button, buttonClass, Card, EmptyState, Kbd, SeverityBadge, severityBar, Sheet } from "@/components/ui";
-import { firm, TODAY } from "@/data/demo";
+import { TODAY } from "@/data/demo";
 import { cn } from "@/lib/cn";
 import type { Finding } from "@/lib/engine";
 import { fmtDate, inrShort } from "@/lib/format";
@@ -33,7 +33,7 @@ const decisionLabel: Record<Decision, { label: string; tone: "good" | "neutral" 
 };
 
 export function ReviewInbox() {
-  const { decisions, decide, approved, approve, explain, aiEnabled, can, me } = useApp();
+  const { decisions, decide, approved, approve, explain, aiEnabled, can, me, firm } = useApp();
   const portfolios = useVisiblePortfolios();
   const canApprove = can("approve");
   const displayName = useClientName();
@@ -356,7 +356,7 @@ export function ReviewInbox() {
                 <Logo size={28} />
                 <div>
                   <p className="text-[13px] font-semibold text-fg">{firm.name}</p>
-                  <p className="text-[11px] text-muted">SEBI RIA {firm.registration}</p>
+                  <p className="text-[11px] text-muted">{firm.type === "RIA" ? "SEBI RIA" : "AMFI ARN"} {firm.registration}</p>
                 </div>
               </div>
               <p className="text-[11.5px] text-muted">{fmtDate(TODAY)}</p>

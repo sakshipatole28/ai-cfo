@@ -1,16 +1,17 @@
-import { Check, Clock, LogOut, MailPlus, Minus, Monitor, Send, ShieldCheck, Smartphone, UserCog, X } from "lucide-react";
+import { Check, Clock, Copy, KeyRound, LogOut, MailPlus, Minus, Monitor, Send, ShieldCheck, Smartphone, UserCog, X } from "lucide-react";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, Badge, Button, Card, CardHeader, Sheet, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { firm, type Member, permissions, primaryAdviser, type Role, type Scope } from "@/data/demo";
+import { type Member, permissions, primaryAdviser, type Scope } from "@/data/demo";
 import { cn } from "@/lib/cn";
 import { portfolios } from "@/lib/engine";
 import { fmtDate } from "@/lib/format";
+import { ROLE_HELP, ROLES, type Role } from "@/lib/roles";
 import { useApp, useClientName } from "@/state/app";
 
-const ROLES: Role[] = ["Owner", "Adviser", "Analyst", "Compliance"];
-const roleTone: Record<Role, "accent" | "ai" | "neutral" | "warning"> = { Owner: "accent", Adviser: "ai", Analyst: "neutral", Compliance: "warning" };
+// Badge colour per role.
+const roleTone: Record<Role, "accent" | "ai" | "neutral" | "warning"> = { Owner: "accent", Admin: "accent", Adviser: "ai", Analyst: "neutral", Compliance: "warning" };
 
 function Page({ children }: { children: ReactNode }) {
   return <div className="gutter-x mx-auto max-w-[1200px] space-y-4 py-5 sm:py-6">{children}</div>;
@@ -18,10 +19,14 @@ function Page({ children }: { children: ReactNode }) {
 
 /* ----------------------------- Team ----------------------------- */
 export function Team() {
-  const { me, members, can, setRole, setStatus, invite, sessions, endSession, endOtherSessions } = useApp();
+  const { me, firm, members, can, canGrant, whyNot, setRole, setStatus, invite, sessions, endSession, endOtherSessions } = useApp();
   const [inviteOpen, setInviteOpen] = useState(false);
+  // Owners and Admins can manage people; what they may change is decided per person (whyNot).
   const manage = can("manageTeam");
+  // Clients column: advisers and owners see assigned clients; Admins see none; others read all.
   const clientCount = (m: Member) => (m.role === "Adviser" || m.role === "Owner" ? Object.values(primaryAdviser).filter((x) => x === m.id).length : portfolios.length);
+  // Show a server or rule error as a toast; do nothing on success.
+  const report = (error: string | null, ok: string, description?: string) => (error ? toast.error(error) : toast.success(ok, { description }));
 
   return (
     <Page>
@@ -31,7 +36,7 @@ export function Team() {
             <p className="eyebrow">Firm</p>
             <h2 className="font-display text-[24px] font-semibold text-fg">{firm.name}</h2>
             <p className="text-[13px] text-fg-2">
-              SEBI RIA {firm.registration} · {members.filter((m) => m.status === "Active").length} active people · two-step sign-in enforced for everyone
+              {firm.type === "RIA" ? "SEBI RIA" : "AMFI ARN"} {firm.registration} · {members.filter((m) => m.status === "Active").length} active people · two-step sign-in enforced for everyone
             </p>
           </div>
           {manage ? (
@@ -39,7 +44,7 @@ export function Team() {
               <MailPlus /> Invite someone
             </Button>
           ) : (
-            <Badge tone="outline">Only the firm owner can change the team</Badge>
+            <Badge tone="outline">Only Owners and Admins can change the team</Badge>
           )}
         </div>
       </Card>
@@ -74,43 +79,50 @@ export function Team() {
                     </div>
                   </td>
                   <td className="px-3 py-3">
-                    {manage && m.id !== me?.id ? (
-                      <label className="sr-only" htmlFor={`role-${m.id}`}>
-                        Role for {m.name}
-                      </label>
-                    ) : null}
-                    {manage && m.id !== me?.id ? (
-                      <select
-                        id={`role-${m.id}`}
-                        value={m.role}
-                        onChange={(e) => {
-                          setRole(m.id, e.target.value as Role);
-                          toast.success(`${m.name} is now ${e.target.value}`);
-                        }}
-                        className="h-8 cursor-pointer rounded-lg border border-line bg-surface px-2 text-[12.5px] text-fg"
-                      >
-                        {ROLES.map((r) => (
-                          <option key={r}>{r}</option>
-                        ))}
-                      </select>
+                    {/* The role picker appears only when the rules let you change this person. */}
+                    {manage && !whyNot(m, m.role) && m.status !== "Invited" ? (
+                      <>
+                        <label className="sr-only" htmlFor={`role-${m.id}`}>
+                          Role for {m.name}
+                        </label>
+                        <select
+                          id={`role-${m.id}`}
+                          value={m.role}
+                          onChange={async (e) => {
+                            const next = e.target.value as Role;
+                            report(await setRole(m.id, next), `${m.name} is now ${next}`);
+                          }}
+                          className="h-8 cursor-pointer rounded-lg border border-line bg-surface px-2 text-[12.5px] text-fg"
+                        >
+                          {/* Offer only roles you may grant (an Admin cannot hand out Owner or Admin). */}
+                          {ROLES.filter((r) => r === m.role || canGrant.includes(r)).map((r) => (
+                            <option key={r}>{r}</option>
+                          ))}
+                        </select>
+                      </>
                     ) : (
                       <Badge tone={roleTone[m.role]}>{m.role}</Badge>
                     )}
                   </td>
-                  <td className="tabular px-3 py-3 text-fg-2">{m.role === "Adviser" ? `${clientCount(m)} assigned` : m.role === "Owner" ? `All · ${clientCount(m)} own` : "All (read)"}</td>
+                  <td className="tabular px-3 py-3 text-fg-2">{m.role === "Adviser" ? `${clientCount(m)} assigned` : m.role === "Owner" ? `All · ${clientCount(m)} own` : m.role === "Admin" ? "No client data" : "All (read)"}</td>
                   <td className="px-3 py-3">{m.mfa ? <Badge tone="good"><ShieldCheck aria-hidden /> On</Badge> : <Badge tone="warning">Pending setup</Badge>}</td>
                   <td className="px-3 py-3 text-fg-2">{m.lastActive}</td>
                   <td className="px-3 py-3">
                     <Badge tone={m.status === "Active" ? "good" : m.status === "Invited" ? "ai" : "critical"}>{m.status}</Badge>
                   </td>
                   <td className="px-5 py-3 text-right">
-                    {manage && m.id !== me?.id && (
-                      m.status === "Suspended" ? (
-                        <Button size="sm" variant="ghost" onClick={() => { setStatus(m.id, "Active"); toast(`${m.name} restored`); }}>
+                    {/* Suspend/restore only where the rules allow; otherwise explain why not. */}
+                    {manage && m.status !== "Invited" && (
+                      whyNot(m, m.status === "Suspended" ? m.role : null) ? (
+                        <span className="text-[12px] text-muted" title={whyNot(m, null) ?? undefined}>
+                          {m.id === me?.id ? "" : "Owner only"}
+                        </span>
+                      ) : m.status === "Suspended" ? (
+                        <Button size="sm" variant="ghost" onClick={async () => report(await setStatus(m.id, "Active"), `${m.name} restored`)}>
                           Restore
                         </Button>
                       ) : (
-                        <Button size="sm" variant="ghost" onClick={() => { setStatus(m.id, "Suspended"); toast(`${m.name} suspended`, { description: "All their sessions were signed out." }); }}>
+                        <Button size="sm" variant="ghost" onClick={async () => report(await setStatus(m.id, "Suspended"), `${m.name} suspended`, "All their sessions were signed out.")}>
                           <Minus /> Suspend
                         </Button>
                       )
@@ -189,58 +201,104 @@ export function Team() {
         </Card>
       </div>
 
-      <InviteSheet
-        open={inviteOpen}
-        onOpenChange={setInviteOpen}
-        onInvite={(m) => {
-          invite(m);
-          setInviteOpen(false);
-          toast.success(`Invitation sent to ${m.email}`, { description: "They must set a password and two-step sign-in before they can see anything." });
-        }}
-      />
+      <InviteSheet open={inviteOpen} onOpenChange={setInviteOpen} roles={canGrant} onInvite={invite} />
     </Page>
   );
 }
 
-function InviteSheet({ open, onOpenChange, onInvite }: { open: boolean; onOpenChange: (o: boolean) => void; onInvite: (m: { name: string; email: string; role: Role }) => void }) {
+/** Give someone access: pick their role; they join with the one-time code shown afterwards. */
+function InviteSheet({
+  open,
+  onOpenChange,
+  roles,
+  onInvite,
+}: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  roles: Role[]; // only the roles the signed-in person may grant
+  onInvite: (m: { name: string; email: string; role: Role }) => Promise<{ code: string } | { error: string }>;
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRoleState] = useState<Role>("Adviser");
-  const submit = (e: FormEvent) => {
+  const [role, setRoleState] = useState<Role>(roles.includes("Adviser") ? "Adviser" : (roles[0] ?? "Adviser"));
+  const [code, setCode] = useState<string | null>(null); // set after a successful invite
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.includes("@")) return toast.error("Add a name and a work email");
-    onInvite({ name: name.trim(), email: email.trim().toLowerCase(), role });
-    setName("");
-    setEmail("");
+    setBusy(true);
+    const r = await onInvite({ name: name.trim(), email: email.trim().toLowerCase(), role });
+    setBusy(false);
+    if ("error" in r) return toast.error(r.error);
+    setCode(r.code); // shown once: only a hash is kept on the server
   };
+
+  const close = (o: boolean) => {
+    onOpenChange(o);
+    if (!o) {
+      setCode(null); // clear everything when the sheet closes
+      setName("");
+      setEmail("");
+    }
+  };
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Invite someone to the firm" description="The invite expires in 72 hours">
-      <form onSubmit={submit} className="space-y-4 p-5">
-        <label className="block text-[12.5px] font-medium text-fg">
-          Full name
-          <input id="inv-name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-line bg-surface px-3 text-[13.5px] font-normal text-fg outline-none focus:border-accent" />
-        </label>
-        <label className="block text-[12.5px] font-medium text-fg">
-          Work email
-          <input id="inv-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-line bg-surface px-3 text-[13.5px] font-normal text-fg outline-none focus:border-accent" />
-        </label>
-        <fieldset>
-          <legend className="text-[12.5px] font-medium text-fg">Role</legend>
-          <div className="mt-1.5 grid grid-cols-2 gap-2">
-            {ROLES.filter((r) => r !== "Owner").map((r) => (
-              <button type="button" key={r} onClick={() => setRoleState(r)} className={cn("cursor-pointer rounded-lg border p-2.5 text-left", role === r ? "border-accent bg-accent-soft" : "border-line")}>
-                <span className="block text-[13px] font-medium text-fg">{r}</span>
-                <span className="block text-[11.5px] text-muted">
-                  {r === "Adviser" ? "Reviews and approves own clients" : r === "Analyst" ? "Prepares data, cannot approve" : "Read-only, sees audit trail"}
-                </span>
-              </button>
-            ))}
+    <Sheet open={open} onOpenChange={close} title="Give someone access" description="They join with a one-time code that expires in 72 hours">
+      {code ? (
+        <div className="space-y-4 p-5">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+            <KeyRound className="size-5" aria-hidden />
           </div>
-        </fieldset>
-        <Button type="submit" variant="primary" className="h-10 w-full">
-          <Send /> Send invitation
-        </Button>
-      </form>
+          <div>
+            <p className="font-display text-[20px] font-semibold text-fg">Invite ready for {name}</p>
+            <p className="mt-1 text-[13px] text-muted">
+              Send them this code privately. They open <span className="font-medium text-fg-2">Join your firm</span> on the sign-in page, enter it, and set a password and authenticator. It is shown only once.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 rounded-xl border border-line bg-surface-2 p-3">
+            <code className="tabular flex-1 text-[22px] font-semibold tracking-widest text-fg">{code}</code>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                void navigator.clipboard?.writeText(code);
+                toast.success("Code copied");
+              }}
+            >
+              <Copy /> Copy
+            </Button>
+          </div>
+          <Button variant="primary" className="h-10 w-full" onClick={() => close(false)}>
+            Done
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={submit} className="space-y-4 p-5">
+          <label className="block text-[12.5px] font-medium text-fg">
+            Full name
+            <input id="inv-name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-line bg-surface px-3 text-[13.5px] font-normal text-fg outline-none focus:border-accent" />
+          </label>
+          <label className="block text-[12.5px] font-medium text-fg">
+            Work email
+            <input id="inv-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-line bg-surface px-3 text-[13.5px] font-normal text-fg outline-none focus:border-accent" />
+          </label>
+          <fieldset>
+            <legend className="text-[12.5px] font-medium text-fg">Role</legend>
+            <div className="mt-1.5 grid grid-cols-2 gap-2">
+              {roles.map((r) => (
+                <button type="button" key={r} onClick={() => setRoleState(r)} className={cn("cursor-pointer rounded-lg border p-2.5 text-left", role === r ? "border-accent bg-accent-soft" : "border-line")}>
+                  <span className="block text-[13px] font-medium text-fg">{r}</span>
+                  <span className="block text-[11.5px] text-muted">{ROLE_HELP[r]}</span>
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <Button type="submit" variant="primary" className="h-10 w-full" disabled={busy}>
+            <Send /> {busy ? "Creating…" : "Create invite"}
+          </Button>
+        </form>
+      )}
     </Sheet>
   );
 }

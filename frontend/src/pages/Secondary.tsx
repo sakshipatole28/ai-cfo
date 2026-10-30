@@ -20,7 +20,6 @@ import { type ReactNode, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, Badge, Button, Card, CardHeader, Switch } from "@/components/ui";
-import { firm } from "@/data/demo";
 import { verify } from "@/lib/audit";
 import { portfolios } from "@/lib/engine";
 import { cn } from "@/lib/cn";
@@ -254,7 +253,7 @@ function SettingRow({ title, desc, children }: { title: string; desc: string; ch
 }
 
 export function Settings() {
-  const { aiEnabled, setAiEnabled, setLocked, can } = useApp();
+  const { aiEnabled, setAiEnabled, setLocked, can, firm } = useApp();
   const owner = can("settings");
   const [mode, setMode] = useState("india");
   return (
@@ -292,7 +291,7 @@ export function Settings() {
             </div>
           </SettingRow>
           <SettingRow title="Compliance profile" desc="Controls which wording the guard allows in drafts.">
-            <Badge tone="accent">SEBI RIA · {firm.registration}</Badge>
+            <Badge tone="accent">{firm.type === "RIA" ? "SEBI RIA" : "AMFI ARN"} · {firm.registration}</Badge>
           </SettingRow>
         </div>
       </Card>
@@ -334,6 +333,7 @@ export function Settings() {
 
 /* Client-facing consent page (no login, mobile-first) */
 export function Consent() {
+  const { firm } = useApp();
   const [step, setStep] = useState<"read" | "otp" | "done">("read");
   const [otp, setOtp] = useState("");
   return (
@@ -343,7 +343,7 @@ export function Consent() {
           <Avatar name={firm.name} className="size-9" />
           <div>
             <p className="text-[14px] font-semibold text-fg">{firm.name}</p>
-            <p className="text-[12px] text-muted">SEBI-registered investment adviser · {firm.registration}</p>
+            <p className="text-[12px] text-muted">{firm.type === "RIA" ? "SEBI-registered investment adviser" : "AMFI-registered distributor"} · {firm.registration}</p>
           </div>
         </div>
         <Card className="mt-5 p-5">

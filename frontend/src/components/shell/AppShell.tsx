@@ -35,7 +35,6 @@ import { Logo } from "@/components/shell/Logo";
 import { CopilotPanel } from "@/components/copilot/CopilotPanel";
 import { ExplainDrawer } from "@/components/explain/ExplainDrawer";
 import { Avatar, Badge, Button, Kbd, Sheet, Tip } from "@/components/ui";
-import { firm } from "@/data/demo";
 import { cn } from "@/lib/cn";
 import { type Capability, type Theme, useApp, useVisiblePortfolios } from "@/state/app";
 
@@ -128,7 +127,7 @@ function ThemeMenu() {
 }
 
 function UserMenu() {
-  const { setLocked, me, signOut } = useApp();
+  const { setLocked, me, signOut, firm } = useApp();
   const navigate = useNavigate();
   if (!me) return null;
   return (
@@ -196,7 +195,7 @@ function AiPill() {
 
 export function AppShell() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const { setCommandOpen, openCopilot, can, requests, me } = useApp();
+  const { setCommandOpen, openCopilot, can, requests, me, firm } = useApp();
   const pending = usePendingCount();
   const nav = NAV.filter((n) => !n.needs || can(n.needs));
   const waitingAccess = requests.filter((r) => r.status === "Waiting for client").length;

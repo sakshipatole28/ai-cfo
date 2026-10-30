@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { LiveConnectSheet } from "@/components/live/LiveConnect";
 import { Logo } from "@/components/shell/Logo";
 import { Avatar, Badge, Button, Card, CardHeader, Sheet } from "@/components/ui";
-import { type ClientShare, firm, primaryAdviser, type Scope } from "@/data/demo";
+import { type ClientShare, primaryAdviser, type Scope } from "@/data/demo";
 import { cn } from "@/lib/cn";
 import { portfolioById } from "@/lib/engine";
 import { fmtDate, inrShort } from "@/lib/format";
@@ -15,7 +15,7 @@ import { useApp } from "@/state/app";
 const SHARE_SCOPES: Scope[] = ["Tax summary", "Reports", "Mutual fund statements", "Dhan holdings"];
 
 export function Portal() {
-  const { clientId, clientSignOut, requests, decideRequest, shares, addShare, revokeShare, members, audit, dhanStatus, liveSync } = useApp();
+  const { clientId, clientSignOut, requests, decideRequest, shares, addShare, revokeShare, members, audit, dhanStatus, liveSync, firm } = useApp();
   const [liveOpen, setLiveOpen] = useState(false);
   const navigate = useNavigate();
   const [shareOpen, setShareOpen] = useState(false);

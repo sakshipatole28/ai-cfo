@@ -1,3 +1,5 @@
+import type { Role } from "@/lib/roles";
+
 /**
  * Synthetic demo book. Every person, firm and fund name here is fictional.
  * Company names are real listed companies; all weights, prices and positions are invented.
@@ -377,7 +379,8 @@ export const aumHistoryMonths = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"
 
 /* Team, roles and access (all fictional) */
 
-export type Role = "Owner" | "Adviser" | "Analyst" | "Compliance";
+// Roles and their rules live in lib/roles.ts (mirrors the API).
+export type { Role };
 
 export interface Member {
   id: string;
@@ -387,6 +390,7 @@ export interface Member {
   status: "Active" | "Invited" | "Suspended";
   mfa: boolean;
   lastActive: string;
+  inviteCode?: string; // one-time code an invited person uses to join (demo keeps it in memory)
 }
 
 export const members: Member[] = [
@@ -394,6 +398,7 @@ export const members: Member[] = [
   { id: "m-arun", name: "Arun Kumar", email: "arun@anandwealth.in", role: "Adviser", status: "Active", mfa: true, lastActive: "12 min ago" },
   { id: "m-sana", name: "Sana Sheikh", email: "sana@anandwealth.in", role: "Analyst", status: "Active", mfa: true, lastActive: "Yesterday" },
   { id: "m-dev", name: "Dev Mehra", email: "dev@anandwealth.in", role: "Compliance", status: "Active", mfa: true, lastActive: "3 days ago" },
+  { id: "m-neel", name: "Neel Bose", email: "neel@anandwealth.in", role: "Admin", status: "Active", mfa: true, lastActive: "1 hour ago" },
 ];
 
 /** Primary adviser for each client. */
@@ -418,9 +423,10 @@ export const permissions: { label: string; roles: Role[] }[] = [
   { label: "Upload statements, resolve data exceptions", roles: ["Owner", "Adviser", "Analyst"] },
   { label: "Accept findings and approve reviews", roles: ["Owner", "Adviser"] },
   { label: "Request client access", roles: ["Owner", "Adviser"] },
-  { label: "Invite people, change roles, end sessions", roles: ["Owner"] },
+  { label: "Invite people, change staff roles, suspend", roles: ["Owner", "Admin"] },
+  { label: "Appoint or remove Owners and Admins", roles: ["Owner"] },
   { label: "AI kill switch and firm settings", roles: ["Owner"] },
-  { label: "Read audit trail", roles: ["Owner", "Compliance"] },
+  { label: "Read audit trail", roles: ["Owner", "Admin", "Compliance"] },
 ];
 
 export type Scope = "Mutual fund statements" | "Dhan holdings" | "Tradebook" | "Tax summary" | "Reports";
