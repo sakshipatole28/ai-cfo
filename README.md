@@ -25,28 +25,93 @@ Tradebook files           ┘  FIFO lots + FY tax rules       verifier: no unsup
 Full diagrams (components, sequence, CI/CD): **[EXPLANATION.md](EXPLANATION.md)**.
 
 ## Architecture
+
+![AI CFO system architecture](docs/architecture.png)
+
+Every box is a part of this repository or a service it deploys to. Arrows show the direction of requests and data. Read it top to bottom: people and GitHub at the top, the hosted console (Netlify) and API (Render) in the middle, the database and automation below, and the AI providers at the bottom.
+
+<details>
+<summary>Editable source (Mermaid; also in <code>docs/architecture.mmd</code>)</summary>
+
 ```mermaid
-flowchart LR
-  subgraph Browser["Advisor's browser (Netlify)"]
-    UI["Advisor console<br/>React + Vite"]
+flowchart TB
+  adv(["Advisor, Owner, Admin, Employee<br/>(browser)"])
+  cli(["Client portal<br/>(demo)"])
+
+  subgraph gh["GitHub"]
+    repo["main and feature branches"]
+    ci["CI: lint, types, all tests,<br/>Postgres, browser test, Semgrep, gitleaks"]
+    cd["Deploy: API first, then console,<br/>only after CI passes on main"]
   end
-  subgraph API["API (FastAPI, Docker)"]
-    Auth["Firm accounts<br/>password + authenticator<br/>roles: Owner · Admin · Adviser · Analyst · Compliance"]
-    Core["Deterministic core<br/>every number"]
-    Graph["LangGraph review<br/>3 analysts → rank → explainer<br/>→ compliance → verifier"]
-    RAG["RAG<br/>BM25 + embeddings + RRF<br/>cited, verified answers"]
-    LLM["LangChain<br/>Groq ⇄ Gemini"]
+
+  subgraph netlify["Netlify"]
+    console["Advisor console<br/>React 19 + Vite, static"]
   end
-  DB[("Postgres<br/>firms · users · snapshots<br/>findings · reviews<br/>hash-chained audit")]
-  N8N["n8n<br/>weekly sweep · notifications"]
-  UI -->|"HTTPS + session token"| Auth
-  Auth --> Core & Graph & RAG
-  Graph --> Core & RAG & LLM
-  RAG --> LLM
-  API --> DB
-  N8N -->|"bearer token"| API
-  API -->|"HMAC-signed events"| N8N
+
+  subgraph render["Render (Docker)"]
+    subgraph api["FastAPI  /v1"]
+      auth["Accounts and roles<br/>scrypt password, TOTP, session token"]
+      routes["Routes<br/>clients, reviews, approvals,<br/>pipeline, audit, rulebook, copilot"]
+      pipe["Data pipeline<br/>book to core to database, idempotent"]
+      core["Deterministic core<br/>positions, drift, overlap, tax lots"]
+      review["LangGraph review<br/>3 analysts in parallel, rank,<br/>explainer, compliance, verifier"]
+      copilot["Copilot agent<br/>tools and rulebook"]
+      rag["RAG over the rulebook (data/kb)<br/>BM25 + embeddings + RRF,<br/>cited and verified answers"]
+      llm["LLM layer (LangChain)<br/>Groq, with Gemini as fallback"]
+      events["Signed events<br/>HMAC-SHA256"]
+    end
+  end
+
+  subgraph db["Postgres 17 (Supabase, Neon or Docker)"]
+    tables[("tenants, users, invites, clients,<br/>snapshots, positions,<br/>review_runs, findings, reviews")]
+    audit[("audit_log<br/>hash-chained, append-only")]
+  end
+
+  subgraph n8n["n8n"]
+    sweep["Weekly sweep<br/>Mon 07:00 IST"]
+    notify["Review events<br/>check signature, then notify"]
+  end
+
+  groq[("Groq<br/>openai/gpt-oss-120b")]
+  gemini[("Gemini<br/>gemini-3-flash-preview")]
+  slack[["Slack or Teams<br/>incoming webhook"]]
+  book[["data/synthetic/book.json<br/>synthetic clients"]]
+  dhan[["Dhan (read-only)<br/>sandbox by default"]]
+
+  adv -- "HTTPS" --> console
+  cli -.-> console
+  console -- "session token, JSON" --> routes
+  routes --> auth
+  auth --> tables
+  routes --> pipe
+  book --> pipe
+  pipe --> core
+  pipe --> tables
+  routes --> review
+  routes --> copilot
+  routes --> db
+  routes --> events
+  review --> core
+  review --> rag
+  review --> llm
+  copilot --> core
+  copilot --> rag
+  rag --> llm
+  copilot --> llm
+  llm --> groq
+  llm -. "if Groq fails" .-> gemini
+  events -- "POST, signed" --> notify
+  sweep -- "bearer token" --> routes
+  notify --> slack
+  sweep --> slack
+  routes -.-> dhan
+  repo --> ci --> cd
+  cd -- "deploy hook" --> render
+  cd -- "Netlify deploy" --> console
 ```
+
+</details>
+
 **Who can do what:** the *Owner* creates the firm account and becomes its first Owner. Owners and *Admins* give employees access by inviting them with a role; the employee joins with a one-time code. Admins can grant staff roles only; only an Owner can appoint Owners or Admins; nobody can change their own role; the firm always keeps one active Owner. Details: [EXPLANATION.md](EXPLANATION.md#firm-accounts-and-roles).
 
 ## Screenshots
@@ -132,7 +197,24 @@ Without `VITE_API_URL` the console runs as an offline demo with fictional accoun
 
 **Keep `AICFO_LOCAL_KEKS` and `AICFO_JWT_SECRET` stable.** If they change, existing accounts can no longer sign in (`make init-env` sets them once and never overwrites).
 
-**Verify:** `make check` (lint, types, 161 tests, guards) · `make e2e` (real browser: create firm → invite Admin → Admin invites Adviser; needs the API and console running) · `cd frontend && npm run build:preview && npm run audit:a11y`.
+**Verify every step.** Each row is one check; run them from the repository root.
+
+| What it proves | Command |
+|---|---|
+| Backend: lint, strict types, 162 tests, broker read-only guard, n8n workflow files | `make check` |
+| Frontend: lint, types, production build | `cd frontend && npm run lint && npm run typecheck && npm run build` |
+| Accessibility on 13 screens, light and dark | `cd frontend && npm run build:preview && npm run audit:a11y` |
+| Offline demo: create firm, invite, join, role limits | `cd frontend && npm run e2e:demo` |
+| Full stack in a real browser (API + database + console) | `make e2e` (API and console must be running) |
+| Database on real Postgres, migrations up and down | `cd backend && AICFO_TEST_DATABASE_URL=postgresql+psycopg://aicfo:aicfo@localhost:5432/aicfo_test uv run pytest tests/test_db_pipeline.py tests/test_auth.py` then `make db-migrate` |
+| Groq and Gemini keys work, and which one the agents use | `make llm-status` |
+| Provider comparison on this app's own checks | `make llm-bench` |
+| Agents run for real, with a model choosing findings | `cd backend && uv run python -m aicfo.agents review rohan-deshpande` |
+| RAG retrieval on plain and paraphrased questions | `cd backend && uv run python -m aicfo.rag eval` |
+| API image builds and starts | `docker build -f backend/Dockerfile -t aicfo-api . ` |
+| n8n sweep and signed-webhook workflows | `make automation-up && make n8n-import` |
+
+The database tests drop their tables afterwards, so point them at a separate database (`createdb aicfo_test`), never your development one.
 
 ## API keys (Groq and Gemini)
 Put them in **`backend/.env`** (git-ignored; copy it from `.env.example`):

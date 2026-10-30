@@ -1,0 +1,74 @@
+flowchart TB
+  adv(["Advisor, Owner, Admin, Employee<br/>(browser)"])
+  cli(["Client portal<br/>(demo)"])
+
+  subgraph gh["GitHub"]
+    repo["main and feature branches"]
+    ci["CI: lint, types, all tests,<br/>Postgres, browser test, Semgrep, gitleaks"]
+    cd["Deploy: API first, then console,<br/>only after CI passes on main"]
+  end
+
+  subgraph netlify["Netlify"]
+    console["Advisor console<br/>React 19 + Vite, static"]
+  end
+
+  subgraph render["Render (Docker)"]
+    subgraph api["FastAPI  /v1"]
+      auth["Accounts and roles<br/>scrypt password, TOTP, session token"]
+      routes["Routes<br/>clients, reviews, approvals,<br/>pipeline, audit, rulebook, copilot"]
+      pipe["Data pipeline<br/>book to core to database, idempotent"]
+      core["Deterministic core<br/>positions, drift, overlap, tax lots"]
+      review["LangGraph review<br/>3 analysts in parallel, rank,<br/>explainer, compliance, verifier"]
+      copilot["Copilot agent<br/>tools and rulebook"]
+      rag["RAG over the rulebook (data/kb)<br/>BM25 + embeddings + RRF,<br/>cited and verified answers"]
+      llm["LLM layer (LangChain)<br/>Groq, with Gemini as fallback"]
+      events["Signed events<br/>HMAC-SHA256"]
+    end
+  end
+
+  subgraph db["Postgres 17 (Supabase, Neon or Docker)"]
+    tables[("tenants, users, invites, clients,<br/>snapshots, positions,<br/>review_runs, findings, reviews")]
+    audit[("audit_log<br/>hash-chained, append-only")]
+  end
+
+  subgraph n8n["n8n"]
+    sweep["Weekly sweep<br/>Mon 07:00 IST"]
+    notify["Review events<br/>check signature, then notify"]
+  end
+
+  groq[("Groq<br/>openai/gpt-oss-120b")]
+  gemini[("Gemini<br/>gemini-3-flash-preview")]
+  slack[["Slack or Teams<br/>incoming webhook"]]
+  book[["data/synthetic/book.json<br/>synthetic clients"]]
+  dhan[["Dhan (read-only)<br/>sandbox by default"]]
+
+  adv -- "HTTPS" --> console
+  cli -.-> console
+  console -- "session token, JSON" --> routes
+  routes --> auth
+  auth --> tables
+  routes --> pipe
+  book --> pipe
+  pipe --> core
+  pipe --> tables
+  routes --> review
+  routes --> copilot
+  routes --> db
+  routes --> events
+  review --> core
+  review --> rag
+  review --> llm
+  copilot --> core
+  copilot --> rag
+  rag --> llm
+  copilot --> llm
+  llm --> groq
+  llm -. "if Groq fails" .-> gemini
+  events -- "POST, signed" --> notify
+  sweep -- "bearer token" --> routes
+  notify --> slack
+  sweep --> slack
+  routes -.-> dhan
+  repo --> ci --> cd
+  cd -- "deploy hook" --> render
+  cd -- "Netlify deploy" --> console
