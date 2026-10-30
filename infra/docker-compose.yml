@@ -1,4 +1,6 @@
 # Local development only. Never put real client data in these containers.
+#   make dev-up         Postgres + OpenBao (API on the host: make run)
+#   make automation-up  also the API (container, seeded with the synthetic book) and n8n
 name: aicfo-dev
 
 services:
@@ -22,5 +24,45 @@ services:
     ports: ["127.0.0.1:8200:8200"]
     cap_add: [IPC_LOCK]
 
+  n8n:
+    profiles: [automation]
+    # Workflow automation: weekly review sweep and approval notifications (infra/n8n/).
+    image: n8nio/n8n:2.46.3
+    ports: ["127.0.0.1:5678:5678"]
+    environment:
+      GENERIC_TIMEZONE: Asia/Kolkata
+      TZ: Asia/Kolkata
+      N8N_SECURE_COOKIE: "false"  # plain http on localhost only
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-dev-only-change-me}
+      # The workflows read these with $env; keep secrets in infra/.env, never in workflow JSON.
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      # The API container. For an API on the host, run it with --host 0.0.0.0 and use
+      # http://host.docker.internal:8000.
+      AICFO_API_URL: ${AICFO_API_URL:-http://api:8000}
+      AICFO_AUTOMATION_TOKEN: ${AICFO_AUTOMATION_TOKEN:-dev-automation-token}
+      AICFO_N8N_WEBHOOK_SECRET: ${AICFO_N8N_WEBHOOK_SECRET:-dev-webhook-secret}
+      AICFO_NOTIFY_URL: ${AICFO_NOTIFY_URL:-}
+      NODE_FUNCTION_ALLOW_BUILTIN: crypto  # the webhook workflow verifies HMAC signatures
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      - n8ndata:/home/node/.n8n
+      - ./n8n/workflows:/workflows:ro
+
+  api:
+    profiles: [automation]
+    build: { context: .., dockerfile: backend/Dockerfile }
+    depends_on: { postgres: { condition: service_healthy } }
+    ports: ["127.0.0.1:8000:8000"]
+    env_file: [{ path: ../backend/.env, required: false }]
+    environment:
+      AICFO_ENV: dev
+      AICFO_DATABASE_URL: postgresql+psycopg://aicfo:aicfo@postgres:5432/aicfo
+      AICFO_SEED_DEMO: "true"
+      AICFO_AUTOMATION_TOKEN: ${AICFO_AUTOMATION_TOKEN:-dev-automation-token}
+      AICFO_N8N_WEBHOOK_URL: http://n8n:5678/webhook/aicfo-events
+      AICFO_N8N_WEBHOOK_SECRET: ${AICFO_N8N_WEBHOOK_SECRET:-dev-webhook-secret}
+
 volumes:
   pgdata:
+  n8ndata:

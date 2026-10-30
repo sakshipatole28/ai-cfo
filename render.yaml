@@ -1,0 +1,38 @@
+# Render Blueprint for the synthetic-data demo API (Singapore region; plan §2 allows this for
+# synthetic data only. Real client data needs India-region hosting: Oracle Mumbai + Supabase).
+# Deploys are triggered by .github/workflows/deploy.yml after CI passes (autoDeploy off).
+services:
+  - type: web
+    name: aicfo-api
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    region: singapore
+    plan: free
+    autoDeploy: false
+    healthCheckPath: /health
+    envVars:
+      - key: AICFO_ENV
+        value: staging
+      - key: AICFO_SEED_DEMO
+        value: "true"
+      - key: AICFO_DATABASE_URL     # Supabase (Mumbai) or Neon connection string
+        sync: false
+      - key: AICFO_CORS_ORIGINS     # JSON list, e.g. ["https://<site>.netlify.app"]
+        sync: false
+      - key: AICFO_LLM_PROVIDER     # auto | groq | gemini | none
+        value: auto
+      - key: AICFO_GROQ_API_KEY
+        sync: false
+      - key: AICFO_GEMINI_API_KEY
+        sync: false
+      - key: AICFO_AUTOMATION_TOKEN # same value as in n8n
+        generateValue: true
+      - key: AICFO_JWT_SECRET       # signs sign-in sessions; keep it stable
+        generateValue: true
+      - key: AICFO_LOCAL_KEKS       # "k1:<base64>": run `make init-env` locally and copy the value
+        sync: false
+      - key: AICFO_N8N_WEBHOOK_URL  # https://<n8n>/webhook/aicfo-events (optional)
+        sync: false
+      - key: AICFO_N8N_WEBHOOK_SECRET
+        sync: false

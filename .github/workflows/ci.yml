@@ -21,7 +21,7 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -29,12 +29,49 @@ jobs:
         run: uv run ruff check src tests && uv run ruff format --check src tests
       - name: Type check
         run: uv run mypy
-      - name: Tests
+      - name: Tests (SQLite, fake LLM, mocked HTTP)
         run: uv run pytest
       - name: Dependency audit
         run: |
           uv export --locked --no-hashes --no-emit-project > /tmp/requirements.txt
           uvx pip-audit -r /tmp/requirements.txt
+
+  database:
+    # The same DB tests against real Postgres 17 + pgvector, then the CLI pipeline end to end.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: aicfo
+          POSTGRES_PASSWORD: aicfo
+          POSTGRES_DB: aicfo
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U aicfo" --health-interval 5s --health-retries 10
+    env:
+      AICFO_ENV: test
+      AICFO_LLM_PROVIDER: none
+      AICFO_DATABASE_URL: postgresql+psycopg://aicfo:aicfo@localhost:5432/aicfo
+      AICFO_TEST_DATABASE_URL: postgresql+psycopg://aicfo:aicfo@localhost:5432/aicfo
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: DB tests on Postgres
+        run: uv run pytest tests/test_db_pipeline.py
+      - name: Migrate → seed → verify → downgrade → migrate
+        run: |
+          uv run python -m aicfo.db migrate
+          uv run python -m aicfo.db seed | tee /tmp/seed.txt
+          grep -q "audit chain: intact" /tmp/seed.txt
+          uv run python -m aicfo.db downgrade
+          uv run python -m aicfo.db migrate
 
   frontend:
     runs-on: ubuntu-latest
@@ -58,6 +95,78 @@ jobs:
           npx playwright install --with-deps chromium
           npm run build:preview
           npm run audit:a11y
+          npm run e2e:demo
+
+  e2e:
+    # Real browser against the real stack (console → API → Postgres): the Owner creates a firm,
+    # grants Admin access, the Admin grants staff access, and each role sees only what it may.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: aicfo
+          POSTGRES_PASSWORD: aicfo
+          POSTGRES_DB: aicfo
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U aicfo" --health-interval 5s --health-retries 10
+    env:
+      AICFO_ENV: dev
+      AICFO_LLM_PROVIDER: none
+      AICFO_DATABASE_URL: postgresql+psycopg://aicfo:aicfo@localhost:5432/aicfo
+      AICFO_JWT_SECRET: ci-only-jwt-secret-ci-only-jwt-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Start the API
+        working-directory: backend
+        run: |
+          uv sync --locked
+          export AICFO_LOCAL_KEKS="k1:$(uv run python -c 'import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())')"
+          uv run python -m aicfo.db migrate
+          nohup uv run uvicorn aicfo.main:app --port 8000 > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS localhost:8000/health && break; sleep 2; done
+      - name: Build and serve the console against that API
+        working-directory: frontend
+        env:
+          VITE_API_URL: http://localhost:8000
+        run: |
+          npm ci
+          npm run build
+          nohup npx vite preview --port 5173 --strictPort > /tmp/web.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS localhost:5173 > /dev/null && break; sleep 1; done
+      - name: Browser test
+        working-directory: frontend
+        run: |
+          npx playwright install --with-deps chromium
+          E2E_WEB=http://localhost:5173 npm run e2e:live
+      - if: failure()
+        run: tail -n 60 /tmp/api.log /tmp/web.log
+
+  container:
+    # Build the API image and smoke-test it (SQLite inside the container, synthetic seed).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f backend/Dockerfile -t aicfo-api:ci .
+      - name: Smoke test
+        run: |
+          docker run -d --name api -p 8000:8000 \
+            -e AICFO_DATABASE_URL=sqlite:////tmp/demo.db -e AICFO_SEED_DEMO=true \
+            -e AICFO_LLM_PROVIDER=none -e AICFO_AUTOMATION_TOKEN=ci aicfo-api:ci
+          for i in $(seq 1 30); do curl -fsS localhost:8000/health && break; sleep 2; done
+          curl -fsS localhost:8000/v1/pipeline/status | tee /tmp/status.json
+          grep -q '"audit_chain_ok":true' /tmp/status.json
+      - if: failure()
+        run: docker logs api
 
   guards:
     runs-on: ubuntu-latest
@@ -65,6 +174,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Read-only broker guard
         run: python3 scripts/check_no_order_apis.py
+      - name: n8n workflow guard
+        run: python3 scripts/check_n8n_workflows.py
 
   sast:
     # Static security analysis. Replaces CodeQL, which needs paid Advanced Security on private repos.

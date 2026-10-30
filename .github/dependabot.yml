@@ -12,3 +12,11 @@ updates:
     directory: /infra
     schedule:
       interval: monthly
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: monthly
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly

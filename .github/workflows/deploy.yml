@@ -1,0 +1,77 @@
+# Continuous delivery: runs only after CI succeeds on a push to main (or by hand).
+#   console → Netlify (static, synthetic demo)   API → Render deploy hook (Docker, render.yaml)
+#
+# Repository settings → Secrets and variables → Actions:
+#   secrets:   NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID, RENDER_DEPLOY_HOOK_URL (optional)
+#   variables: VITE_API_URL (the API's public URL; leave unset for the offline demo)
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  api:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Trigger Render deploy
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "RENDER_DEPLOY_HOOK_URL not set; skipping API deploy"; exit 0; fi
+          curl -fsS -X POST "$HOOK" > /dev/null
+          echo "Render deploy triggered"
+      - name: Wait for the API to be healthy
+        if: vars.VITE_API_URL != ''
+        env:
+          API: ${{ vars.VITE_API_URL }}
+        run: |
+          for i in $(seq 1 40); do curl -fsS "$API/health" && exit 0; sleep 15; done
+          echo "API did not become healthy in 10 minutes" && exit 1
+
+  console:
+    needs: api
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets"; exit 1
+          fi
+          npx --yes netlify-cli@27.16.1 deploy --prod --no-build --dir=frontend/dist \
+            --message "CI ${{ github.event.workflow_run.head_sha || github.sha }}"

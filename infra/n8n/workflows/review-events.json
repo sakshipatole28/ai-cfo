@@ -1,0 +1,192 @@
+{
+  "name": "AI CFO · Review events",
+  "nodes": [
+    {
+      "id": "a3d74069-7825-5b2f-936e-a49c24188aed",
+      "name": "Review event from API",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aicfo-events",
+        "responseMode": "onReceived",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "webhookId": "1cec0878-2228-555d-b476-4f445d76c57a"
+    },
+    {
+      "id": "3c5ddc2a-81f2-585a-a257-6d3cad0d7fc0",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Reject anything the API did not sign (X-AICFO-Signature: sha256=<hmac of the raw body>).\nconst crypto = require('crypto');\nconst item = $input.first();\nconst raw = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst expected = 'sha256=' + crypto.createHmac('sha256', $env.AICFO_N8N_WEBHOOK_SECRET).update(raw).digest('hex');\nconst got = String(item.json.headers['x-aicfo-signature'] || '');\nif (got.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(got), Buffer.from(expected))) {\n  throw new Error('Rejected: missing or invalid X-AICFO-Signature');\n}\nreturn [{ json: JSON.parse(raw.toString('utf8')) }];"
+      }
+    },
+    {
+      "id": "5a435888-7382-5bf0-85b5-2ceac7c8fb78",
+      "name": "Pending reviews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.AICFO_API_URL }}/v1/reviews/pending",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.AICFO_AUTOMATION_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "f9ac8bc8-8967-57ee-9932-d5822910242b",
+      "name": "Compose message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const evt = $('Verify signature').first().json;\n// The pending list arrives as one item per client; an empty list arrives as one empty item.\nconst pending = $input.all().filter((i) => i.json.client_ref).length;\nconst d = evt.data;\nconst what = evt.event === 'review.approved'\n  ? `Review approved for ${d.client} (review ${d.review_id}).`\n  : `New review drafted for ${d.client}: ${d.kept} findings kept, ${d.dropped} blocked by guards.`;\nreturn [{ json: { event: evt.event, pending, text: `${what} ${pending} review(s) still pending.` } }];"
+      }
+    },
+    {
+      "id": "b4a1971f-e650-5f2a-9c13-88b9ea38b267",
+      "name": "Notify URL set?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2e277275-990f-56c5-ad99-77f85c977476",
+              "leftValue": "={{ $env.AICFO_NOTIFY_URL }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "384f7bb8-822e-59d3-8583-a30c6aeea9eb",
+      "name": "Notify advisers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        -100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AICFO_NOTIFY_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Review event from API": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Pending reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pending reviews": {
+      "main": [
+        [
+          {
+            "node": "Compose message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose message": {
+      "main": [
+        [
+          {
+            "node": "Notify URL set?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify URL set?": {
+      "main": [
+        [
+          {
+            "node": "Notify advisers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata"
+  },
+  "active": false,
+  "pinData": {},
+  "id": "aicfoReviewEvent",
+  "tags": []
+}

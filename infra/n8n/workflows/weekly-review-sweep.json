@@ -1,0 +1,279 @@
+{
+  "name": "AI CFO · Weekly review sweep",
+  "nodes": [
+    {
+      "id": "72947021-6eeb-59ea-a7b0-0690a6ce9138",
+      "name": "Every Monday 07:00 IST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e26837c4-fb66-5499-8db4-4db8dc49f791",
+      "name": "Run now",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "5211b6e3-a5c0-5819-a710-5b1bb65adb9d",
+      "name": "Sync data pipeline",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AICFO_API_URL }}/v1/pipeline/sync",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.AICFO_AUTOMATION_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "84b27cac-f2ed-52da-baa9-82272e4ab673",
+      "name": "List clients",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        100
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.AICFO_API_URL }}/v1/clients",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.AICFO_AUTOMATION_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "184905af-7d6b-5d91-837a-f167d04aae67",
+      "name": "Run review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AICFO_API_URL }}/v1/clients/{{ $json.id }}/reviews/run",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.AICFO_AUTOMATION_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 3000
+            }
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"trigger\": \"schedule\" }"
+      }
+    },
+    {
+      "id": "4297089a-a757-5cab-b7aa-01016663bd0f",
+      "name": "Summarise",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        100
+      ],
+      "parameters": {
+        "jsCode": "// Counts only: client references are pseudonymous, and no names or amounts leave the API.\nconst runs = $input.all().map((i) => i.json);\nconst waiting = runs.filter((r) => r.kept > 0);\nreturn [{ json: {\n  runs: runs.length,\n  kept: runs.reduce((s, r) => s + r.kept, 0),\n  dropped: runs.reduce((s, r) => s + r.dropped, 0),\n  clients_with_drafts: waiting.map((r) => r.client),\n  models: [...new Set(runs.map((r) => r.model))],\n  text: `AI CFO weekly sweep: ${waiting.length} of ${runs.length} client reviews are waiting for approval.`,\n} }];"
+      }
+    },
+    {
+      "id": "b1aa623a-514a-5327-b4eb-6de905b15fd9",
+      "name": "Drafts waiting and notify URL set?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        100
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7ca9b5a0-c63f-5fc0-bf4a-fd3b29db6369",
+              "leftValue": "={{ $json.kept }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "2931c372-660d-588e-b47e-ee4ec447d437",
+              "leftValue": "={{ $env.AICFO_NOTIFY_URL }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "384f7bb8-822e-59d3-8583-a30c6aeea9eb",
+      "name": "Notify advisers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AICFO_NOTIFY_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every Monday 07:00 IST": {
+      "main": [
+        [
+          {
+            "node": "Sync data pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run now": {
+      "main": [
+        [
+          {
+            "node": "Sync data pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync data pipeline": {
+      "main": [
+        [
+          {
+            "node": "List clients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List clients": {
+      "main": [
+        [
+          {
+            "node": "Run review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run review": {
+      "main": [
+        [
+          {
+            "node": "Summarise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarise": {
+      "main": [
+        [
+          {
+            "node": "Drafts waiting and notify URL set?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafts waiting and notify URL set?": {
+      "main": [
+        [
+          {
+            "node": "Notify advisers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata"
+  },
+  "active": false,
+  "pinData": {},
+  "id": "aicfoWeeklySweep",
+  "tags": []
+}
