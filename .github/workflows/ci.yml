@@ -163,7 +163,8 @@ jobs:
             -e AICFO_DATABASE_URL=sqlite:////tmp/demo.db -e AICFO_SEED_DEMO=true \
             -e AICFO_LLM_PROVIDER=none -e AICFO_AUTOMATION_TOKEN=ci aicfo-api:ci
           for i in $(seq 1 30); do curl -fsS localhost:8000/health && break; sleep 2; done
-          curl -fsS localhost:8000/v1/pipeline/status | tee /tmp/status.json
+          # The status route needs the automation token the container was started with.
+          curl -fsS -H "Authorization: Bearer ci" localhost:8000/v1/pipeline/status | tee /tmp/status.json
           grep -q '"audit_chain_ok":true' /tmp/status.json
       - if: failure()
         run: docker logs api

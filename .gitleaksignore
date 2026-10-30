@@ -1,0 +1,4 @@
+# False positives: the "generic-api-key" rule misreads `trigger="api", latency_ms=5` in two tests as a key.
+# Fingerprints are commit:file:rule:line, so these entries cover only those exact historical lines.
+613b0b3b26971e90733917385ba7cceefa3f079e:backend/tests/test_db_pipeline.py:generic-api-key:101
+613b0b3b26971e90733917385ba7cceefa3f079e:backend/tests/test_db_pipeline.py:generic-api-key:288
