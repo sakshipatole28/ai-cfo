@@ -4,10 +4,12 @@
                                       ├─ allocation_analyst ─┼→ rank → explain → compliance → verify → END
                                       └─ tax_analyst ────────┘
 
-* Deterministic nodes: load_snapshot, compute_evidence, rank, verify.
-* Agents: three analysts, the explainer (uses RAG for citations) and the compliance
-  agent (rules → ML classifier → LLM judge). With no model configured, each agent
-  falls back to its deterministic policy so the pipeline always runs (CI, demos).
+* Tools (plain code): load_snapshot, compute_evidence, rank.
+* Agents (a model makes a choice): three analysts and the explainer (uses RAG for citations).
+  With no model configured, each agent falls back to its deterministic policy so the
+  pipeline always runs (CI, demos).
+* Guards (checks that can block): compliance (rules → ML classifier → LLM judge for
+  borderline wording) and the verifier (plain code).
 * Every node appends a trace event (duration, what it decided and why).
 """
 

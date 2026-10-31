@@ -114,6 +114,8 @@ flowchart TB
 
 **Who can do what:** the *Owner* creates the firm account and becomes its first Owner. Owners and *Admins* give employees access by inviting them with a role; the employee joins with a one-time code. Admins can grant staff roles only; only an Owner can appoint Owners or Admins; nobody can change their own role; the firm always keeps one active Owner. Details: [EXPLANATION.md](EXPLANATION.md#firm-accounts-and-roles).
 
+**Preparing to present this project?** [EXPLANATION.md §9](EXPLANATION.md#9-questions-you-may-be-asked-viva-preparation) has block diagrams for the workflow, the agents, identity protection and the ML guard, plus 25 practice viva questions with answers.
+
 ## Screenshots
 Synthetic demo data: every client, firm and fund name is fictional. Mint marks computed, verified numbers; sky marks AI drafts.
 

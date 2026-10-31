@@ -1,7 +1,9 @@
 /**
  * Real outputs of the Python LangGraph review pipeline, exported with
  * `uv run python -m aicfo.agents export` (data/synthetic/agent_runs.json).
- * The console replays these traces; with VITE_API_URL set it can call the API instead.
+ * The console only REPLAYS these saved traces. New reviews are run by the backend
+ * (`POST /v1/clients/{id}/reviews/run`, the CLI, or the n8n weekly sweep); the console has no
+ * button for that yet.
  */
 import raw from "../../../data/synthetic/agent_runs.json";
 
